@@ -2,6 +2,26 @@
   "checkedAt": "2026-10-19",
   "note": "원문 전문이 아닌 검증용 출처 대장입니다. 기사 사진·전문은 저장하지 않습니다.",
   "sources": {
+    "kosis": {
+      "label": "KOSIS · 통계 원표 추가 확인 경로 (수치 미게시)",
+      "url": "https://kosis.kr/",
+      "kind": "official"
+    },
+    "nts": {
+      "label": "국세청 · TASIS 국세통계포털 (원표 검증 대기)",
+      "url": "https://tasis.nts.go.kr/",
+      "kind": "official"
+    },
+    "bok": {
+      "label": "한국은행 · ECOS (대출 원표 검증 대기)",
+      "url": "https://ecos.bok.or.kr/",
+      "kind": "official"
+    },
+    "reb": {
+      "label": "한국부동산원 · 부동산통계정보시스템 (임대료 원표 검증 대기)",
+      "url": "https://www.reb.or.kr/r-one/",
+      "kind": "official"
+    },
     "package": {
       "label": "중앙일보 · [창간기획] 2024 자영업 리포트",
       "url": "https://www.joongang.co.kr/issue/11684",

@@ -1,5 +1,9 @@
 export const checkedAt='2026-10-19';
 export const sources={
+ kosis:{label:'KOSIS · 통계 원표 추가 확인 경로 (수치 미게시)',url:'https://kosis.kr/',kind:'official'},
+ nts:{label:'국세청 · TASIS 국세통계포털 (원표 검증 대기)',url:'https://tasis.nts.go.kr/',kind:'official'},
+ bok:{label:'한국은행 · ECOS (대출 원표 검증 대기)',url:'https://ecos.bok.or.kr/',kind:'official'},
+ reb:{label:'한국부동산원 · 부동산통계정보시스템 (임대료 원표 검증 대기)',url:'https://www.reb.or.kr/r-one/',kind:'official'},
  package:{label:'중앙일보 · [창간기획] 2024 자영업 리포트',url:'https://www.joongang.co.kr/issue/11684',kind:'article'},
  wage24:{label:'고용노동부 · 2024년 적용 최저임금',url:'https://www.moel.go.kr/news/enews/report/enewsView.do?news_seq=15346',published:'2023-08-04',kind:'official'},
  wage26:{label:'고용노동부 · 2026년 적용 최저임금 확정',url:'https://www.moel.go.kr/news/enews/report/enewsView.do?news_seq=18144',published:'2025-08-05',kind:'official'},
@@ -32,5 +36,5 @@ export const indicators=[
 {id:'one',name:'신생기업 1년 생존율',unit:'%',before:64.9,after:64.4,beforePeriod:'2022년 생존 기준 · 2021년 신생 집단',afterPeriod:'2023년 생존 기준(잠정) · 2022년 신생 집단',beforeSource:'survival24',source:'survival',changeType:'pp',meaning:'0.5%p 하락. 전 산업의 서로 다른 신생기업 코호트 비교입니다. 2024년 말 공표치의 64.9%는 2025년 공표 자료에서 소급 정비된 값입니다.'},
 {id:'five',name:'신생기업 5년 생존율',unit:'%',before:34.8,after:36.4,beforePeriod:'2022년 생존 기준 · 2017년 신생 집단',afterPeriod:'2023년 생존 기준(잠정) · 2018년 신생 집단',beforeSource:'survival24',source:'survival',changeType:'pp',meaning:'1.6%p 상승. 2025년 공표 자료의 같은 정의·소급 정비 계열로 비교했습니다. 게임 이용자나 특정 가맹점의 미래 생존확률이 아닙니다.'}
 ];
-export const pending=[['자영업자 수·취업자 대비 비중','2026년 9월 고용동향 공표 확인. 종사상 지위 상세 수치 대조 미완료','employment'],['연령별 자영업자 비중','2024년 기사와 동일한 농어민 제외 정의의 최신 집계 미확보','employment'],['신규 사업자·자영업자 대출·연체율','공식 원표·대상 범위 검증 미완료. 수치 미게시','employment'],['브랜드별 창업비용·평균 매출','API 경로 확인. 정보공개서 원자료 미확보 → 가상 브랜드 사용','franchise'],['원재료 가격·상가 임대료·국제비교','동일 정의의 시계열과 최신 공표치 검증 대기. 게임 가정과 분리','employment']];
+export const pending=[['자영업자 수·취업자 대비 비중','2026년 9월 고용동향 공표 확인. 종사상 지위 상세 수치 대조 미완료','employment'],['연령별 자영업자 비중','2024년 기사와 동일한 농어민 제외 정의의 최신 집계 미확보','kosis'],['신규 사업자','국세통계 원표·대상 범위 검증 미완료. 수치 미게시','nts'],['자영업자 대출·연체율','공식 원표·차주 및 대출 범위 검증 미완료. 수치 미게시','bok'],['브랜드별 창업비용·평균 매출','API 경로 확인. 정보공개서 원자료 미확보 → 가상 브랜드 사용','franchise'],['원재료 가격·국제비교','동일 정의의 시계열과 최신 공표치 검증 대기. 게임 가정과 분리','kosis'],['상가 임대료','한국부동산원 동일 유형·지역의 임대료 시계열 추가 검증 대기','reb']];
 export const methods={simulation:'모든 매출·비용·이벤트는 원본 프로토타입을 확장한 가정입니다. 2026년 10월 조건을 고정한 가상 36개월이며 2027~2029년의 임금·금리·매출 예측이 아닙니다.',accounting:'금액 단위는 만원. 매출·운영비는 부가세 제외 기준. 영업이익 = 매출 − 현금 운영비 − 시설 감가상각(60개월). 세후 손익 = 영업이익 − 이자 − 소득세 추정. 현금증감 = 세후 손익 + 감가상각 − 부가세 실효 부담 준비금 − 대출원금 − 생활비. 일시 선택 비용은 당월 영업비용과 현금에서 각각 한 번 반영합니다. 세금 절감 효과는 추가 추정하지 않습니다.',tax:'소득세는 월별 양의 이자 차감 후 이익에 설정 비율을 적용하고 손실 이월·연간 정산은 생략합니다. 부가세는 매출의 설정 실효 비율을 현금에서 유보하는 단순화입니다. 실제 세법·누진세율·매입세액 공제 계산이 아닙니다.',liquidation:'최종 자기자본 회수액 = 현금 + 회수 보증금 + 시설 처분액 − 잔여 대출 − 철거비 − 해지비. 36개월 정상 운영 종료에도 동일한 가상 청산 기준으로 비교하되 실제 폐업과 구분합니다. 생활비 인출액은 현금에서 이미 차감하며 투자손익에 다시 더하지 않습니다. 권리금 회수는 0, 직원 퇴직금은 인건비 가정에 포함된 것으로 단순화합니다.',economic:'경제적 수익 = 영업이익 − 점주 노동시간 × 비교 시급 − 초기 자기자본 × 연 기회비용률 × 경과기간. 점주 노동시간당 사업소득 = 노동비용 차감 전 영업이익 ÷ 노동시간. 자본 수익도 포함할 수 있으며 법정 임금이 아닙니다.'};
