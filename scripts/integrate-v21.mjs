@@ -1,0 +1,21 @@
+import fs from 'node:fs';
+let app=fs.readFileSync('dist/app.js','utf8');
+function replaceOnce(from,to){if(!app.includes(from))throw Error('Missing anchor: '+from.slice(0,90));app=app.replace(from,to);}
+replaceOnce("const $=id=>", "import {brandPicker,paintBrandSummary,paintFeePreview,paintRunBurden,deliveryResult,deliveryStoryMarkup,wireDeliveryStory,paintUpdates} from './extensions.js';\nconst $=id=>");
+replaceOnce("brand:'brand',size", "brand:'brand',salesCapture:'salesCapture',size");
+replaceOnce("'staff','hours','strategy'].includes(k)","'staff','hours','strategy','salesCapture'].includes(k)");
+replaceOnce("summary();};$('industryOptions').append(b);", "brandPicker(selected,()=>{dirty.delete('sales');summary();});summary();};$('industryOptions').append(b);");
+replaceOnce("$('sideBuffer').className='val '", "$('sales').dataset.override=String(dirty.has('sales'));paintBrandSummary(s);paintFeePreview(s,r);$('feeLabShare').value=Number($('deliveryShare').value);$('feeLabShareValue').textContent=$('deliveryShare').value+'%';\n $('sideBuffer').className='val '");
+replaceOnce("for(const id of Object.keys(basicMap))", "brandPicker(selected,()=>{dirty.delete('sales');summary();});\n$('feeLabShare').oninput=()=>{$('deliveryShare').value=$('feeLabShare').value;dirty.add('deliveryShare');summary();};\nfor(const id of Object.keys(basicMap))");
+replaceOnce("$('playStory').textContent=", "paintRunBurden(sim,r);$('playStory').textContent=");
+replaceOnce("const recalc=()=>", "$('extendedResults').insertAdjacentHTML('afterbegin',deliveryResult(sim));$('resultDeliveryLink').onclick=()=>{reality(false);currentStory=articles.findIndex(a=>a.id==='delivery');renderStory();$('reality').scrollIntoView({behavior:'smooth'});};\n const recalc=()=>");
+replaceOnce("personal=personalize&&!!sim;if(personal)", "personal=personalize&&!!sim;if(!personal)$('personalized').innerHTML='';if(personal)");
+const begin=app.indexOf(" if(id==='delivery')return "),end=app.indexOf(" if(id==='franchise')return ",begin);
+if(begin<0||end<0)throw Error('Missing delivery markup anchors');app=app.slice(0,begin)+" if(id==='delivery')return deliveryStoryMarkup();\n"+app.slice(end);
+const drawBegin=app.indexOf(" if(a.id==='delivery'){const draw="),drawEnd=app.indexOf("\n$('prevStory').onclick",drawBegin);
+if(drawBegin<0||drawEnd<0)throw Error('Missing delivery interaction anchors');app=app.slice(0,drawBegin)+" if(a.id==='delivery')wireDeliveryStory();}\n"+app.slice(drawEnd);
+replaceOnce("본 게임의 가상 A·B는 실제 기업과 무관합니다.", "키워드는 실제 브랜드를 참고하지만 게임의 비용·계약 조건은 업종 공통 모형입니다.");
+replaceOnce("change=d.changeType==='pp'?d.after-d.before:(d.after/d.before-1)*100", "change=d.officialChange??(d.changeType==='pp'?d.after-d.before:(d.after/d.before-1)*100)");
+replaceOnce("summary();reality();comparison();", "paintUpdates();summary();reality();comparison();");
+fs.writeFileSync('dist/app.js',app);
+console.log('Integrated v2.1 UI enhancements');

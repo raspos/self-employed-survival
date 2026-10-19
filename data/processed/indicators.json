@@ -51,6 +51,58 @@
       "source": "survival",
       "changeType": "pp",
       "meaning": "1.6%p 상승. 2025년 공표 자료의 같은 정의·소급 정비 계열로 비교했습니다. 게임 이용자나 특정 가맹점의 미래 생존확률이 아닙니다."
+    },
+    {
+      "id": "franchiseSales",
+      "name": "전체 가맹점 연평균 매출",
+      "unit": "백만원",
+      "before": 354,
+      "after": 369,
+      "beforePeriod": "2023년 실적",
+      "afterPeriod": "2024년 실적",
+      "source": "ftc2025",
+      "changeType": "percent",
+      "officialChange": 4.3,
+      "meaning": "공정위 공표 증감률 +4.3%. 표시값은 백만원 단위 반올림으로 단순 계산과 차이가 날 수 있습니다. 비용 차감 전 매출이며 점주의 순이익 증가율이 아닙니다."
+    },
+    {
+      "id": "foodSales",
+      "name": "외식 가맹점 연평균 매출",
+      "unit": "백만원",
+      "before": 331,
+      "after": 351,
+      "beforePeriod": "2023년 실적",
+      "afterPeriod": "2024년 실적",
+      "source": "ftc2025",
+      "changeType": "percent",
+      "officialChange": 6.1,
+      "meaning": "공정위 공표 증감률 +6.1%. 명목 매출 증가에는 가격·점포 구성 변화가 포함될 수 있습니다. 인과관계나 실질소득 증가로 해석하지 않습니다."
+    },
+    {
+      "id": "foodSupply",
+      "name": "외식 가맹점 평균 차액가맹금",
+      "unit": "백만원",
+      "before": 23,
+      "after": 26,
+      "beforePeriod": "2023년 실적",
+      "afterPeriod": "2024년 실적",
+      "source": "ftc2025",
+      "changeType": "percent",
+      "officialChange": 13,
+      "meaning": "공정위 공표 증감률 +13.0%. 매입대금 중 적정 도매가격을 넘는 대가로, 총 원재료비나 로열티 전체와 다릅니다. 게임 원가율에 별도로 더하지 않았습니다."
+    },
+    {
+      "id": "franchiseStores",
+      "name": "전체 가맹점 수",
+      "unit": "개",
+      "before": 365014,
+      "after": 379739,
+      "beforePeriod": "2023년 말",
+      "afterPeriod": "2024년 말",
+      "source": "ftc2025",
+      "changeType": "percent",
+      "officialChange": 4,
+      "meaning": "공정위 공표 증감률 +4.0%. 전체 자영업자 수가 아닌 등록 가맹사업의 점포 수입니다. 가맹본부·브랜드의 2025년 집계와 대상 연도가 다릅니다."
     }
   ],
   "pending": [
@@ -75,8 +127,8 @@
       "bok"
     ],
     [
-      "브랜드별 창업비용·평균 매출",
-      "API 경로 확인. 정보공개서 원자료 미확보 → 가상 브랜드 사용",
+      "개별 브랜드 초기비용·계약 조건",
+      "평균매출 참고 목록은 반영. 개별 가맹비·필수품목·시설비 원표는 추가 대조 필요 → 비용은 업종 공통 가정 사용",
       "franchise"
     ],
     [

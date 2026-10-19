@@ -38,3 +38,25 @@ export const indicators=[
 ];
 export const pending=[['자영업자 수·취업자 대비 비중','2026년 9월 고용동향 공표 확인. 종사상 지위 상세 수치 대조 미완료','employment'],['연령별 자영업자 비중','2024년 기사와 동일한 농어민 제외 정의의 최신 집계 미확보','kosis'],['신규 사업자','국세통계 원표·대상 범위 검증 미완료. 수치 미게시','nts'],['자영업자 대출·연체율','공식 원표·차주 및 대출 범위 검증 미완료. 수치 미게시','bok'],['브랜드별 창업비용·평균 매출','API 경로 확인. 정보공개서 원자료 미확보 → 가상 브랜드 사용','franchise'],['원재료 가격·국제비교','동일 정의의 시계열과 최신 공표치 검증 대기. 게임 가정과 분리','kosis'],['상가 임대료','한국부동산원 동일 유형·지역의 임대료 시계열 추가 검증 대기','reb']];
 export const methods={simulation:'모든 매출·비용·이벤트는 원본 프로토타입을 확장한 가정입니다. 2026년 10월 조건을 고정한 가상 36개월이며 2027~2029년의 임금·금리·매출 예측이 아닙니다.',accounting:'금액 단위는 만원. 매출·운영비는 부가세 제외 기준. 영업이익 = 매출 − 현금 운영비 − 시설 감가상각(60개월). 세후 손익 = 영업이익 − 이자 − 소득세 추정. 현금증감 = 세후 손익 + 감가상각 − 부가세 실효 부담 준비금 − 대출원금 − 생활비. 일시 선택 비용은 당월 영업비용과 현금에서 각각 한 번 반영합니다. 세금 절감 효과는 추가 추정하지 않습니다.',tax:'소득세는 월별 양의 이자 차감 후 이익에 설정 비율을 적용하고 손실 이월·연간 정산은 생략합니다. 부가세는 매출의 설정 실효 비율을 현금에서 유보하는 단순화입니다. 실제 세법·누진세율·매입세액 공제 계산이 아닙니다.',liquidation:'최종 자기자본 회수액 = 현금 + 회수 보증금 + 시설 처분액 − 잔여 대출 − 철거비 − 해지비. 36개월 정상 운영 종료에도 동일한 가상 청산 기준으로 비교하되 실제 폐업과 구분합니다. 생활비 인출액은 현금에서 이미 차감하며 투자손익에 다시 더하지 않습니다. 권리금 회수는 0, 직원 퇴직금은 인건비 가정에 포함된 것으로 단순화합니다.',economic:'경제적 수익 = 영업이익 − 점주 노동시간 × 비교 시급 − 초기 자기자본 × 연 기회비용률 × 경과기간. 점주 노동시간당 사업소득 = 노동비용 차감 전 영업이익 ÷ 노동시간. 자본 수익도 포함할 수 있으며 법정 임금이 아닙니다.'};
+sources.ftc2025={label:'공정위 · 2025년 가맹사업 현황 (KDI 원문 제공)',url:'https://eiec.kdi.re.kr/policy/materialView.do?num=279336',published:'2026-04-12',kind:'official',period:'가맹점·매출 2024년 / 가맹본부·브랜드 2025년'};
+sources.delivery2024={label:'관계부처 · 2024년 배달플랫폼 최종 상생방안',url:'https://www.mafra.go.kr/bbs/home/792/582799/download.do',published:'2024-11-14',kind:'official'};
+sources.baemin={label:'배민 · 배민배달 상생요금제 공식 안내',url:'https://ceo.baemin.com/guide/12699',kind:'official',checked:'2026-10-19'};
+sources.coupangCurrent={label:'쿠팡이츠 · 음식점 상생요금제 공식 안내',url:'https://partners.coupangeats.com/onboarding/',kind:'official',checked:'2026-10-19'};
+sources.coupangSettlement={label:'쿠팡이츠 · 정산 정책',url:'https://partners.coupangeats.com/news/policies/7692/',kind:'official',checked:'2026-10-19'};
+sources.employmentBrief={label:'국가데이터처 · 2026년 9월 고용동향 브리핑',url:'https://www.korea.kr/briefing/policyBriefingView.do?newsId=156785404',published:'2026-10-16',kind:'official'};
+sources.snackRanking={label:'점포가이드 · 분식 평균매출 공개 집계 (보조 출처)',url:'https://jumpo.shop/franchise-ranking/bunsik/',kind:'secondary',checked:'2026-10-19'};
+indicators.push(
+ {id:'franchiseSales',name:'전체 가맹점 연평균 매출',unit:'백만원',before:354,after:369,beforePeriod:'2023년 실적',afterPeriod:'2024년 실적',source:'ftc2025',changeType:'percent',officialChange:4.3,meaning:'공정위 공표 증감률 +4.3%. 표시값은 백만원 단위 반올림으로 단순 계산과 차이가 날 수 있습니다. 비용 차감 전 매출이며 점주의 순이익 증가율이 아닙니다.'},
+ {id:'foodSales',name:'외식 가맹점 연평균 매출',unit:'백만원',before:331,after:351,beforePeriod:'2023년 실적',afterPeriod:'2024년 실적',source:'ftc2025',changeType:'percent',officialChange:6.1,meaning:'공정위 공표 증감률 +6.1%. 명목 매출 증가에는 가격·점포 구성 변화가 포함될 수 있습니다. 인과관계나 실질소득 증가로 해석하지 않습니다.'},
+ {id:'foodSupply',name:'외식 가맹점 평균 차액가맹금',unit:'백만원',before:23,after:26,beforePeriod:'2023년 실적',afterPeriod:'2024년 실적',source:'ftc2025',changeType:'percent',officialChange:13.0,meaning:'공정위 공표 증감률 +13.0%. 매입대금 중 적정 도매가격을 넘는 대가로, 총 원재료비나 로열티 전체와 다릅니다. 게임 원가율에 별도로 더하지 않았습니다.'},
+ {id:'franchiseStores',name:'전체 가맹점 수',unit:'개',before:365014,after:379739,beforePeriod:'2023년 말',afterPeriod:'2024년 말',source:'ftc2025',changeType:'percent',officialChange:4.0,meaning:'공정위 공표 증감률 +4.0%. 전체 자영업자 수가 아닌 등록 가맹사업의 점포 수입니다. 가맹본부·브랜드의 2025년 집계와 대상 연도가 다릅니다.'}
+);
+export const updates=[
+ {period:'2026.04 발표 / 2023 → 2024 실적',title:'매출 증가와 비용 부담은 함께 움직인다',number:'매출 +6.1% / 차액가맹금 +13.0%',text:'외식 가맹점의 연평균 매출과 평균 차액가맹금이 모두 늘었습니다. 매출만으로 수익성을 판단하기 어려운 이유입니다. 서로 다른 비용 지표를 매출에서 한 번 더 빼거나 인과관계로 단정하지 않습니다.',source:'ftc2025'},
+ {period:'2024.11 상생안 → 이후 시행·현재 안내 확인',title:'중개료는 차등화됐지만 배달비는 남았다',number:'중개 2.0~7.8% + 별도 배달비',text:'과거 기본 중개료 9.8%와 달리 매출 구간별 요율을 적용합니다. 배달비·결제료·광고비와 정산 시차를 함께 봐야 합니다. 구간 분류와 환급 방식은 플랫폼별로 다릅니다.',source:'baemin'},
+ {period:'2026.07 발표 / 2024 → 2025 실적',title:'폐업 신고 감소가 곧 부담 해소는 아니다',number:'100.8만 → 97.6만 개',text:'폐업 사업자 수는 줄었습니다. 이 통계는 폐업 신고 집계이므로 기업 생존율·가맹계약 해지율과 같은 개념으로 다루지 않습니다.',source:'closures'},
+ {period:'2026.10.16 발표 / 2026년 9월 전년동월 대비',title:'혼자 일하는 사장과 고용하는 사장의 변화가 다르다',number:'고용원 없음 +4.9만 / 있음 −0.8만 명',text:'최신 고용동향은 두 집단의 방향이 달랐음을 보여줍니다. 한 시점의 전년동월 변화이며 2024년부터 누적된 증감이나 그 원인으로 해석하지 않습니다.',source:'employmentBrief'}
+];
+methods.simulation='브랜드별 기존 가맹점 평균매출은 출처·실적연도가 있는 참고 통계입니다. 게임 매출은 그 월 환산값에 기본 65%의 수정 가능한 시나리오 반영률을 적용한 가정입니다. 실제 신규 매장의 예상 매출이나 성공률이 아닙니다. 비용·이벤트는 업종 공통 모형이며 실제 브랜드 계약을 재현하지 않습니다. 2026년 10월 조건을 고정한 가상 36개월로 미래 임금·금리·매출을 예측하지 않습니다.';
+const brandPending=pending.findIndex(r=>r[0].includes('브랜드별'));
+if(brandPending>=0)pending[brandPending]=['개별 브랜드 초기비용·계약 조건','평균매출 참고 목록은 반영. 개별 가맹비·필수품목·시설비 원표는 추가 대조 필요 → 비용은 업종 공통 가정 사용','franchise'];

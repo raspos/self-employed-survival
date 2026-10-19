@@ -99,6 +99,49 @@
       "label": "공공데이터포털 · 공정위 브랜드별 평균매출 API",
       "url": "https://www.data.go.kr/data/15143710/openapi.do",
       "kind": "official"
+    },
+    "ftc2025": {
+      "label": "공정위 · 2025년 가맹사업 현황 (KDI 원문 제공)",
+      "url": "https://eiec.kdi.re.kr/policy/materialView.do?num=279336",
+      "published": "2026-04-12",
+      "kind": "official",
+      "period": "가맹점·매출 2024년 / 가맹본부·브랜드 2025년"
+    },
+    "delivery2024": {
+      "label": "관계부처 · 2024년 배달플랫폼 최종 상생방안",
+      "url": "https://www.mafra.go.kr/bbs/home/792/582799/download.do",
+      "published": "2024-11-14",
+      "kind": "official"
+    },
+    "baemin": {
+      "label": "배민 · 배민배달 상생요금제 공식 안내",
+      "url": "https://ceo.baemin.com/guide/12699",
+      "kind": "official",
+      "checked": "2026-10-19"
+    },
+    "coupangCurrent": {
+      "label": "쿠팡이츠 · 음식점 상생요금제 공식 안내",
+      "url": "https://partners.coupangeats.com/onboarding/",
+      "kind": "official",
+      "checked": "2026-10-19"
+    },
+    "coupangSettlement": {
+      "label": "쿠팡이츠 · 정산 정책",
+      "url": "https://partners.coupangeats.com/news/policies/7692/",
+      "kind": "official",
+      "checked": "2026-10-19"
+    },
+    "employmentBrief": {
+      "label": "국가데이터처 · 2026년 9월 고용동향 브리핑",
+      "url": "https://www.korea.kr/briefing/policyBriefingView.do?newsId=156785404",
+      "published": "2026-10-16",
+      "kind": "official"
+    },
+    "snackRanking": {
+      "label": "점포가이드 · 분식 평균매출 공개 집계 (보조 출처)",
+      "url": "https://jumpo.shop/franchise-ranking/bunsik/",
+      "kind": "secondary",
+      "checked": "2026-10-19"
     }
   }
 }

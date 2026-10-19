@@ -1,0 +1,239 @@
+{
+  "checkedAt": "2026-10-19",
+  "brands": {
+    "chicken": [
+      {
+        "id": "soy-honey",
+        "name": "교촌치킨",
+        "keyword": "간장·허니 시그니처",
+        "detail": "간장과 꿀을 연상하는 치킨",
+        "annualSales": 72726.4,
+        "rank": 1,
+        "period": "2024년 실적",
+        "published": "2026-04-12",
+        "checked": "2026-10-19",
+        "source": {
+          "label": "공정위 2025년 가맹사업 현황 · 2026-04-12 발표 · 붙임3",
+          "url": "https://eiec.kdi.re.kr/policy/materialView.do?num=279336",
+          "document": "https://ipsi.u1.ac.kr/u1job/community/notice.do?articleNo=76294&attachNo=51263&mode=download"
+        },
+        "sourceKind": "official",
+        "rankingScope": "공정위 공표 해당 업종 평균매출 상위 5개 중 상위 3개",
+        "page": 28
+      },
+      {
+        "id": "young-chicken",
+        "name": "청년치킨",
+        "keyword": "청춘·가성비 치킨",
+        "detail": "젊은 이름을 내건 치킨",
+        "annualSales": 60969.4,
+        "rank": 2,
+        "period": "2024년 실적",
+        "published": "2026-04-12",
+        "checked": "2026-10-19",
+        "source": {
+          "label": "공정위 2025년 가맹사업 현황 · 2026-04-12 발표 · 붙임3",
+          "url": "https://eiec.kdi.re.kr/policy/materialView.do?num=279336",
+          "document": "https://ipsi.u1.ac.kr/u1job/community/notice.do?articleNo=76294&attachNo=51263&mode=download"
+        },
+        "sourceKind": "official",
+        "rankingScope": "공정위 공표 해당 업종 평균매출 상위 5개 중 상위 3개",
+        "page": 28
+      },
+      {
+        "id": "cheese-crunch",
+        "name": "비에이치씨(BHC)",
+        "keyword": "치즈 시즈닝·바삭 치킨",
+        "detail": "가루 시즈닝으로 떠올리는 치킨",
+        "annualSales": 52972.4,
+        "rank": 3,
+        "period": "2024년 실적",
+        "published": "2026-04-12",
+        "checked": "2026-10-19",
+        "source": {
+          "label": "공정위 2025년 가맹사업 현황 · 2026-04-12 발표 · 붙임3",
+          "url": "https://eiec.kdi.re.kr/policy/materialView.do?num=279336",
+          "document": "https://ipsi.u1.ac.kr/u1job/community/notice.do?articleNo=76294&attachNo=51263&mode=download"
+        },
+        "sourceKind": "official",
+        "rankingScope": "공정위 공표 해당 업종 평균매출 상위 5개 중 상위 3개",
+        "page": 28
+      }
+    ],
+    "cafe": [
+      {
+        "id": "cake-cafe",
+        "name": "투썸플레이스",
+        "keyword": "케이크·대형 카페",
+        "detail": "디저트와 좌석을 갖춘 카페",
+        "annualSales": 57172.6,
+        "rank": 1,
+        "period": "2024년 실적",
+        "published": "2026-04-12",
+        "checked": "2026-10-19",
+        "source": {
+          "label": "공정위 2025년 가맹사업 현황 · 2026-04-12 발표 · 붙임3",
+          "url": "https://eiec.kdi.re.kr/policy/materialView.do?num=279336",
+          "document": "https://ipsi.u1.ac.kr/u1job/community/notice.do?articleNo=76294&attachNo=51263&mode=download"
+        },
+        "sourceKind": "official",
+        "rankingScope": "공정위 공표 해당 업종 평균매출 상위 5개 중 상위 3개",
+        "page": 28
+      },
+      {
+        "id": "jeju-cafe",
+        "name": "에이바우트커피",
+        "keyword": "제주에서 온 대형 카페",
+        "detail": "제주에서 시작한 이름을 떠올리기",
+        "annualSales": 44588.8,
+        "rank": 2,
+        "period": "2024년 실적",
+        "published": "2026-04-12",
+        "checked": "2026-10-19",
+        "source": {
+          "label": "공정위 2025년 가맹사업 현황 · 2026-04-12 발표 · 붙임3",
+          "url": "https://eiec.kdi.re.kr/policy/materialView.do?num=279336",
+          "document": "https://ipsi.u1.ac.kr/u1job/community/notice.do?articleNo=76294&attachNo=51263&mode=download"
+        },
+        "sourceKind": "official",
+        "rankingScope": "공정위 공표 해당 업종 평균매출 상위 5개 중 상위 3개",
+        "page": 28
+      },
+      {
+        "id": "country-code",
+        "name": "PLUS 82(플러스 82)",
+        "keyword": "국가번호·배달 디저트",
+        "detail": "대한민국 국가번호를 닮은 이름",
+        "annualSales": 42383.8,
+        "rank": 3,
+        "period": "2024년 실적",
+        "published": "2026-04-12",
+        "checked": "2026-10-19",
+        "source": {
+          "label": "공정위 2025년 가맹사업 현황 · 2026-04-12 발표 · 붙임3",
+          "url": "https://eiec.kdi.re.kr/policy/materialView.do?num=279336",
+          "document": "https://ipsi.u1.ac.kr/u1job/community/notice.do?articleNo=76294&attachNo=51263&mode=download"
+        },
+        "sourceKind": "official",
+        "rankingScope": "공정위 공표 해당 업종 평균매출 상위 5개 중 상위 3개",
+        "page": 28
+      }
+    ],
+    "store": [
+      {
+        "id": "number-25",
+        "name": "GS25",
+        "keyword": "숫자 25·생활 편의점",
+        "detail": "25가 들어가는 익숙한 간판",
+        "annualSales": 64371.8,
+        "rank": 1,
+        "period": "2024년 실적",
+        "published": "2026-04-12",
+        "checked": "2026-10-19",
+        "source": {
+          "label": "공정위 2025년 가맹사업 현황 · 2026-04-12 발표 · 붙임3",
+          "url": "https://eiec.kdi.re.kr/policy/materialView.do?num=279336",
+          "document": "https://ipsi.u1.ac.kr/u1job/community/notice.do?articleNo=76294&attachNo=51263&mode=download"
+        },
+        "sourceKind": "official",
+        "rankingScope": "공정위 공표 해당 업종 평균매출 상위 5개 중 상위 3개",
+        "page": 30
+      },
+      {
+        "id": "purple-green",
+        "name": "씨유(CU)",
+        "keyword": "보라·초록 동네 편의점",
+        "detail": "두 색깔과 짧은 인사말",
+        "annualSales": 63383.7,
+        "rank": 2,
+        "period": "2024년 실적",
+        "published": "2026-04-12",
+        "checked": "2026-10-19",
+        "source": {
+          "label": "공정위 2025년 가맹사업 현황 · 2026-04-12 발표 · 붙임3",
+          "url": "https://eiec.kdi.re.kr/policy/materialView.do?num=279336",
+          "document": "https://ipsi.u1.ac.kr/u1job/community/notice.do?articleNo=76294&attachNo=51263&mode=download"
+        },
+        "sourceKind": "official",
+        "rankingScope": "공정위 공표 해당 업종 평균매출 상위 5개 중 상위 3개",
+        "page": 30
+      },
+      {
+        "id": "seven-eleven",
+        "name": "세븐일레븐",
+        "keyword": "7·11·글로벌 편의점",
+        "detail": "두 숫자로 떠올리는 편의점",
+        "annualSales": 51121,
+        "rank": 3,
+        "period": "2024년 실적",
+        "published": "2026-04-12",
+        "checked": "2026-10-19",
+        "source": {
+          "label": "공정위 2025년 가맹사업 현황 · 2026-04-12 발표 · 붙임3",
+          "url": "https://eiec.kdi.re.kr/policy/materialView.do?num=279336",
+          "document": "https://ipsi.u1.ac.kr/u1job/community/notice.do?articleNo=76294&attachNo=51263&mode=download"
+        },
+        "sourceKind": "official",
+        "rankingScope": "공정위 공표 해당 업종 평균매출 상위 5개 중 상위 3개",
+        "page": 30
+      }
+    ],
+    "snack": [
+      {
+        "id": "value-gimbap",
+        "name": "싸다김밥",
+        "keyword": "가성비 김밥·큰 메뉴판",
+        "detail": "가격을 강조하는 김밥·분식",
+        "annualSales": 86094,
+        "rank": 1,
+        "period": "공시연도 혼재 · 실적연도 원문 대조 대기",
+        "published": null,
+        "checked": "2026-10-19",
+        "source": {
+          "label": "점포가이드 · 공정위 정보공개서 공개 집계 (보조 출처)",
+          "url": "https://jumpo.shop/franchise-ranking/bunsik/"
+        },
+        "sourceKind": "secondary",
+        "rankingScope": "가맹점 20개 이상·평균매출 공개 브랜드의 보조 집계 상위 3개",
+        "page": null
+      },
+      {
+        "id": "delivery-bunsik",
+        "name": "최배달 떡순튀",
+        "keyword": "최강 배달·떡순튀",
+        "detail": "배달과 떡볶이·순대·튀김",
+        "annualSales": 72786,
+        "rank": 2,
+        "period": "공시연도 혼재 · 실적연도 원문 대조 대기",
+        "published": null,
+        "checked": "2026-10-19",
+        "source": {
+          "label": "점포가이드 · 공정위 정보공개서 공개 집계 (보조 출처)",
+          "url": "https://jumpo.shop/franchise-ranking/bunsik/"
+        },
+        "sourceKind": "secondary",
+        "rankingScope": "가맹점 20개 이상·평균매출 공개 브랜드의 보조 집계 상위 3개",
+        "page": null
+      },
+      {
+        "id": "school-bunsik",
+        "name": "스쿨푸드",
+        "keyword": "학교 감성·프리미엄 분식",
+        "detail": "학교를 뜻하는 이름의 분식",
+        "annualSales": 69122,
+        "rank": 3,
+        "period": "공시연도 혼재 · 실적연도 원문 대조 대기",
+        "published": null,
+        "checked": "2026-10-19",
+        "source": {
+          "label": "점포가이드 · 공정위 정보공개서 공개 집계 (보조 출처)",
+          "url": "https://jumpo.shop/franchise-ranking/bunsik/"
+        },
+        "sourceKind": "secondary",
+        "rankingScope": "가맹점 20개 이상·평균매출 공개 브랜드의 보조 집계 상위 3개",
+        "page": null
+      }
+    ]
+  },
+  "method": "선택 화면은 브랜드 실명 대신 연상 키워드를 사용합니다. 치킨·카페·편의점은 공정위 공표 목록의 2024년 실적 상위 3개입니다. 분식은 공정위 보도자료의 업종별 상위 목록에 없어 공개 정보공개서 집계의 상위 3개를 보조 출처로 사용했습니다. 분식의 기준 연도는 혼재되어 원문 대조가 더 필요하며, 다른 업종과 순위를 비교하지 않습니다. 게임 매출은 연평균 매출÷12×시나리오 반영률(기본 65%)에 지역·규모·전략·월 변동을 적용합니다. 65%는 신규 매장 성공률이나 실증 추정값이 아닌 수정 가능한 가정입니다. 비용·면적·인력은 실제 해당 브랜드의 계약 조건이 아닌 공통 업종 모형입니다."
+}
