@@ -1,0 +1,84 @@
+{
+  "checkedAt": "2026-10-19",
+  "note": "원문 전문이 아닌 검증용 출처 대장입니다. 기사 사진·전문은 저장하지 않습니다.",
+  "sources": {
+    "package": {
+      "label": "중앙일보 · [창간기획] 2024 자영업 리포트",
+      "url": "https://www.joongang.co.kr/issue/11684",
+      "kind": "article"
+    },
+    "wage24": {
+      "label": "고용노동부 · 2024년 적용 최저임금",
+      "url": "https://www.moel.go.kr/news/enews/report/enewsView.do?news_seq=15346",
+      "published": "2023-08-04",
+      "kind": "official"
+    },
+    "wage26": {
+      "label": "고용노동부 · 2026년 적용 최저임금 확정",
+      "url": "https://www.moel.go.kr/news/enews/report/enewsView.do?news_seq=18144",
+      "published": "2025-08-05",
+      "kind": "official"
+    },
+    "survival": {
+      "label": "국가데이터처 · 2024년 기업생멸행정통계(잠정), 표 19",
+      "url": "https://sri.kostat.go.kr/boardDownload.es?bid=11469&list_no=438913&seq=1",
+      "published": "2025-10-23",
+      "kind": "official"
+    },
+    "survival24": {
+      "label": "통계청 · 2023년 기업생멸행정통계",
+      "url": "https://www.kostat.go.kr/boardDownload.es?bid=11469&list_no=434555&seq=3",
+      "published": "2024-12-27",
+      "kind": "official"
+    },
+    "closures": {
+      "label": "중소벤처기업부 · 폐업 통계로 본 폐업 현황과 재기 지원",
+      "url": "https://www.mss.go.kr/site/smba/ex/bbs/View.do?bcIdx=1069562&cbIdx=288",
+      "published": "2026-07-02",
+      "kind": "official"
+    },
+    "employment": {
+      "label": "국가데이터처 · 2026년 9월 고용동향",
+      "url": "https://mods.go.kr/board.es?act=view&bid=210&list_no=447479&mid=a10301020200",
+      "published": "2026-10-16",
+      "kind": "official"
+    },
+    "coupang": {
+      "label": "쿠팡이츠 · 사장님 요금제 정책 (2025-04-01 시행 문서)",
+      "url": "https://partners.coupangeats.com/wp-content/uploads/2026/02/250401_%EC%8B%9C%ED%96%89%EC%BF%A0%ED%8C%A1%EC%9D%B4%EC%B8%A0-%EC%82%AC%EC%9E%A5%EB%8B%98-%EC%9A%94%EA%B8%88%EC%A0%9C-%EC%A0%95%EC%B1%85.pdf",
+      "kind": "official",
+      "published": "2025-04-01"
+    },
+    "pickup": {
+      "label": "쿠팡 뉴스룸 · 2026년 포장 중개이용료 정책",
+      "url": "https://news.coupang.com/archives/59590/",
+      "published": "2026-02-26",
+      "kind": "official"
+    },
+    "support": {
+      "label": "소상공인시장진흥공단 · 2026년 원스톱폐업지원 2차 수정 공고",
+      "url": "https://www.sbiz.or.kr/nhrp/pblanc/pblancView.do?directCall=Y",
+      "kind": "official"
+    },
+    "supportApply": {
+      "label": "소상공인24 · 점포철거비 공고·신청",
+      "url": "https://www.sbiz24.kr/#/pbanc/567",
+      "kind": "official"
+    },
+    "franchise": {
+      "label": "공정거래위원회 · 가맹사업 정보공개서",
+      "url": "https://franchise.ftc.go.kr/",
+      "kind": "official"
+    },
+    "entry": {
+      "label": "공공데이터포털 · 공정위 창업금액 API",
+      "url": "https://www.data.go.kr/data/15110265/openapi.do",
+      "kind": "official"
+    },
+    "sales": {
+      "label": "공공데이터포털 · 공정위 브랜드별 평균매출 API",
+      "url": "https://www.data.go.kr/data/15143710/openapi.do",
+      "kind": "official"
+    }
+  }
+}

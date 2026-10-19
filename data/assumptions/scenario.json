@@ -1,0 +1,125 @@
+{
+  "kind": "fictional",
+  "profiles": {
+    "chicken": {
+      "name": "치킨",
+      "symbol": "🍗",
+      "caption": "배달과 홀 운영의 균형",
+      "sales": 2700,
+      "costRatio": 0.43,
+      "royalty": 0.03,
+      "wages": 550,
+      "rent": 240,
+      "other": 180,
+      "entry": 1500,
+      "interior": 5500,
+      "deposit": 2500
+    },
+    "cafe": {
+      "name": "카페",
+      "symbol": "☕",
+      "caption": "객단가·회전율·임대료",
+      "sales": 1900,
+      "costRatio": 0.32,
+      "royalty": 0.04,
+      "wages": 500,
+      "rent": 220,
+      "other": 160,
+      "entry": 1200,
+      "interior": 4800,
+      "deposit": 2200
+    },
+    "store": {
+      "name": "편의점",
+      "symbol": "🏪",
+      "caption": "상품 원가와 긴 영업시간",
+      "sales": 4300,
+      "costRatio": 0.7,
+      "royalty": 0.01,
+      "wages": 420,
+      "rent": 260,
+      "other": 200,
+      "entry": 1000,
+      "interior": 4400,
+      "deposit": 2500
+    },
+    "snack": {
+      "name": "분식",
+      "symbol": "🍜",
+      "caption": "점심 피크와 원가 관리",
+      "sales": 2200,
+      "costRatio": 0.39,
+      "royalty": 0.025,
+      "wages": 480,
+      "rent": 210,
+      "other": 150,
+      "entry": 1000,
+      "interior": 4000,
+      "deposit": 2000
+    }
+  },
+  "areas": {
+    "res": {
+      "name": "수도권 주거지역",
+      "sales": 1,
+      "rent": 0,
+      "deposit": 0
+    },
+    "center": {
+      "name": "서울 주요 상권",
+      "sales": 1.17,
+      "rent": 180,
+      "deposit": 1500
+    },
+    "local": {
+      "name": "중소도시 상권",
+      "sales": 0.82,
+      "rent": -80,
+      "deposit": -800
+    }
+  },
+  "defaults": {
+    "industry": "chicken",
+    "area": "res",
+    "own": 10000,
+    "loan": 3000,
+    "living": 280,
+    "size": 20,
+    "staff": 2,
+    "hours": 60,
+    "rate": 5,
+    "term": 60,
+    "repayment": "amortizing",
+    "strategy": "balanced",
+    "brand": "standard",
+    "sales": null,
+    "costRatio": null,
+    "rent": null,
+    "interior": null,
+    "entry": null,
+    "deposit": null,
+    "franchiseDeposit": 300,
+    "keyMoney": 500,
+    "deliveryShare": 40,
+    "deliveryFee": 7.8,
+    "deliveryPerOrder": 2900,
+    "ticket": 25000,
+    "cardFee": 1.5,
+    "deliveryPayment": 3,
+    "taxRate": 10,
+    "vatRate": 2,
+    "hourly": 10320,
+    "capitalRate": 3,
+    "demolition": 600,
+    "termination": 200,
+    "depositRecovery": 100,
+    "salvage": 20
+  },
+  "methods": {
+    "simulation": "모든 매출·비용·이벤트는 원본 프로토타입을 확장한 가정입니다. 2026년 10월 조건을 고정한 가상 36개월이며 2027~2029년의 임금·금리·매출 예측이 아닙니다.",
+    "accounting": "금액 단위는 만원. 매출·운영비는 부가세 제외 기준. 영업이익 = 매출 − 현금 운영비 − 시설 감가상각(60개월). 세후 손익 = 영업이익 − 이자 − 소득세 추정. 현금증감 = 세후 손익 + 감가상각 − 부가세 실효 부담 준비금 − 대출원금 − 생활비. 일시 선택 비용은 당월 영업비용과 현금에서 각각 한 번 반영합니다. 세금 절감 효과는 추가 추정하지 않습니다.",
+    "tax": "소득세는 월별 양의 이자 차감 후 이익에 설정 비율을 적용하고 손실 이월·연간 정산은 생략합니다. 부가세는 매출의 설정 실효 비율을 현금에서 유보하는 단순화입니다. 실제 세법·누진세율·매입세액 공제 계산이 아닙니다.",
+    "liquidation": "최종 자기자본 회수액 = 현금 + 회수 보증금 + 시설 처분액 − 잔여 대출 − 철거비 − 해지비. 36개월 정상 운영 종료에도 동일한 가상 청산 기준으로 비교하되 실제 폐업과 구분합니다. 생활비 인출액은 현금에서 이미 차감하며 투자손익에 다시 더하지 않습니다. 권리금 회수는 0, 직원 퇴직금은 인건비 가정에 포함된 것으로 단순화합니다.",
+    "economic": "경제적 수익 = 영업이익 − 점주 노동시간 × 비교 시급 − 초기 자기자본 × 연 기회비용률 × 경과기간. 점주 노동시간당 사업소득 = 노동비용 차감 전 영업이익 ÷ 노동시간. 자본 수익도 포함할 수 있으며 법정 임금이 아닙니다."
+  }
+}
