@@ -1,0 +1,16 @@
+*{box-sizing:border-box}body{margin:0;background:#fff;color:#111;font:17px/1.75 'Noto Sans KR','Malgun Gothic',sans-serif;word-break:keep-all}
+a{color:inherit}.in{width:min(760px,100% - 40px);margin:0 auto}
+.mast{border-bottom:1px solid #111}.mast .in{width:min(1100px,100% - 40px);display:flex;justify-content:space-between;align-items:center;gap:16px;min-height:56px;flex-wrap:wrap}
+.mast>.in>a{font:900 17px 'Noto Serif KR',serif;text-decoration:none}.mast nav{display:flex;gap:20px;font-size:15px}.mast nav a{text-decoration:none}.state{font-size:15px;color:#555}
+.kicker{margin:40px 0 12px;font-size:14px;color:#555}h1{font:900 clamp(30px,5vw,44px)/1.25 'Noto Serif KR',serif;margin:0 0 20px;letter-spacing:-.02em}
+.deck{font:500 clamp(18px,2.4vw,21px)/1.7 'Noto Serif KR',serif;margin:0 0 24px}
+.btn{display:inline-block;background:#111;color:#fff;padding:14px 28px;text-decoration:none;font-weight:700;font-size:17px}
+.hero{margin:40px calc(50% - min(550px,50vw - 20px)) 0;width:min(1100px,100vw - 40px)}.hero img{display:block;width:100%;height:auto}
+figcaption{font-size:14px;color:#555;margin-top:8px;max-width:760px}
+.toc{list-style:none;margin:40px 0;padding:0;border-top:1px solid #111}.toc a{display:flex;justify-content:space-between;gap:16px;padding:16px 0;border-bottom:1px solid #ddd;text-decoration:none}.toc span{color:#555;font-size:15px;text-align:right}
+footer{padding:24px 0 48px;font-size:14px;color:#555}
+.game{padding-bottom:48px}.figures{display:flex;flex-wrap:wrap;gap:4px 24px;margin:24px 0;padding:12px 0;border-top:1px solid #111;border-bottom:1px solid #ddd;font-size:16px;color:#555}.figures b{color:#111;font-weight:700}
+h1.ev{font-size:clamp(26px,4vw,34px);margin-bottom:16px}blockquote{margin:0 0 28px;padding:0 0 0 20px;border-left:3px solid #111;font:500 18px/1.85 'Noto Serif KR',serif}
+.choices{list-style:none;margin:0;padding:0;border-top:1px solid #111}.choices a{display:flex;gap:16px;padding:16px 0;border-bottom:1px solid #ddd;text-decoration:none;font-size:18px}.choices a:hover{background:#f6f6f4}.choices i{font:900 18px 'Noto Serif KR',serif;font-style:normal}
+.note{display:flex;gap:16px;align-items:flex-start;margin:40px 0 24px;font-size:15px;line-height:1.65}.note img{width:120px;height:80px;object-fit:cover;flex:none}.note p{margin:0}.fine{font-size:14px;color:#555}
+@media(max-width:520px){.mast nav{display:none}.note img{width:96px}}

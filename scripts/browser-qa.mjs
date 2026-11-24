@@ -73,7 +73,7 @@ for(let i=0;i<8;i++){await page.locator(`[data-story="${i}"]`).click();await pag
 await page.locator('#nextStory').click();await page.locator('#indicatorSelect').selectOption('five');assert.ok((await page.locator('#comparison').innerText()).includes('+1.6%p'));
 await page.locator('#indicatorSelect').selectOption('foodSupply');assert.ok((await page.locator('#comparison').innerText()).includes('+13%'));assert.equal(await page.locator('#after2024 .update-chapters article').count(),4);assert.equal(await page.locator('#dataCards button').count(),8);await page.locator('#after2024').scrollIntoViewIfNeeded();await page.screenshot({path:'artifacts/desktop-after2024.png'});
 await page.locator('.ending').scrollIntoViewIfNeeded();await page.screenshot({path:'artifacts/desktop-ending.png'});
-await page.locator('#restart').click();await unhide(page).then(()=>page.locator('#start').click());await page.locator('#quit').click();await page.locator('#compare').click();assert.equal(await page.locator('#storyContent h3').innerText(),'가게를 닫는 데도 돈이 든다');
+await page.locator('#restart').click();await unhide(page).then(()=>page.locator('#start').click());await page.locator('summary:text-is("운영 조정·폐업")').click().then(()=>page.locator('#quit').click());await page.locator('#compare').click();assert.equal(await page.locator('#storyContent h3').innerText(),'가게를 닫는 데도 돈이 든다');
 const mobile=await browser.newPage({viewport:{width:390,height:844},isMobile:true,deviceScaleFactor:1});mobile.on('pageerror',e=>errors.push(e.message));await mobile.goto('http://127.0.0.1:4174');await mobile.locator('#industryOptions button').first().waitFor();await mobile.screenshot({path:'artifacts/mobile-home.png'});
 const overflow=[];for(const id of ['setup','reality','data','sources']){await mobile.locator('#'+id).scrollIntoViewIfNeeded();const size=await mobile.evaluate(()=>({w:document.documentElement.clientWidth,s:document.documentElement.scrollWidth}));if(size.s>size.w)overflow.push({id,...size});}
 await mobile.locator('[data-story="2"]').click();await mobile.locator('#storyContent').scrollIntoViewIfNeeded();await mobile.screenshot({path:'artifacts/mobile-story.png'});
@@ -85,7 +85,7 @@ await mobile.locator('#funds').fill('50000');
 await mobile.locator('.setup-details > summary').click();
 await mobile.locator('#householdReserve').fill('5000');
 await unhide(mobile).then(()=>mobile.locator('#start').click());
-await mobile.getByText('매장 양도',{exact:true}).click();
+await mobile.locator('summary:text-is("운영 조정·폐업")').click();await mobile.getByText('매장 양도',{exact:true}).click();
 await mobile.getByLabel(/시설·권리 양도대금/).fill('600');
 await mobile.getByRole('button',{name:'양도하고 영업 종료'}).click();
 assert.equal(await mobile.locator('#resultTitle').innerText(),'가게를 넘기고 새 출발');

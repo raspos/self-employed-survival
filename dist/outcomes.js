@@ -146,7 +146,7 @@ const fmtPrior = value => Math.round(value).toLocaleString('ko-KR');
 
 const SERIF = "'Noto Serif KR','Nanum Myeongjo','Batang',serif";
 const SANS = "'Noto Sans KR','Malgun Gothic',sans-serif";
-const INK = '#171717', SUB = '#60605B', LINE = '#DEDDD7', BRAND = '#AD352B', POS = '#27724E', PAPER = '#F7F6F2';
+const INK = '#f2ebe0', SUB = '#c4b9a9', LINE = '#4a3f35', BRAND = '#f09a8e', POS = '#8fc79a', PAPER = '#1b1714', AMBER = '#e0a458';
 const won = n => `${n < 0 ? '−' : ''}${Math.round(Math.abs(n)).toLocaleString('ko-KR')}만원`;
 const eok = n => { const a = Math.round(Math.abs(n)), e = Math.floor(a / 10000), m = a % 10000; return (n < 0 ? '−' : '') + (e ? `${e.toLocaleString('ko-KR')}억${m ? ` ${m.toLocaleString('ko-KR')}만원` : '원'}` : `${m.toLocaleString('ko-KR')}만원`); };
 
@@ -174,7 +174,7 @@ export function drawShareCard(canvas, state, result, address) {
   const W = 1080, H = canvas.height, M = 72, ctx = canvas.getContext('2d');
   const gap = result.liquidation.net - state.own;
   ctx.fillStyle = PAPER; ctx.fillRect(0, 0, W, H);
-  ctx.fillStyle = INK; ctx.fillRect(M, 64, W - M * 2, 8);
+  ctx.fillStyle = AMBER; ctx.fillRect(M, 64, W - M * 2, 8);
   ctx.textBaseline = 'alphabetic';
   ctx.fillStyle = INK; ctx.font = `900 40px ${SERIF}`; ctx.fillText('대한민국 자영업자로 살아남기', M, 132);
   ctx.fillStyle = SUB; ctx.font = `500 26px ${SANS}`; ctx.textAlign = 'right'; ctx.fillText('가상 시뮬레이션 결과', W - M, 132); ctx.textAlign = 'left';
@@ -204,7 +204,7 @@ export function drawShareCard(canvas, state, result, address) {
   });
   const barY = top + (tall ? 330 : 256), barW = W - M * 2, { parts, left } = costShares(state);
   ctx.fillStyle = INK; ctx.font = `700 26px ${SANS}`; ctx.fillText('매출 100만원 중 남은 돈', M, barY);
-  const colors = ['#375B78', '#6F8CA5', '#A9B9C7', '#C9C8C0'];
+  const colors = ['#e0a458', '#8fb5d6', '#a9a095', '#7d6f60'];
   let x = M;
   [...parts, ['남는 돈', Math.max(0, left)]].forEach(([, v], i) => {
     const w = Math.max(0, v) / 100 * barW;
