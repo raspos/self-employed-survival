@@ -3,32 +3,212 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>대한민국 자영업자로 살아남기 | 창업 생존 시뮬레이터</title>
-<style>
-:root{--bg:#f6f5f1;--dark:#132b30;--mint:#a6e0c4;--ink:#17282b;--text:#354a4d;--muted:#728281;--line:#d9e0da;--orange:#ee7446;--white:#fff;--panel:#fff;--green:#18775e;--red:#af3c31}
-*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--bg);color:var(--ink);font-family:Pretendard,'Apple SD Gothic Neo','Malgun Gothic',sans-serif;letter-spacing:-.025em}button,input,select{font:inherit}button{cursor:pointer}a{color:inherit}.container{width:min(1120px,calc(100% - 40px));margin:auto}.header{background:#132b30;color:white;padding:15px 0}.header .container{display:flex;align-items:center;justify-content:space-between;gap:16px}.brand{font-size:17px;font-weight:900;letter-spacing:-.035em}.nav-note{font-size:12px;color:#aec3bf}.tag{display:inline-block;padding:8px 11px;border-radius:100px;background:rgba(166,224,196,.15);color:#a6e0c4;font-weight:700;font-size:12px}.hero{background:var(--dark);color:white;padding:65px 0 54px;overflow:hidden;position:relative}.hero:after{content:'₩';position:absolute;right:max(0px,calc((100vw - 1130px)/2));bottom:-140px;font-weight:900;font-size:370px;color:rgba(166,224,196,.055);pointer-events:none}.hero h1{font-size:clamp(36px,6vw,68px);line-height:1.13;margin:20px 0 18px;max-width:810px;letter-spacing:-.065em}.hero h1 span{color:var(--mint)}.lead{line-height:1.75;color:#c4d5d1;font-size:17px;max-width:700px}.fact{font-size:12px;line-height:1.7;color:#a9bdba;border-left:3px solid var(--mint);padding-left:14px;margin-top:24px;max-width:720px}.steps{padding:26px 0 0;display:grid;grid-template-columns:repeat(4,1fr);gap:8px}.step{border-radius:13px;background:#e9eee9;padding:13px 15px;color:#72817f;font-size:12px;font-weight:800}.step b{display:block;font-size:18px;margin-bottom:5px;color:#a0aaa6}.step.active{background:var(--dark);color:white}.step.active b{color:var(--mint)}.main{padding:23px 0 60px}.layout{display:grid;grid-template-columns:minmax(0,1fr) 315px;gap:20px;align-items:start}.panel{background:var(--panel);border:1px solid var(--line);border-radius:20px;padding:28px;margin-bottom:18px;box-shadow:0 5px 18px rgba(25,50,35,.025)}.kicker{font-size:12px;font-weight:900;color:var(--green);letter-spacing:.12em;margin:0 0 12px}.title{font-size:clamp(23px,3vw,30px);line-height:1.35;margin:0 0 10px;letter-spacing:-.04em}.desc{color:#536665;font-size:14px;line-height:1.7;margin:0 0 22px}.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}.form-group{display:flex;flex-direction:column;gap:8px}.form-group label{font-size:13px;font-weight:800}.form-group input,.form-group select{width:100%;border:1px solid #bac9c2;padding:13px 12px;border-radius:11px;min-width:0;background:#fff;color:var(--ink);font-size:16px}.help{color:var(--muted);font-size:12px;line-height:1.6}.industry-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:20px}.option{background:#f8faf8;border:1.5px solid #dbe4dd;border-radius:14px;padding:16px;text-align:left;min-height:95px;transition:background .1s,border-color .1s}.option:hover{border-color:#8ecfb3}.option.chosen{background:#e8f5ed;border:2px solid #198565;padding:15.5px}.option strong{display:block;font-size:16px;margin-bottom:8px}.option small{display:block;color:#71807e;line-height:1.5}.side-title{font-size:13px;font-weight:900;margin:0 0 12px;color:#52615e}.metric{border-bottom:1px solid #e8ece8;padding:13px 0;display:flex;justify-content:space-between;gap:10px}.metric:last-child{border:0}.metric .name{color:#71817e;font-size:13px}.metric .val{font-size:15px;font-weight:900;white-space:nowrap}.metric .val.bad{color:var(--red)}.metric .val.good{color:var(--green)}.divider{border:0;border-top:1px solid #dce5dc;margin:18px 0}.action{background:var(--dark);color:white;border:0;border-radius:12px;padding:15px 22px;font-weight:900;min-height:48px}.action:hover{background:#245358}.action:disabled{background:#abb7b3;cursor:not-allowed}.action-alt{background:white;border:1px solid #b7c9c1;color:#25453f;border-radius:12px;padding:13px 18px;font-weight:800}.actions{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:22px}.warning{border-radius:12px;padding:14px 15px;background:#fff5eb;border:1px solid #f1d6ba;color:#744824;font-size:13px;line-height:1.6;margin:18px 0}.mini{font-size:12px;color:var(--muted);line-height:1.75}.off{display:none!important}.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.stat{background:#f0f5f1;border-radius:12px;padding:15px 13px}.stat .lab{font-size:12px;color:#627571;margin-bottom:9px}.stat .num{font-size:20px;font-weight:900;letter-spacing:-.03em}.stat .num.neg{color:var(--red)}.story{font-size:21px;font-weight:850;line-height:1.55;letter-spacing:-.035em}.quote{margin:20px 0;border-left:4px solid var(--orange);padding:4px 0 4px 18px;color:#375551;line-height:1.7}.choice-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.choice{border:1.5px solid #cbd9d0;border-radius:13px;padding:19px;background:#fbfcfb;text-align:left;min-height:115px}.choice:hover{border-color:#1d8c67;background:#f1f9f2}.choice strong{font-size:15px;display:block;margin-bottom:6px}.choice span{font-size:12px;color:#58706a;line-height:1.6}.graphbox{height:220px;background:#f7faf7;border:1px solid #e4ece4;border-radius:14px;padding:16px 10px 5px;margin-top:18px}.graphbox svg{width:100%;height:100%;display:block}.section-title{font-size:19px;margin:0 0 12px}.foot{padding:35px 0;background:#e7eee8;color:#526661;font-size:12px;line-height:1.85}.foot a{color:#185d4b}.credit{font-size:12px;margin:4px 0 0;color:#8da49c}.pill{border-radius:100px;padding:7px 11px;background:#e6f2e9;color:#17664f;display:inline-block;font-size:12px;font-weight:800}.tablewrap{overflow-x:auto;margin-top:18px}table{width:100%;border-collapse:collapse;font-size:12px;white-space:nowrap}th,td{padding:11px 9px;text-align:right;border-bottom:1px solid #e4eae4}th:first-child,td:first-child{text-align:left}th{color:#71817a;background:#f7faf7}.endmessage{border-radius:15px;padding:21px;background:#e8f4ed;color:#214f3e;font-size:16px;line-height:1.65}.endmessage.danger{background:#fff0ed;color:#9a332a}.kpi-accent{font-size:clamp(32px,4vw,48px);font-weight:950;margin:10px 0}.source-list{padding-left:17px;color:#647570;font-size:12px;line-height:1.8}.source-list li{margin-bottom:8px}.note-box{border:1px solid #e1e9e2;background:#f8faf8;padding:12px 13px;border-radius:11px;font-size:12px;color:#59716b;line-height:1.7}
-@media(max-width:850px){.layout{grid-template-columns:1fr}.sticky-side{order:-1}.sticky-side .panel{margin-bottom:12px}.form-grid{grid-template-columns:1fr 1fr}.hero{padding:45px 0}.panel{padding:22px}}
-@media(max-width:520px){.container{width:min(100% - 24px,1120px)}.hero h1{font-size:41px}.steps{grid-template-columns:repeat(4,1fr)}.step{font-size:11px;padding:10px 8px}.step b{font-size:15px}.form-grid,.industry-grid,.choice-grid{grid-template-columns:1fr}.stats{gap:6px}.stat{padding:12px 8px}.stat .num{font-size:15px}.metric .val{font-size:14px}.nav-note{display:none}.panel{border-radius:16px;padding:18px}.story{font-size:19px}}
-</style>
+<title>대한민국 자영업자로 살아남기</title>
+<meta name="description" content="당신에게 1억원이 생겼습니다. 36개월의 선택 끝에서 실제 사장님들의 이야기와 공식 통계를 만납니다."/>
+<link rel="icon" href="data:,"/>
 <link rel="stylesheet" href="editorial.css"/>
-<meta name="description" content="당신에게 1억원이 생겼습니다. 36개월의 경영 선택 끝에서 실제 사장님들의 이야기와 공식 통계를 만납니다."/>
 </head>
 <body>
-<header class="header"><div class="container"><div class="brand">SURVIVE / 대한민국 자영업자로 살아남기</div><div class="nav-note">2024 REPORT → 2026 UPDATE</div></div></header><nav class="part-nav" aria-label="콘텐츠 이동"><a href="#setup">01 당신은 사장입니다</a><a href="#reality" id="navReality">02 게임 밖의 현실</a><a href="#data">03 그때와 지금</a></nav>
-<section class="hero"><div class="container"><span class="tag">INTERACTIVE JOURNALISM / VOL. 02</span><h1>대한민국<br>자영업자로 <span>살아남기</span></h1><p class="lead">당신에게 1억원이 생겼습니다.<br>회사를 그만두고 사장이 되시겠습니까?</p><a class="hero-start" href="#setup">내 가게 시작하기 <span>↗</span></a><div class="hero-route"><a href="#reality">실제 사장님 이야기</a><a href="#data">그때와 지금</a></div><div class="fact">36개월의 선택, 그리고 게임 밖의 삶.<br>가상 경영 시뮬레이션 × 중앙일보 「2024 자영업 리포트」 기반 재구성<br><b>독립 제작 프로젝트 · 중앙일보 공식 서비스가 아닙니다.</b></div></div></section>
-<div class="container steps" id="progress"><div class="step active" data-step="0"><b>01</b>창업 선택</div><div class="step" data-step="1"><b>02</b>개업</div><div class="step" data-step="2"><b>03</b>생존 도전</div><div class="step" data-step="3"><b>04</b>3년 성적표</div></div>
-<main class="main container"><div class="layout">
+<header class="topbar"><div class="wrap">
+<a class="brand-mark" href="#top">대한민국 자영업자로 살아남기</a>
+<button class="menu-toggle" id="menuToggle" type="button" aria-expanded="false" aria-controls="menu">메뉴</button>
+<ul class="menu" id="menu"><li><a href="#setup" id="navPlay">사장이 되어보기</a></li><li><a href="#reality" id="navReality">실제 사장님들</a></li><li><a href="#data">자영업 데이터</a></li><li><a href="#method">계산 방법</a></li></ul>
+</div></header>
+
+<section class="cover" id="top"><div class="wrap">
 <div>
-<section id="setup" class="panel"><p class="kicker">DAY 0 · 내 가게를 열어라</p><h2 class="title">어떤 사장님이 되실 건가요?</h2><p class="desc">출발 자본과 업종, 상권을 선택하면 창업비용과 예상 운영비가 달라집니다. 실제 브랜드를 연상하는 키워드를 고르고, 평균매출 통계와 내 가게의 가정을 나눠 살펴보세요.</p>
-<div class="industry-grid" id="industryOptions"></div><section class="brand-section"><p class="kicker">CHOOSE YOUR BRAND / 평균매출 상위 선택지</p><h3>어떤 간판을 떠올리셨나요?</h3><p class="mini">실명 대신 특징 키워드로 선택합니다. 치킨·카페·편의점은 공정위 공표 2024년 실적 상위 3개, 분식은 공개 집계 상위 3개로 기준 연도가 다를 수 있습니다. 선택은 해당 브랜드의 창업 권유가 아닙니다.</p><select id="brand" aria-label="브랜드 키워드" hidden></select><div id="brandOptions" class="brand-options" role="group" aria-label="브랜드 키워드 선택"></div><div id="brandSummary" class="brand-summary" aria-live="polite"></div></section>
-<div class="form-grid"><div class="form-group"><label for="funds">내 자본금 (만원)</label><input id="funds" type="number" min="1000" max="100000" step="500" value="10000"/><span class="help">보유 현금. 빌린 돈은 포함하지 않습니다.</span></div><div class="form-group"><label for="loan">창업 대출 (만원)</label><input id="loan" type="number" min="0" max="100000" step="500" value="3000"/><span class="help">연 5%·60개월 원금 균등상환 기본값 (아래에서 변경)</span></div><div class="form-group"><label for="area">상권</label><select id="area"><option value="res">수도권 주거지역</option><option value="center">서울 주요 상권</option><option value="local">중소도시 상권</option></select></div><div class="form-group"><label for="owner">사장님의 월 생활비 (만원)</label><input id="owner" type="number" min="0" max="5000" step="20" value="280"/><span class="help">사업 손익과 별도로 현금흐름에서 차감</span></div></div><div class="form-grid extra-setup"><div class="form-group"><label for="salesCapture">통계 매출 시나리오 반영률 (%)</label><input id="salesCapture" type="number" value="65" min="5" max="150" step="1" required/></div><div class="form-group"><label for="size">매장 규모 (평)</label><input id="size" type="number" value="20" min="5" max="100" step="1" required/></div><div class="form-group"><label for="staff">직원 수 (명)</label><input id="staff" type="number" value="2" min="0" max="10" step="1" required/></div><div class="form-group"><label for="hours">점주 노동시간 (시간/주)</label><input id="hours" type="number" value="60" min="1" max="112" step="1" required/></div><div class="form-group"><label for="strategy">영업 전략</label><select id="strategy"><option value="balanced">홀·배달 균형</option><option value="delivery">배달 집중 · 매출 기준 +8% / 배달비중 +20%p</option><option value="local">단골 중심 · 매출 기준 −4% / 배달비중 −20%p</option></select></div></div><details class="assumptions"><summary>가정값 직접 수정하기 <span>비용·세금·노동·대출 ↗</span></summary><p class="mini">업종·지역 기본값을 수정하면 적용됩니다. 모든 금액은 만원, 매출·비용은 부가세 제외 기준입니다. 브랜드 평균매출은 참고 통계, 비용·세금·운영 조건은 수정 가능한 모의 가정입니다.</p><div class="form-grid" id="assumptionFields"><div class="form-group"><label for="rate">대출금리 (연 %)</label><input id="rate" type="number" value="5" min="0" max="30" step="0.1" required/></div><div class="form-group"><label for="term">대출 만기 (개월)</label><input id="term" type="number" value="60" min="1" max="360" step="1" required/></div><div class="form-group"><label for="repayment">원금상환 방식</label><select id="repayment"><option value="amortizing">매월 원금 균등상환</option><option value="bullet">만기 일시상환</option></select></div><div class="form-group"><label for="sales">기준 월 매출 (만원)</label><input id="sales" type="number" value="2700" min="0" max="1000000" step="1" required/></div><div class="form-group"><label for="costRatio">원재료·상품 원가율 (%)</label><input id="costRatio" type="number" value="43" min="0" max="95" step="0.1" required/></div><div class="form-group"><label for="rent">월 임대료 (만원)</label><input id="rent" type="number" value="240" min="0" max="1000000" step="1" required/></div><div class="form-group"><label for="interior">인테리어·시설비 (만원)</label><input id="interior" type="number" value="5500" min="0" max="1000000" step="1" required/></div><div class="form-group"><label for="entry">가맹비·교육비 (만원)</label><input id="entry" type="number" value="1500" min="0" max="1000000" step="1" required/></div><div class="form-group"><label for="deposit">임대보증금 (만원)</label><input id="deposit" type="number" value="2500" min="0" max="1000000" step="1" required/></div><div class="form-group"><label for="franchiseDeposit">가맹 보증금 (만원)</label><input id="franchiseDeposit" type="number" value="300" min="0" max="10000" step="1" required/></div><div class="form-group"><label for="keyMoney">권리금 (만원)</label><input id="keyMoney" type="number" value="500" min="0" max="50000" step="1" required/></div><div class="form-group"><label for="deliveryShare">기본 배달 매출 비중 (%)</label><input id="deliveryShare" type="number" value="40" min="0" max="100" step="1" required/></div><div class="form-group"><label for="deliveryFee">배달 중개수수료 (%)</label><input id="deliveryFee" type="number" value="7.8" min="0" max="30" step="0.1" required/></div><div class="form-group"><label for="deliveryPerOrder">점주 배달비 (원/건)</label><input id="deliveryPerOrder" type="number" value="2900" min="0" max="20000" step="1" required/></div><div class="form-group"><label for="ticket">배달 객단가 (원)</label><input id="ticket" type="number" value="25000" min="1000" max="100000" step="1" required/></div><div class="form-group"><label for="cardFee">홀 카드수수료 (%)</label><input id="cardFee" type="number" value="1.5" min="0" max="20" step="0.1" required/></div><div class="form-group"><label for="deliveryAdRate">배달 광고비율 가정 (%)</label><input id="deliveryAdRate" type="number" value="0" min="0" max="25" step="0.1" required/></div><div class="form-group"><label for="deliveryPayment">배달 결제수수료 (%)</label><input id="deliveryPayment" type="number" value="3" min="0" max="20" step="0.1" required/></div><div class="form-group"><label for="taxRate">소득세 추정 실효율 (%)</label><input id="taxRate" type="number" value="10" min="0" max="50" step="0.1" required/></div><div class="form-group"><label for="vatRate">부가세 실효부담 준비율 (%)</label><input id="vatRate" type="number" value="2" min="0" max="10" step="0.1" required/></div><div class="form-group"><label for="hourly">점주 노동 비교시급 (원)</label><input id="hourly" type="number" value="10320" min="0" max="100000" step="1" required/></div><div class="form-group"><label for="capitalRate">자기자본 기회비용 (연 %)</label><input id="capitalRate" type="number" value="3" min="0" max="30" step="0.1" required/></div><div class="form-group"><label for="demolition">철거·원상복구비 (만원)</label><input id="demolition" type="number" value="600" min="0" max="10000" step="1" required/></div><div class="form-group"><label for="termination">계약해지비 (만원)</label><input id="termination" type="number" value="200" min="0" max="10000" step="1" required/></div><div class="form-group"><label for="depositRecovery">보증금 회수 비율 (%)</label><input id="depositRecovery" type="number" value="100" min="0" max="100" step="1" required/></div><div class="form-group"><label for="salvage">시설 초기 처분비율 (%)</label><input id="salvage" type="number" value="20" min="0" max="100" step="1" required/></div></div><button class="action-alt" id="resetAssumptions" type="button">업종 기본값으로 되돌리기</button></details><section class="fee-preview" aria-label="창업 전 배달 비용 확인"><p class="kicker">DELIVERY / 배달 매출과 내 몫</p><label for="feeLabShare">기본 배달 매출 비중 <output id="feeLabShareValue">40%</output></label><input id="feeLabShare" type="range" min="0" max="100" step="5" value="40"/><div id="feePreview" aria-live="polite"></div><p class="mini">이 슬라이더는 게임의 배달 비중을 변경합니다. 영업 전략에 따라 최대 ±20%p를 더 반영합니다. 총매출을 고정한 비용 비교이며 실제 주문량 변화를 예측하지 않습니다.</p></section><div id="startAlert" class="warning" role="status"></div><div class="actions"><button class="action" id="start">가게 문 열기 →</button><span class="mini">최대 36개월</span></div></section>
-<section id="play" class="panel off"><p class="kicker" id="playKicker">DAY 180 · 개업 6개월</p><h2 class="title" id="playTitle">당신의 가게는 지금</h2><p class="desc" id="playSubtitle"></p><div class="stats"><div class="stat"><div class="lab">사업 현금 잔액</div><div class="num" id="cashNow">-</div></div><div class="stat"><div class="lab">이번 6개월 매출</div><div class="num" id="salesNow">-</div></div><div class="stat"><div class="lab">이번 6개월 현금증감</div><div class="num" id="profitNow">-</div></div></div><div class="graphbox"><svg viewBox="0 0 620 200" role="img" aria-label="사업 현금 잔액 추이 그래프" id="cashChart"></svg></div><div id="runDelivery" class="run-delivery"></div><div class="quote" id="playStory"></div><h3 class="section-title" id="eventTitle">이제 선택할 시간입니다</h3><p class="desc" id="eventText"></p><div class="choice-grid" id="eventChoices"></div><div id="closePreview" class="note-box"></div><div class="actions"><button class="action-alt" id="quit">여기서 문 닫기</button><span class="mini">대출 원금은 설정에 따라 상환 · 잔여분은 청산 시 정산</span></div></section>
-<section id="results" class="panel off"><p class="kicker">THE FINAL REPORT · 당신의 3년</p><h2 class="title" id="resultTitle">마지막 장부를 펼칩니다</h2><div class="endmessage" id="resultMessage"></div><p class="desc" style="margin-top:22px;margin-bottom:7px">가상 청산 시 자기자본 회수액 (보증금·시설 처분·대출·철거비 반영)</p><div class="kpi-accent" id="finalWorth">-</div><div class="stats"><div class="stat"><div class="lab">운영 개월 수</div><div class="num" id="monthsRun">-</div></div><div class="stat"><div class="lab">누적 매출</div><div class="num" id="totalRevenue">-</div></div><div class="stat"><div class="lab">자기자본 대비 차이</div><div class="num" id="netChange">-</div></div></div><div id="extendedResults"></div><div class="reality-gateway"><p id="bridgeLine"></p><h3>당신의 3년은<br>여기서 끝났습니다.</h3><p>하지만 누군가에게 이 이야기는<br>아직 끝나지 않은 현실입니다.</p><button class="action" id="compare">내 선택을 현실과 비교하기 →</button><p class="mini">현실은 어떨까요?</p></div><div class="actions"><button class="action" id="restart">다른 가게 차려보기 ↻</button><button class="action-alt" id="export">내 월별 장부 CSV</button></div><div class="tablewrap"><table><thead><tr><th>월</th><th>매출(만원)</th><th>운영비·이자(만원)</th><th>생활비(만원)</th><th>현금잔액(만원)</th></tr></thead><tbody id="recordTable"></tbody></table></div></section>
-<section class="panel" id="methodPanel"><p class="kicker">READ THE LEDGER</p><h2 class="title">매출과 이익, 이익과 현금은 다릅니다.</h2><div id="methodText"></div></section>
+<h1><span>대한민국</span><br><span>자영업자로</span> <em>살아남기</em></h1>
+<p class="cover-lead">당신에게 1억원이 생겼습니다.<br>회사를 그만두고 사장이 되시겠습니까?</p>
+<a class="btn primary" href="#setup" id="coverStart">내 가게 시작하기</a>
+<div class="cover-links"><a href="#reality">실제 사장님들의 이야기</a><a href="#data">그때와 지금</a></div>
+<p class="cover-meta">중앙일보 「2024 자영업 리포트」를 바탕으로 만든 가상 경영 체험입니다. 독립 제작물이며 중앙일보 공식 서비스가 아닙니다.</p>
 </div>
-<aside class="sticky-side"><div class="panel"><p class="side-title">MY STORE / 가상 경영 장부</p><div class="metric"><span class="name">선택 업종</span><span class="val" id="sideIndustry">치킨</span></div><div class="metric"><span class="name">창업 지역</span><span class="val" id="sideArea">수도권 주거지역</span></div><div class="metric"><span class="name">총 마련한 자금</span><span class="val" id="sideFunding">1억 3,000만원</span></div><div class="metric"><span class="name">초기 투자·보증금</span><span class="val" id="sideStartcost">-</span></div><div class="metric"><span class="name">개업 직후 현금</span><span class="val" id="sideBuffer">-</span></div><hr class="divider"/><div class="metric"><span class="name">월간 기준 매출</span><span class="val" id="sideSales">-</span></div><div class="metric"><span class="name">월간 예상 손익분기 매출</span><span class="val" id="sideBE">-</span></div><div class="metric"><span class="name">첫 달 순현금 (계절변동 제외)</span><span class="val" id="sideFree">-</span></div><p class="mini">실제 통계를 참고해 구조를 설명하는 가상 시나리오입니다. 업종·브랜드 평균을 신규 점포 매출로 예측하지 않습니다.</p></div><div class="panel"><p class="side-title">게임 뒤에 이어지는 이야기</p><p class="desc">배달비, 월세, 빚, 그리고 내 노동시간.<br>당신이 경험한 부담에서<br>현실의 사장님을 만납니다.</p><a href="#reality" class="text-link" id="sideReality">현실 이야기 먼저 읽기 ↗</a><hr class="divider"/><div class="pill">게임 수치 = 가정 · 기사 = 2024년 취재</div></div></aside>
-</div></main><section id="reality" class="reality-section"><div class="container"><p class="eyebrow">PART 02 / REALITY</p><h2>게임이 끝나면<br><em>현실이 시작된다.</em></h2><p class="reality-lead">2024년, 기자들이 만난 사장님들의 삶.<br>당신의 선택에서 시작해, 가게 밖의 경제를 읽습니다.</p><div id="personalized" class="personalized"></div><div class="story-tabs" id="storyTabs" role="group" aria-label="현실 이야기 선택"></div><article id="storyContent" class="story-content" aria-live="polite"></article><div class="story-actions"><button id="prevStory" class="action-alt">← 이전 이야기</button><button id="nextStory" class="action">다음 이야기 →</button></div><p class="reality-caption">취재 사례는 2024년 당시 상황입니다. 현재 근황을 의미하지 않습니다.<br>게임과 사례의 연결은 주제별 추천이며 이용자와 취재 대상자가 같은 상황이라는 판단이 아닙니다.</p></div></section><section id="data" class="data-section"><div class="container"><p class="eyebrow">PART 03 / DATA</p><h2>2024년 이후,<br>무엇이 달라졌을까.</h2><p class="data-intro">숫자는 언제의 현실을 담고 있을까요?<br>대상 기간과 발표 날짜를 함께 읽어야 변화가 보입니다.</p><div id="after2024"></div><div class="data-controls"><label for="indicatorSelect">비교할 지표</label><select id="indicatorSelect"></select><span>자료 확인일 2026.10.19</span></div><div id="comparison" aria-live="polite"></div><div class="data-grid" id="dataCards"></div><details class="data-method"><summary>아직 확인하지 못한 데이터와 검증 상태</summary><div id="pendingData"></div></details><div class="support-panel"><span>THE NEXT CHAPTER</span><h3>폐업 이후의 선택지도<br>사회가 함께 만들어야 합니다.</h3><p>2026년 희망리턴패키지 원스톱폐업지원은 사업정리 컨설팅·법률자문·채무조정·점포철거비 등을 안내합니다. 지원 대상, 임차 조건, 운영 기간, 제외 업종·중복 수혜 제한, 잔여 예산은 세부 사업별 최신 공고를 확인해야 합니다. 지원금은 게임 회수액에 자동 포함하지 않았습니다.</p><a href="https://www.sbiz24.kr/#/pbanc/567" target="_blank" rel="noopener noreferrer">2026년 점포철거비 공고 확인 ↗</a><a href="https://www.sbiz.or.kr/nhrp/main.do" target="_blank" rel="noopener noreferrer">컨설팅·법률·채무조정 공고 확인 ↗</a></div></div></section><section class="ending"><div class="container"><p>게임 속 당신은<br>다른 선택을 할 수 있었습니다.</p><h2>하지만 현실의 사장님들에게는<br>선택지가 많지 않았을지도 모릅니다.</h2><a href="https://www.joongang.co.kr/issue/11684" target="_blank" rel="noopener noreferrer">중앙일보 2024 자영업 리포트 읽기 ↗</a><a href="#setup">다시 장부를 펼치기 ↑</a></div></section><section class="sources-section container" id="sources"><h2>취재와 데이터의 출처</h2><p>이 프로젝트는 독립적인 재구성물입니다. 기사 전문·사진·영상은 재게시하지 않았습니다.</p><h3>취재 기사 · 2024년 당시</h3><div id="articleSources"></div><div id="brandSources"></div><h3>공식 통계·정책 · 대상 기간은 각 항목 참고</h3><div id="officialSources"></div><details><summary>계산 방식과 한계</summary><div id="allMethods"></div></details></section>
-<footer class="foot"><div class="container"><b>SURVIVE / 대한민국 자영업자로 살아남기 2.0</b><p>독립 제작 · 중앙일보 공식 서비스 아님 · 원본 프로토타입을 확장한 가상 체험</p><a href="#sources">출처와 방법론</a> · <a href="#setup">처음으로 ↑</a></div></footer>
+<figure><img src="shop-illustration.jpg" width="1672" height="941" alt="마감 시간에 동네 가게에서 영수증을 정리하는 점주"><figcaption>일러스트</figcaption></figure>
+</div></section>
+
+<main>
+<section id="setup" class="setup"><div class="wrap-game">
+<ol class="wiz-steps" id="wizSteps"><li class="on">업종</li><li>투자</li><li>개업 준비</li></ol>
+
+<div id="step1">
+<h2>어떤 가게를 열까요?</h2>
+<div class="industry-grid" id="industryOptions"></div>
+<section class="brand-section"><h3>어떤 간판을 떠올리셨나요?</h3>
+<select id="brand" aria-label="브랜드 키워드" hidden></select>
+<div id="brandOptions" class="brand-options" role="group" aria-label="브랜드 키워드 선택"></div>
+<div id="brandSummary" class="brand-summary" aria-live="polite"></div>
+<p class="fine">실명 대신 특징 키워드로 고릅니다. 치킨·카페·편의점은 공정위 2024년 실적 상위 3개, 분식은 공개 집계 상위 3개이며 기준 연도가 다를 수 있습니다.</p></section>
+<div class="wiz-nav"><button class="btn primary" type="button" id="toStep2">다음: 얼마나 투자할까요</button></div>
+</div>
+
+<div id="step2" hidden>
+<h2>얼마나 투자할까요?</h2>
+<div class="setup-cols">
+<div class="stack">
+<div class="form-group"><span class="label" id="fundsLabel">내 자본금 (만원)</span>
+<div class="capital-presets" id="capitalPresets" role="group" aria-label="창업 자본 빠른 선택"></div>
+<input id="funds" type="number" min="1000" max="100000" step="500" value="10000" aria-labelledby="fundsLabel"/>
+<span class="help">빌린 돈은 포함하지 않습니다.</span></div>
+<div class="form-group"><label for="loan">창업 대출 (만원)</label><input id="loan" type="number" min="0" max="100000" step="500" value="3000"/><span class="help">연 5%, 60개월 원금 균등상환이 기본입니다.</span></div>
+<div class="form-group"><label for="area">상권</label><select id="area"><option value="res">수도권 주거지역</option><option value="center">서울 주요 상권</option><option value="local">중소도시 상권</option></select></div>
+<div class="form-group"><label for="mode">운영 방식</label><select id="mode"><option value="staff">직원 고용</option><option value="solo">나 홀로 운영</option><option value="family">가족 공동 운영</option></select></div>
+<div class="form-group"><label for="economy">경제 환경</label><select id="economy"></select><span class="help" id="economyNote"></span></div>
+</div>
+<div class="budget" aria-live="polite"><h3>자본은 이렇게 쓰입니다</h3><div id="startupBar"></div></div>
+</div>
+<div class="wiz-nav"><button class="action-alt" type="button" id="backStep1">이전</button><button class="btn primary" type="button" id="toStep3">다음: 개업 준비 완료</button></div>
+</div>
+
+<div id="step3" hidden>
+<h2>개업 준비 완료</h2>
+<div class="bigstats">
+<div class="bigstat"><span class="l">총 창업 비용</span><span class="v" id="sideStartcost">-</span></div>
+<div class="bigstat"><span class="l">개업 후 남는 현금</span><span class="v" id="sideBuffer">-</span></div>
+<div class="bigstat"><span class="l">월 고정비</span><span class="v" id="sideFixed">-</span><span class="s">인건비·임대료·이자·원금 포함</span></div>
+<div class="bigstat"><span class="l">손익분기 매출</span><span class="v" id="sideBE">-</span><span class="s">월 기준</span></div>
+</div>
+<p class="help" id="setupLine"></p>
+<div id="startAlert" class="warning" role="status" aria-live="polite"></div>
+<div class="actions"><button class="btn primary" id="start" type="button">가게 문 열기</button></div>
+
+<details class="assumptions setup-details"><summary>상세 설정 <span>생활비·규모·금리·원가·세금</span></summary>
+<div class="form-grid">
+<div class="form-group"><label for="owner">사장님의 월 생활비 (만원)</label><input id="owner" type="number" min="0" max="5000" step="20" value="280"/></div>
+<div class="form-group"><label for="householdReserve">생활비로 남겨둘 자본 (만원)</label><input id="householdReserve" type="number" min="0" max="100000" step="1" value="0"/></div>
+<div class="form-group"><label for="annualSalary">비교용 세전 연봉 (만원)</label><input id="annualSalary" type="number" min="0" max="100000" step="100" value="4200"/></div>
+<div class="form-group"><label for="size">매장 규모 (평)</label><input id="size" type="number" value="20" min="5" max="100" step="1" required/></div>
+<div class="form-group"><label for="staff">직원 수 (명)</label><input id="staff" type="number" value="2" min="0" max="10" step="1" required/></div>
+<div class="form-group"><label for="hours">점주 노동시간 (시간/주)</label><input id="hours" type="number" value="60" min="1" max="112" step="1" required/></div>
+<div class="form-group"><label for="salesCapture">통계 매출 반영률 (%)</label><input id="salesCapture" type="number" value="65" min="5" max="150" step="1" required/></div>
+<div class="form-group"><label for="strategy">영업 전략</label><select id="strategy"><option value="balanced">홀·배달 균형</option><option value="delivery">배달 집중</option><option value="local">단골 중심</option></select></div>
+</div>
+<details class="assumptions"><summary>비용·세금·대출 가정</summary>
+<p>금액은 만원, 매출·비용은 부가세 제외 기준입니다. 업종·상권 기본값을 고치면 그대로 적용됩니다.</p>
+<div class="form-grid" id="assumptionFields">
+<div class="form-group"><label for="rate">대출금리 (연 %)</label><input id="rate" type="number" value="5" min="0" max="30" step="0.1" required/></div>
+<div class="form-group"><label for="term">대출 만기 (개월)</label><input id="term" type="number" value="60" min="1" max="360" step="1" required/></div>
+<div class="form-group"><label for="repayment">원금상환 방식</label><select id="repayment"><option value="amortizing">매월 원금 균등상환</option><option value="bullet">만기 일시상환</option></select></div>
+<div class="form-group"><label for="sales">기준 월 매출 (만원)</label><input id="sales" type="number" value="2700" min="0" max="1000000" step="1" required/></div>
+<div class="form-group"><label for="costRatio">원재료·상품 원가율 (%)</label><input id="costRatio" type="number" value="43" min="0" max="95" step="0.1" required/></div>
+<div class="form-group"><label for="rent">월 임대료 (만원)</label><input id="rent" type="number" value="240" min="0" max="1000000" step="1" required/></div>
+<div class="form-group"><label for="interior">인테리어·시설비 (만원)</label><input id="interior" type="number" value="5500" min="0" max="1000000" step="1" required/></div>
+<div class="form-group"><label for="entry">가맹비·교육비 (만원)</label><input id="entry" type="number" value="1500" min="0" max="1000000" step="1" required/></div>
+<div class="form-group"><label for="deposit">임대보증금 (만원)</label><input id="deposit" type="number" value="2500" min="0" max="1000000" step="1" required/></div>
+<div class="form-group"><label for="franchiseDeposit">가맹 보증금 (만원)</label><input id="franchiseDeposit" type="number" value="300" min="0" max="10000" step="1" required/></div>
+<div class="form-group"><label for="keyMoney">권리금 (만원)</label><input id="keyMoney" type="number" value="500" min="0" max="50000" step="1" required/></div>
+<div class="form-group"><label for="deliveryShare">기본 배달 매출 비중 (%)</label><input id="deliveryShare" type="number" value="40" min="0" max="100" step="1" required/></div>
+<div class="form-group"><label for="deliveryFee">배달 중개수수료 (%)</label><input id="deliveryFee" type="number" value="7.8" min="0" max="30" step="0.1" required/></div>
+<div class="form-group"><label for="deliveryPerOrder">점주 배달비 (원/건)</label><input id="deliveryPerOrder" type="number" value="2900" min="0" max="20000" step="1" required/></div>
+<div class="form-group"><label for="ticket">배달 객단가 (원)</label><input id="ticket" type="number" value="25000" min="1000" max="100000" step="1" required/></div>
+<div class="form-group"><label for="cardFee">홀 카드수수료 (%)</label><input id="cardFee" type="number" value="1.5" min="0" max="20" step="0.1" required/></div>
+<div class="form-group"><label for="deliveryAdRate">배달 광고비율 (%)</label><input id="deliveryAdRate" type="number" value="0" min="0" max="25" step="0.1" required/></div>
+<div class="form-group"><label for="deliveryPayment">배달 결제수수료 (%)</label><input id="deliveryPayment" type="number" value="3" min="0" max="20" step="0.1" required/></div>
+<div class="form-group"><label for="taxRate">소득세 실효율 (%)</label><input id="taxRate" type="number" value="10" min="0" max="50" step="0.1" required/></div>
+<div class="form-group"><label for="vatRate">부가세 준비율 (%)</label><input id="vatRate" type="number" value="2" min="0" max="10" step="0.1" required/></div>
+<div class="form-group"><label for="hourly">점주 노동 비교시급 (원)</label><input id="hourly" type="number" value="10320" min="0" max="100000" step="1" required/></div>
+<div class="form-group"><label for="capitalRate">자기자본 기회비용 (연 %)</label><input id="capitalRate" type="number" value="3" min="0" max="30" step="0.1" required/></div>
+<div class="form-group"><label for="demolition">철거·원상복구비 (만원)</label><input id="demolition" type="number" value="600" min="0" max="10000" step="1" required/></div>
+<div class="form-group"><label for="termination">계약해지비 (만원)</label><input id="termination" type="number" value="200" min="0" max="10000" step="1" required/></div>
+<div class="form-group"><label for="depositRecovery">보증금 회수 비율 (%)</label><input id="depositRecovery" type="number" value="100" min="0" max="100" step="1" required/></div>
+<div class="form-group"><label for="salvage">시설 처분 비율 (%)</label><input id="salvage" type="number" value="20" min="0" max="100" step="1" required/></div>
+</div>
+<div class="actions"><button class="action-alt" id="resetAssumptions" type="button">업종 기본값으로 되돌리기</button></div>
+</details>
+<section class="fee-preview" aria-label="배달 비용 확인"><label for="feeLabShare" class="label">배달 매출 비중 <output id="feeLabShareValue">40%</output></label><input id="feeLabShare" type="range" min="0" max="100" step="5" value="40"/><div id="feePreview" aria-live="polite"></div></section>
+</details>
+<div class="wiz-nav"><button class="action-alt" type="button" id="backStep2">이전</button></div>
+</div>
+</div></section>
+
+<section id="play" class="game off"><div class="wrap-game">
+<div class="gamebar"><b id="playTitle">개업</b><span id="playKicker"></span></div>
+<div class="progress" role="progressbar" aria-valuemin="0" aria-valuemax="36" id="progress"><i id="progressFill"></i></div>
+<div class="vitals">
+<div class="vital"><span class="l">보유 현금</span><span class="v" id="cashNow">-</span></div>
+<div class="vital"><span class="l">최근 매출</span><span class="v" id="salesNow">-</span></div>
+<div class="vital"><span class="l">남은 대출</span><span class="v" id="debtNow">-</span></div>
+</div>
+<div class="gamegrid">
+<div>
+<figure class="scene" id="scene" hidden></figure>
+<p class="event-from" id="eventFrom"></p>
+<h2 class="event-title" id="eventTitle"></h2>
+<div class="event-body" id="eventText"></div>
+<div class="choices" id="eventChoices"></div>
+<p class="fine" id="playStory"></p>
+</div>
+<aside class="side-panel" aria-label="가게 현황">
+<h3>가게 현황</h3>
+<ul class="status-list" id="statusList"></ul>
+<details class="assumptions" open><summary>장부 보기</summary><div class="chart-wrap" id="cashChartBox"></div><div id="runDelivery" class="run-delivery"></div></details>
+<div class="exit-box"><div id="closePreview" class="note-box"></div><div class="actions"><button class="action-alt" id="quit" type="button">여기서 문 닫기</button></div></div>
+</aside>
+</div>
+</div></section>
+
+<section id="results" class="off"><div class="wrap-game">
+<div class="front">
+<p class="kicker"><span id="resultTitle">마지막 장부</span></p>
+<h2 id="resultHeadline"></h2>
+<div class="endmessage" id="resultMessage"></div>
+</div>
+<div class="bigstats">
+<div class="bigstat"><span class="l">청산 후 회수 자본</span><span class="v" id="finalWorth">-</span><span class="s" id="finalWorthSub"></span></div>
+<div class="bigstat"><span class="l">누적 노동시간</span><span class="v" id="laborHours">-</span></div>
+<div class="bigstat"><span class="l">남은 대출</span><span class="v" id="debtLeft">-</span></div>
+<div class="bigstat"><span class="l">실질시급</span><span class="v" id="hourlyReal">-</span></div>
+</div>
+<div id="resultFlow">
+<div class="result-block" id="keyEventBlock"><h3>가장 컸던 순간</h3><div id="keyEvent"></div></div>
+<div class="result-block" id="wfBlock"><h3>매출 100만원 중 남은 돈</h3><div id="wfBox"></div></div>
+<div id="extendedResults"></div>
+</div>
+<div class="reality-gateway"><p id="bridgeLine"></p><h3>당신이 겪은 일은<br>게임 속에서만 벌어지는 일이 아닙니다.</h3><div class="actions"><button class="btn primary" id="compare" type="button">실제 사장님들 만나기</button></div></div>
+<div class="actions"><button class="btn" id="restart" type="button">다른 가게 차려보기</button><button class="action-alt" id="export" type="button">월별 장부 CSV</button></div>
+<div class="result-block" id="ledgerBlock"><h3>월별 장부</h3><div class="tablewrap"><table><thead><tr><th>월</th></tr></thead><tbody id="recordTable"></tbody></table></div></div>
+</div></section>
+</main>
+
+<section id="reality" class="reality-section"><div class="wrap">
+<p class="eyebrow">2024년 취재</p>
+<h2>게임이 끝나면 현실이 시작됩니다</h2>
+<p class="reality-lead">기자들이 만난 사장님들의 이야기입니다.</p>
+<div id="personalized" class="personalized"></div>
+<div class="story-tabs" id="storyTabs" role="group" aria-label="이야기 선택"></div>
+<article id="storyContent" class="story-content" aria-live="polite"></article>
+<div class="story-actions"><button id="prevStory" class="action-alt" type="button">이전 이야기</button><button id="nextStory" class="btn primary" type="button">다음 이야기</button></div>
+<p class="reality-caption">취재 사례는 2024년 당시 상황이며 현재 근황이 아닙니다. 게임과 사례의 연결은 주제별 추천입니다.</p>
+</div></section>
+
+<section id="data" class="data-section"><div class="wrap">
+<p class="eyebrow">자영업 데이터</p>
+<h2>2024년 이후, 무엇이 달라졌을까</h2>
+<p class="data-intro">숫자는 대상 기간과 발표 날짜를 함께 읽어야 합니다.</p>
+<div id="after2024"></div>
+<div class="data-controls"><label for="indicatorSelect">비교할 지표</label><select id="indicatorSelect"></select><span>자료 확인일 2026.10.19</span></div>
+<div id="comparison" aria-live="polite"></div>
+<div class="data-grid" id="dataCards"></div>
+<details class="data-method"><summary>아직 확인하지 못한 자료</summary><div id="pendingData"></div></details>
+<div class="support-panel"><span>폐업 이후</span><h3>2026년 희망리턴패키지</h3><p>사업정리 컨설팅, 법률자문, 채무조정, 점포철거비 등을 지원합니다. 대상·임차 조건·제외 업종·잔여 예산은 세부 사업별 최신 공고를 확인해야 하며, 게임 회수액에는 포함하지 않았습니다.</p><a href="https://www.sbiz24.kr/#/pbanc/567" target="_blank" rel="noopener noreferrer">2026년 점포철거비 공고 ↗</a><a href="https://www.sbiz.or.kr/nhrp/main.do" target="_blank" rel="noopener noreferrer">컨설팅·법률·채무조정 공고 ↗</a></div>
+</div></section>
+
+<section id="method" class="method"><div class="wrap-article">
+<h2>계산 방법</h2>
+<div id="methodText"></div>
+<details><summary>계산 방식과 한계</summary><div id="allMethods"></div></details>
+</div></section>
+
+<section class="ending"><div class="wrap">
+<p>게임 속 당신은 다른 선택을 할 수 있었습니다.</p>
+<h2>현실의 사장님들에게는 선택지가 많지 않았을지도 모릅니다.</h2>
+<a href="https://www.joongang.co.kr/issue/11684" target="_blank" rel="noopener noreferrer">중앙일보 2024 자영업 리포트 읽기 ↗</a><a href="#setup" id="again">다시 시작하기</a>
+</div></section>
+
+<section class="sources-section wrap" id="sources"><h2>취재와 데이터의 출처</h2>
+<p>독립적인 재구성물이며 기사 전문과 영상은 다시 싣지 않았습니다. 기사 속 사진은 사용 허락을 받아 출처와 함께 게재했습니다.</p>
+<h3>취재 기사 · 2024년 당시</h3><div id="articleSources"></div><div id="brandSources"></div>
+<h3>공식 통계·정책</h3><div id="officialSources"></div></section>
+<footer class="foot"><div class="wrap"><b>대한민국 자영업자로 살아남기 3.0</b><p>독립 제작 · 중앙일보 공식 서비스 아님 · 원본 프로토타입을 확장한 가상 체험</p></div></footer>
 <script type="module" src="app.js"></script>
 </body>
 </html>
