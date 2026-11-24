@@ -29,3 +29,4 @@
 - 미커밋 일러스트를 JPG(0.4MB)로 교체해 첫 사건 화면에 적용, 개발 서버 MIME 추가, 업종 이모지 제거. 커밋 안 함.
 - 재개 지점: (1) 전 업종·전 선택지 자동 순회와 편향 분석, (2) 320/390/768/데스크톱 시각 검증, (3) 데이터 지표 확대(원표 확인 가능한 것만), (4) 건물주·은행 담당 인물 후속, (5) 공개 배포는 사용자 승인·권한 확인 후.
 - GitHub Pages 전환 준비: `.github/workflows/pages.yml` 추가(테스트→빌드→dist 배포). 예정 주소 https://raspos.github.io/self-employed-survival/ . 저장소 생성·Pages(GitHub Actions) 설정은 사용자가 웹에서 한 뒤 `git remote add origin` → push. 기존 chatgpt.site 주소는 별개이며 갱신되지 않는다.
+- 경제 모델 편향 분석(scripts/bias-analysis.mjs) 수행. 배달 비중 업종별 기본값 오류 수정, 편향 회귀 테스트 3개 추가(전체 44개). 남은 보정 판단 4건은 TEST_REPORT.md 참고. 재개 지점: 사용자 판단 후 보정 → 320/390/768/데스크톱 화면 검증 → 데이터 지표 확대.

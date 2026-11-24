@@ -12,7 +12,7 @@ const $=id=>document.getElementById(id),fmt=(n,d=0)=>n.toLocaleString('ko-KR',{m
 const link=(url,label)=>`<a href="${esc(url)}" target="_blank" rel="noopener noreferrer">${esc(label)} ↗</a>`;
 let selected='chicken',sim=null,currentStory=0,personal=false;
 const basicMap={funds:'own',loan:'loan',owner:'living',area:'area',brand:'brand',salesCapture:'salesCapture',size:'size',staff:'staff',hours:'hours',strategy:'strategy'};
-const overrideFields=['sales','costRatio','rent','interior','entry','deposit'];
+const overrideFields=['deliveryShare','sales','costRatio','rent','interior','entry','deposit'];
 const assumptionKeys=Object.keys(defaults).filter(k=>!['industry','own','loan','living','area','brand','size','staff','hours','strategy','salesCapture'].includes(k));
 const dirty=new Set();
 mountTrends($('dataCards'));
