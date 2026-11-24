@@ -1,6 +1,7 @@
 import { beginEpisodes, currentEpisode, decideEpisode } from './episodes.js';
 import { simplifySetup } from './setup-ui.js';
 import { renderOutcome } from './outcomes.js';
+import { environments, applyEnvironment, additionalAreas } from './environments.js';
 import {profiles,areas,defaults,setup,createSimulation,calculateMonth,close,totals,liquidation,recommend,forecastClosure} from './simulation.js';
 import {articles,indicators,sources,pending,methods,checkedAt} from './content.js';
 import {brandPicker,paintBrandSummary,paintFeePreview,paintRunBurden,deliveryResult,deliveryStoryMarkup,wireDeliveryStory,paintUpdates} from './extensions.js';
@@ -12,6 +13,30 @@ const overrideFields=['sales','costRatio','rent','interior','entry','deposit'];
 const assumptionKeys=Object.keys(defaults).filter(k=>!['industry','own','loan','living','area','brand','size','staff','hours','strategy','salesCapture'].includes(k));
 const dirty=new Set();
 simplifySetup();
+for (const [key, area] of Object.entries(additionalAreas)) {
+ $('area').add(new Option(area.name, key));
+}
+const economyLabel = document.createElement('label');
+economyLabel.textContent = '경제 환경 ';
+const economySelect = document.createElement('select');
+for (const [key, scenario] of Object.entries(environments)) {
+ economySelect.add(new Option(scenario.label, key));
+}
+economyLabel.append(economySelect);
+$('setup').querySelector('.setup-details').before(economyLabel);
+const modeLabel = document.createElement('label');
+modeLabel.textContent = '운영 방식 ';
+const modeSelect = document.createElement('select');
+for (const [key, label] of [['staff', '직원 고용'], ['solo', '나 홀로 운영'], ['family', '가족 공동 운영']]) {
+ modeSelect.add(new Option(label, key));
+}
+modeLabel.append(modeSelect);
+economyLabel.before(modeLabel);
+modeSelect.onchange = () => {
+ const staffing = { staff: [2, 60], solo: [0, 78], family: [0, 52] }[modeSelect.value];
+ [$('staff').value, $('hours').value] = staffing;
+ summary();
+};
 function read(){const c={industry:selected};for(const [id,k]of Object.entries(basicMap)){if(['area','brand','strategy'].includes(k))c[k]=$(id).value;else {if(!$(id).value.trim()||!$(id).checkValidity())throw Error('입력값의 범위와 단위를 확인하세요.');c[k]=Number($(id).value);}}
  for(const k of assumptionKeys){if(overrideFields.includes(k)&&!dirty.has(k)){c[k]=null;continue;}if(k==='repayment')c[k]=$(k).value;else{if(!$(k).value.trim()||!$(k).checkValidity())throw Error('가정값의 범위와 단위를 확인하세요.');c[k]=Number($(k).value);if(k==='costRatio')c[k]/=100;}}return c;}
 function updateOverrides(){const c={industry:selected};for(const [id,k]of Object.entries(basicMap))c[k]=['area','brand','strategy'].includes(k)?$(id).value:Number($(id).value);try{const s=setup(c);for(const k of overrideFields)if(!dirty.has(k))$(k).value=Number((k==='costRatio'?s[k]*100:s[k]).toFixed(2));}catch{}}
@@ -37,7 +62,21 @@ function renderPlay(){const t=totals(sim),r=sim.records.at(-1),e=currentEpisode(
  paintRunBurden(sim,r);$('playStory').textContent=`최근 월 영업이익 ${money(r.operating)} / 순현금 ${money(r.flow)}. 누적 점주 노동 ${fmt(t.hours)}시간. 이익이 나도 원금상환과 생활비로 현금은 줄 수 있습니다.`;
  $('eventTitle').textContent=e?e.channel+' · '+e.title:'최종 결산';$('eventText').textContent=e?.body??'';$('eventChoices').innerHTML='';if(e)for(const key of ['a','b']){const c=e[key],b=document.createElement('button');b.className='choice';b.type='button';b.textContent=c;b.onclick=()=>{decideEpisode(sim,key);renderState();};$('eventChoices').append(b);}
  const f=forecastClosure(sim);$('closePreview').innerHTML=`<strong>폐업도 경영의 선택입니다.</strong><br>지금 정리하면 ${money(f.now)} / ${f.target}개월까지 영업 후 정리하면 ${money(f.later)}<br><small>${f.assumption} 회수액은 음수가 될 수 있습니다.</small>`;}
-function renderState(){try{localStorage.setItem("survival-v3",JSON.stringify(sim));}catch{}if(sim.finished){renderResults();renderOutcome(sim,totals(sim));}else{renderPlay();show('play');}}
+function renderState(){try{localStorage.setItem("survival-v3",JSON.stringify(sim));}catch{}if(sim.finished){renderResults();renderOutcome(sim,totals(sim));renderRunCharts();}else{renderPlay();show('play');}}
+function renderRunCharts() {
+ let charts = $('runCharts');
+ if (!charts) {
+  charts = document.createElement('details');
+  charts.id = 'runCharts';
+  charts.className = 'assumptions';
+  $('extendedResults').after(charts);
+ }
+ const timeline = sim.decisions.map(item => `<li><strong>${item.month}개월</strong> · ${esc(item.title)}</li>`).join('');
+ charts.innerHTML = `<summary>36개월 장부와 선택 기록</summary>
+  <div class="graphbox">${lineChart(sim.records,['sales','netIncome'],['매출','세후 손익'])}</div>
+  <div class="graphbox">${lineChart([{month:0,cash:sim.buffer,debt:sim.loan},...sim.records],['cash','debt'],['현금','대출'])}</div>
+  ${timeline ? '<ol>'+timeline+'</ol>' : ''}`;
+}
 const replayControls = document.createElement('div');
 replayControls.className = 'actions';
 for (const [label, sameSeed] of [['같은 조건으로 다시', false], ['같은 사건 시드로 다시', true]]) {
@@ -52,14 +91,33 @@ for (const [label, sameSeed] of [['같은 조건으로 다시', false], ['같은
    deliveryShare: Math.max(0, Math.min(100, sim.config.deliveryShare -
     (sim.config.strategy === 'delivery' ? 20 : sim.config.strategy === 'local' ? -20 : 0))),
   };
-  sim = Object.assign(createSimulation(input), { initialInput: input });
+  const environment = sim.environment;
+  const previousRun = { environment, months: sim.month, equity: liquidation(sim).net, hours: totals(sim).hours };
+  sim = Object.assign(applyEnvironment(createSimulation(input), environment), { initialInput: input, previousRun });
   beginEpisodes(sim, seed);
   renderState();
  };
  replayControls.append(button);
 }
+const replayEnvironment = document.createElement('select');
+replayEnvironment.setAttribute('aria-label','다시 도전할 경제 환경');
+for (const [key, scenario] of Object.entries(environments)) replayEnvironment.add(new Option(scenario.label,key));
+const compareRun = document.createElement('button');
+compareRun.type='button';
+compareRun.className='action-alt';
+compareRun.textContent='환경을 바꿔 다시';
+compareRun.onclick=()=>{
+ const input = sim.initialInput;
+ if (!input) return;
+ const previousRun = { environment: sim.environment, months: sim.month, equity: liquidation(sim).net, hours: totals(sim).hours };
+ const seed = sim.seed;
+ sim = Object.assign(applyEnvironment(createSimulation(input),replayEnvironment.value),{initialInput:input,previousRun});
+ beginEpisodes(sim,seed);
+ renderState();
+};
+replayControls.append(replayEnvironment,compareRun);
 $('restart').after(replayControls);
-$('start').onclick=()=>{try{const input=read();sim=Object.assign(createSimulation(input),{initialInput:input});resume.remove();beginEpisodes(sim,crypto.getRandomValues(new Uint32Array(1))[0]);renderState();}catch(e){$('startAlert').textContent=e.message;}};
+$('start').onclick=()=>{try{const input=read();sim=Object.assign(applyEnvironment(createSimulation(input),economySelect.value),{initialInput:input});resume.remove();beginEpisodes(sim,crypto.getRandomValues(new Uint32Array(1))[0]);renderState();}catch(e){$('startAlert').textContent=e.message;}};
 const resume=document.createElement('button');
 resume.type='button';
 resume.className='action-alt';

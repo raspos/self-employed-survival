@@ -1,4 +1,5 @@
 import { totals } from './simulation.js';
+import { environments } from './environments.js';
 
 export function outcome(state, result = totals(state)) {
   const { investmentReturn: gain, netIncome, hours } = result;
@@ -34,6 +35,7 @@ export function comparison(state, annualSalary, result = totals(state)) {
   return [
     ['누적 노동소득', ownerIncome, wageIncome, '만원'],
     ['노동시간', result.hours, wageHours, '시간'],
+    ['추가 휴무일', state.restDays ?? 0, 0, '일'],
     ['시간당 노동소득', result.hours ? ownerIncome * 10000 / result.hours : 0, wageHours ? wageIncome * 10000 / wageHours : 0, '원'],
     ['초기 자본 대비 순자산 변화', result.investmentReturn, wageAssets, '만원'],
     ['정산 전 대출 잔액', state.debt, 0, '만원'],
@@ -52,6 +54,15 @@ export function renderOutcome(state, result) {
   }
   const fmt = value => Math.round(value).toLocaleString('ko-KR');
   panel.innerHTML = '<summary>직장인으로 남았다면</summary><label>세전 연봉 (만원) <input type="number" min="0" max="100000" step="100"></label><div class="tablewrap"></div><details><summary>비교 기준</summary><p>같은 기간·생활비·소득세율을 적용합니다. 직장인은 주 40시간 근무하며 초기 자본을 설정한 연 수익률로 운용합니다. 가게의 노동소득은 세후 사업소득에서 자기자본 기회비용을 뺀 값입니다. 가게 순자산은 청산 기준입니다.</p></details>';
+  let prior = document.getElementById('priorRun');
+  if (!prior) {
+    prior = document.createElement('p');
+    prior.id = 'priorRun';
+    panel.before(prior);
+  }
+  const old = state.previousRun;
+  prior.hidden = !old;
+  prior.textContent = old ? `지난 운영 ${environments[old.environment]?.label ?? ''} · ${old.months}개월 · 청산액 ${fmtPrior(old.equity)}만원 → 이번 ${fmtPrior(result.liquidation.net)}만원` : '';
   const field = panel.querySelector('input');
   const table = panel.querySelector('.tablewrap');
   field.value = state.annualSalary ?? 4200;
@@ -66,6 +77,8 @@ export function renderOutcome(state, result) {
   draw();
   renderShare(state, result);
 }
+
+const fmtPrior = value => Math.round(value).toLocaleString('ko-KR');
 
 function renderShare(state, result) {
   let panel = document.getElementById('resultShare');

@@ -5,15 +5,27 @@ await new Promise(resolve=>server.listening?resolve():server.once('listening',re
 const require=createRequire(import.meta.url);
 const {chromium}=require('C:/Users/kimwo/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/playwright');
 fs.mkdirSync('artifacts',{recursive:true});
-const browser=await chromium.launch({headless:true,args:['--no-proxy-server'],executablePath:'C:/Users/kimwo/AppData/Local/ms-playwright/chromium_headless_shell-1234/chrome-headless-shell-win64/chrome-headless-shell.exe'});const page=await browser.newPage({viewport:{width:1440,height:1000}});const errors=[];page.on('pageerror',e=>errors.push(e.message));
+const browser=await chromium.launch({headless:true,args:['--no-proxy-server'],channel:'chrome'});const page=await browser.newPage({viewport:{width:1440,height:1000}});const errors=[];page.on('pageerror',e=>errors.push(e.message));
+async function finish(page) {
+ for(let i=0;i<18&&!await page.locator('#results').isVisible();i++) await page.locator('#eventChoices button').first().click();
+ await page.locator('#results').waitFor();
+}
 await page.goto('http://127.0.0.1:4174');await page.locator('#industryOptions button').first().waitFor();
 await page.screenshot({path:'artifacts/desktop-home.png'});
 for(let category=0;category<4;category++){await page.locator('#industryOptions button').nth(category).click();assert.equal(await page.locator('#brandOptions button').count(),3);const first=Number(await page.locator('#sales').inputValue());await page.locator('#brandOptions button').nth(2).click();const last=Number(await page.locator('#sales').inputValue());assert.ok(first>last);assert.ok((await page.locator('#brandSummary').innerText()).includes('SCENARIO'));}
+await page.locator('.setup-details > summary').click();
 await page.locator('#industryOptions button').first().click();await page.locator('#salesCapture').fill('50');const half=Number(await page.locator('#sales').inputValue());await page.locator('#salesCapture').fill('100');const full=Number(await page.locator('#sales').inputValue());assert.ok(Math.abs(half*2-full)<.1);await page.locator('#salesCapture').fill('65');
 await page.locator('#feeLabShare').fill('80');await page.locator('#feeLabShare').dispatchEvent('input');assert.equal(await page.locator('#deliveryShare').inputValue(),'80');await page.locator('#brandOptions').scrollIntoViewIfNeeded();await page.screenshot({path:'artifacts/desktop-brands.png'});await page.locator('#feeLabShare').fill('40');await page.locator('#feeLabShare').dispatchEvent('input');
 await page.locator('#funds').fill('50000');await page.locator('#start').click();
-for(let i=0;i<5;i++){await page.locator('#eventChoices button').first().click();}
+await finish(page);
 await page.locator('#results:not(.off)').waitFor();assert.equal(await page.locator('#monthsRun').innerText(),'36개월');assert.equal(await page.locator('#recordTable tr').count(),36);
+await page.locator('#salaryComparison > summary').click();
+await page.locator('#salaryComparison input').fill('6000');
+assert.match(await page.locator('#salaryComparison tbody').innerText(), /16,200/);
+await page.locator('#resultShare > summary').click();
+const download = page.waitForEvent('download');
+await page.getByRole('button',{name:'이미지 저장'}).click();
+assert.match((await download).suggestedFilename(), /\.png$/);
 await page.screenshot({path:'artifacts/desktop-results.png',fullPage:false});
 await page.locator('#compare').click();await page.locator('#personalized h3').waitFor();assert.ok((await page.locator('#personalized').innerText()).includes('게임 기록'));
 await page.screenshot({path:'artifacts/desktop-reality.png'});
@@ -26,6 +38,15 @@ const mobile=await browser.newPage({viewport:{width:390,height:844},isMobile:tru
 const overflow=[];for(const id of ['setup','reality','data','sources']){await mobile.locator('#'+id).scrollIntoViewIfNeeded();const size=await mobile.evaluate(()=>({w:document.documentElement.clientWidth,s:document.documentElement.scrollWidth}));if(size.s>size.w)overflow.push({id,...size});}
 await mobile.locator('[data-story="2"]').click();await mobile.locator('#storyContent').scrollIntoViewIfNeeded();await mobile.screenshot({path:'artifacts/mobile-story.png'});
 await mobile.locator('#brandOptions').scrollIntoViewIfNeeded();await mobile.screenshot({path:'artifacts/mobile-brands.png'});await mobile.locator('#after2024').scrollIntoViewIfNeeded();await mobile.screenshot({path:'artifacts/mobile-after2024.png'});
-await mobile.locator('#funds').fill('50000');await mobile.locator('#start').click();for(let i=0;i<5;i++)await mobile.locator('#eventChoices button').first().click();await mobile.locator('#results:not(.off)').waitFor();await mobile.screenshot({path:'artifacts/mobile-results.png'});assert.equal(await mobile.locator('#monthsRun').innerText(),'36개월');
+await mobile.locator('#funds').fill('50000');await mobile.locator('#start').click();await finish(mobile);await mobile.locator('#results:not(.off)').waitFor();await mobile.screenshot({path:'artifacts/mobile-results.png'});assert.equal(await mobile.locator('#monthsRun').innerText(),'36개월');
 const mobileSize=await mobile.evaluate(()=>({w:document.documentElement.clientWidth,s:document.documentElement.scrollWidth}));assert.ok(mobileSize.s<=mobileSize.w,JSON.stringify(mobileSize));
-assert.deepEqual(errors,[]);assert.deepEqual(overflow,[]);await browser.close();server.close();fs.writeFileSync('artifacts/browser-qa.json',JSON.stringify({status:'passed',desktop:'1440×1000',mobile:'390×844',checks:['36 months','5 choices','36 ledger rows','personalized reality','8 stories','break-even slider','order decomposition','statistics comparison','last scene','voluntary closure','mobile complete game','no page errors','no page overflow'],errors,overflow},null,2));console.log('Browser QA passed');
+for (const width of [320, 768]) {
+ const narrow = await browser.newPage({ viewport: { width, height: 850 } });
+ narrow.on('pageerror', e => errors.push(e.message));
+ await narrow.goto('http://127.0.0.1:4174/#setup');
+ await narrow.locator('#industryOptions button').first().waitFor();
+ const size = await narrow.evaluate(() => [document.documentElement.scrollWidth, document.documentElement.clientWidth]);
+ assert.ok(size[0] <= size[1], `Setup overflows at ${width}px: ${size}`);
+ await narrow.close();
+}
+assert.deepEqual(errors,[]);assert.deepEqual(overflow,[]);await browser.close();server.close();fs.writeFileSync('artifacts/browser-qa.json',JSON.stringify({status:'passed',desktop:'1440×1000',mobile:'390×844',checks:['36 months','event-driven choices','36 ledger rows','personalized reality','8 stories','break-even slider','order decomposition','statistics comparison','last scene','voluntary closure','mobile complete game','no page errors','no page overflow'],errors,overflow},null,2));console.log('Browser QA passed');
