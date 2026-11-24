@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { createSimulation } from '../dist/simulation.js';
-import { beginEpisodes, currentEpisode, decideEpisode, changeOperations, episodeCount } from '../dist/episodes.js';
+import { beginEpisodes, currentEpisode, decideEpisode, changeOperations, episodeCount, episodeContext } from '../dist/episodes.js';
 
 function run(industry, seed, strategy, restore = false) {
   let state = createSimulation({ industry });
@@ -36,6 +36,26 @@ test('80 episodes are available and an operating adjustment applies only once pe
   assert.equal(changeOperations(state, 'pickup'), false);
   assert.equal(state.records.at(-1).hours, before);
   assert.equal(state.hours + state.extraHours, 52);
+});
+
+test('returning worker recalls the hiring choice after a save and costs less to bring back', () => {
+  for (let seed=0;seed<100;seed++) {
+    const state=createSimulation({industry:'cafe',own:30000});
+    beginEpisodes(state,seed);
+    while(!state.finished) {
+      const event=currentEpisode(state);
+      if(event.requires==='labor') {
+        const restored=JSON.parse(JSON.stringify(state));
+        assert.match(episodeContext(restored,event),/개월 차에 고른/);
+        const wages=restored.wages;
+        decideEpisode(restored,'a');
+        assert.equal(restored.wages-wages,65);
+        return;
+      }
+      decideEpisode(state,'a');
+    }
+  }
+  assert.fail('No returning worker episode found');
 });
 
 test('4,000 seeded runs settle the ledger and can reach either end state', () => {

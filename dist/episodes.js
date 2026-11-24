@@ -95,6 +95,16 @@ export function episodeSpeaker(event) {
   return event.channel;
 }
 
+const contacts = {labor:'민서', order:'수진'};
+
+export function episodeContext(state, event) {
+  if (!event.requires) return event.body;
+  const previous = state.contacts?.[event.requires];
+  return previous
+    ? `${previous.month}개월 차에 고른 ‘${previous.choice}’에 이어 ${contacts[event.requires]}에게서 연락이 왔습니다. ${event.body}`
+    : event.body;
+}
+
 function random(state) {
   state.rng = (Math.imul(1664525,state.rng)+1013904223) >>> 0;
   return state.rng / 4294967296;
@@ -172,7 +182,8 @@ export function decideEpisode(state, choice) {
   const event = currentEpisode(state);
   if(state.finished || !event || !['a','b'].includes(choice)) return;
   const first = choice==='a';
-  const roll = random(state);
+  const relationship = state.contacts?.[event.kind]?.trust ?? 0;
+  const roll = Math.min(1, random(state) + (event.requires ? relationship * .04 : 0));
   const previous = state.records.at(-1);
   let cost = 0;
   switch(event.kind) {
@@ -180,7 +191,12 @@ export function decideEpisode(state, choice) {
     case 'material': cost=first?70:0; state.costRatio=Math.min(.95,state.costRatio+(first?.005:.017)); break;
     case 'competition': cost=first?140:0; state.revenueMult*=first && roll>.35?1.035:.965; break;
     case 'order': cost=first?80:0; state.revenueMult*=first && roll>.3?1.05:1.012; break;
-    case 'labor': state.wages+=first?85:0; state.extraHours=Math.max(1-state.hours,Math.min(112-state.hours,state.extraHours+(first?-5:8))); break;
+    case 'labor': {
+      const returningWorker = event.requires === 'labor' && relationship > 0;
+      state.wages += first ? (returningWorker ? 65 : 85) : 0;
+      state.extraHours = Math.max(1-state.hours,Math.min(112-state.hours,state.extraHours+(first?-5:8)));
+      break;
+    }
     case 'rest':
       cost=first?40:0;
       state.extraHours=Math.max(1-state.hours,Math.min(112-state.hours,state.extraHours+(first?-3:3)));
@@ -200,6 +216,14 @@ export function decideEpisode(state, choice) {
   previous.other+=cost;
   state.seen.push(event.id);
   if(first && ['labor','order'].includes(event.kind)) state.threads.push(event.kind);
+  if (contacts[event.kind]) {
+    state.contacts ??= {};
+    state.contacts[event.kind] = {
+      month: state.month,
+      choice: event[choice],
+      trust: Math.max(-3,Math.min(3,relationship+(first?1:-1))),
+    };
+  }
   state.decisions.push({month:state.month,key:event.kind,choice,title:event[choice],cost});
   nextEpisode(state);
 }

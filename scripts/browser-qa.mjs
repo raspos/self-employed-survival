@@ -6,6 +6,29 @@ const require=createRequire(import.meta.url);
 const {chromium}=require('C:/Users/kimwo/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/playwright');
 fs.mkdirSync('artifacts',{recursive:true});
 const browser=await chromium.launch({headless:true,args:['--no-proxy-server'],channel:'chrome'});const page=await browser.newPage({viewport:{width:1440,height:1000}});const errors=[];page.on('pageerror',e=>errors.push(e.message));
+const {createSimulation}=await import('../dist/simulation.js');
+const {beginEpisodes,currentEpisode,decideEpisode}=await import('../dist/episodes.js');
+let returningWorker;
+for(let seed=0;seed<100&&!returningWorker;seed++){
+ const state=createSimulation({industry:'cafe',own:30000});
+ beginEpisodes(state,seed);
+ while(!state.finished){
+  if(currentEpisode(state).requires==='labor'){returningWorker=state;break;}
+  decideEpisode(state,'a');
+ }
+}
+assert.ok(returningWorker);
+const relationshipPage=await browser.newPage({viewport:{width:390,height:844}});
+relationshipPage.on('pageerror',e=>errors.push(e.message));
+await relationshipPage.goto('http://127.0.0.1:4174/#setup');
+await relationshipPage.evaluate(state=>localStorage.setItem('survival-v3',JSON.stringify(state)),returningWorker);
+await relationshipPage.reload();
+await relationshipPage.getByRole('button',{name:'이어서 플레이'}).click();
+assert.match(await relationshipPage.locator('#eventText').innerText(),/개월 차에 고른.*민서/);
+await relationshipPage.locator('#eventChoices button').first().click();
+const savedWages=await relationshipPage.evaluate(()=>JSON.parse(localStorage.getItem('survival-v3')).wages);
+assert.equal(savedWages,returningWorker.wages+65);
+await relationshipPage.close();
 async function finish(page) {
  for(let i=0;i<18&&!await page.locator('#results').isVisible();i++) await page.locator('#eventChoices button').first().click();
  await page.locator('#results').waitFor();

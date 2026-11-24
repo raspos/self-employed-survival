@@ -1,4 +1,4 @@
-import { beginEpisodes, currentEpisode, decideEpisode, changeOperations, episodeSpeaker } from './episodes.js';
+import { beginEpisodes, currentEpisode, decideEpisode, changeOperations, episodeSpeaker, episodeContext } from './episodes.js';
 import { simplifySetup } from './setup-ui.js';
 import { renderOutcome } from './outcomes.js';
 import { mountTrends } from './trends.js';
@@ -88,7 +88,7 @@ keys.forEach((k,j)=>{out+=`<polyline points="${rows.map((r,i)=>`${X(i)},${Y(r[k]
 function renderPlay(){const t=totals(sim),r=sim.records.at(-1),e=currentEpisode(sim);$('playKicker').textContent=`${sim.month} / 36개월`;$('playTitle').textContent=`${sim.p.name} 가게, ${sim.month}개월 차 장부`;$('playSubtitle').textContent=`${sim.a.name} · ${sim.size}평 · 직원 ${sim.staff}명 · 점주 주 ${sim.hours+sim.extraHours}시간 · 가상 시나리오`;$('cashNow').textContent=money(sim.cash);$('salesNow').textContent=money(sim.lastRevenue);$('profitNow').textContent=money(sim.lastDelta);$('profitNow').className='num '+(sim.lastDelta<0?'neg':'');
  document.querySelector('#play .graphbox').innerHTML=lineChart([{month:0,cash:sim.buffer,debt:sim.loan},...sim.records],['cash','debt'],['현금 잔액','대출 잔액']);
  paintRunBurden(sim,r);$('playStory').textContent=`최근 월 영업이익 ${money(r.operating)} / 순현금 ${money(r.flow)}. 누적 점주 노동 ${fmt(t.hours)}시간. 이익이 나도 원금상환과 생활비로 현금은 줄 수 있습니다.`;
- $('eventTitle').textContent=e?episodeSpeaker(e)+' · '+e.title:'최종 결산';$('eventText').textContent=e?.body??'';$('eventChoices').innerHTML='';if(e)for(const key of ['a','b']){const c=e[key],b=document.createElement('button');b.className='choice';b.type='button';b.textContent=c;b.onclick=()=>{decideEpisode(sim,key);renderState();};$('eventChoices').append(b);}
+ $('eventTitle').textContent=e?episodeSpeaker(e)+' · '+e.title:'최종 결산';$('eventText').textContent=e?episodeContext(sim,e):'';$('eventChoices').innerHTML='';if(e)for(const key of ['a','b']){const c=e[key],b=document.createElement('button');b.className='choice';b.type='button';b.textContent=c;b.onclick=()=>{decideEpisode(sim,key);renderState();};$('eventChoices').append(b);}
  const f=forecastClosure(sim);$('closePreview').innerHTML=`<strong>폐업도 경영의 선택입니다.</strong><br>지금 정리하면 ${money(f.now)} / ${f.target}개월까지 영업 후 정리하면 ${money(f.later)}<br><small>${f.assumption} 회수액은 음수가 될 수 있습니다.</small>`;}
 function renderState(){
  try{localStorage.setItem("survival-v3",JSON.stringify(sim));}catch{}
