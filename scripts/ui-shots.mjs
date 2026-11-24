@@ -44,9 +44,9 @@ for(const w of widths){
   if(await p.locator('#play').isVisible()){await p.locator('#cashChartBox').scrollIntoViewIfNeeded();await snap('07-ledger');await p.locator('#quit').click();await p.waitForTimeout(500);}
   await snap('09-closure');await p.locator('#results').scrollIntoViewIfNeeded();await p.evaluate(()=>scrollTo(0,document.getElementById('results').offsetTop));await snap('10a-results');for(const k of ['b','c','d']){await p.evaluate(()=>scrollBy(0,innerHeight*.9));await snap('10'+k+'-results');}
   await p.locator('#salaryComparison').scrollIntoViewIfNeeded().catch(()=>{});await snap('11-salary',false,'#salaryComparison');
-  await p.locator('#reality').scrollIntoViewIfNeeded();await snap('12-stories');
-  await p.locator('#data').scrollIntoViewIfNeeded();await snap('13-data');
-  await p.locator('#method').scrollIntoViewIfNeeded();await snap('14-method');
+  await p.evaluate(()=>{location.hash='#reality'});await p.waitForTimeout(400);await snap('12-stories');
+  await p.evaluate(()=>{location.hash='#data'});await p.waitForTimeout(500);await snap('13-data');
+  await p.locator('.data-method').scrollIntoViewIfNeeded();await p.locator('.data-method > summary').click();await snap('14-method');
   if(errs.length)report.push({w,name:'console',errs:[...new Set(errs)].slice(0,5)});
   await p.close();
 }

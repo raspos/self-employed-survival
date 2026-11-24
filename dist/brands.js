@@ -2,7 +2,7 @@
 export const brandSource={label:'공정위 2025년 가맹사업 현황 · 2026-04-12 발표 · 붙임3',url:'https://eiec.kdi.re.kr/policy/materialView.do?num=279336',document:'https://ipsi.u1.ac.kr/u1job/community/notice.do?articleNo=76294&attachNo=51263&mode=download'};
 export const snackSource={label:'점포가이드 · 공정위 정보공개서 공개 집계 (보조 출처)',url:'https://jumpo.shop/franchise-ranking/bunsik/'};
 const official=(id,name,keyword,detail,annualSales,rank,page)=>({id,name,keyword,detail,annualSales,rank,period:'2024년 실적',published:'2026-04-12',checked:'2026-10-19',source:brandSource,sourceKind:'official',rankingScope:'공정위 공표 해당 업종 평균매출 상위 5개 중 상위 3개',page});
-const secondary=(id,name,keyword,detail,annualSales,rank)=>({id,name,keyword,detail,annualSales,rank,period:'공시연도 혼재 · 실적연도 원문 대조 대기',published:null,checked:'2026-10-19',source:snackSource,sourceKind:'secondary',rankingScope:'가맹점 20개 이상·평균매출 공개 브랜드의 보조 집계 상위 3개',page:null});
+const secondary=(id,name,keyword,detail,annualSales,rank)=>({id,name,keyword,detail,annualSales,rank,period:'공개 집계',published:null,checked:'2026-10-19',source:snackSource,sourceKind:'secondary',rankingScope:'가맹점 20개 이상·평균매출 공개 브랜드의 보조 집계 상위 3개',page:null});
 export const brands={
  chicken:[official('soy-honey','교촌치킨','간장·허니 시그니처','간장과 꿀을 연상하는 치킨',72726.4,1,28),official('young-chicken','청년치킨','청춘·가성비 치킨','젊은 이름을 내건 치킨',60969.4,2,28),official('cheese-crunch','비에이치씨(BHC)','치즈 시즈닝·바삭 치킨','가루 시즈닝으로 떠올리는 치킨',52972.4,3,28)],
  cafe:[official('cake-cafe','투썸플레이스','케이크·대형 카페','디저트와 좌석을 갖춘 카페',57172.6,1,28),official('jeju-cafe','에이바우트커피','제주에서 온 대형 카페','제주에서 시작한 이름을 떠올리기',44588.8,2,28),official('country-code','PLUS 82(플러스 82)','국가번호·배달 디저트','대한민국 국가번호를 닮은 이름',42383.8,3,28)],

@@ -3,7 +3,7 @@ import { mountPresets } from './setup-ui.js';
 import { eventView } from './event-format.js';
 import { sceneFor, sceneHTML } from './scenes.js';
 import { renderOutcome } from './outcomes.js';
-import { mountTrends } from './trends.js';
+import { mountDataStory } from './datastory.js';
 import { businessOutflows, largestDecisionExpense } from './ledger-summary.js';
 import { transferShop } from './simulation.js';
 import { environments, applyEnvironment, additionalAreas, environmentNotes } from './environments.js';
@@ -21,7 +21,7 @@ const overrideFields=['deliveryShare','sales','costRatio','rent','interior','ent
 const assumptionKeys=Object.keys(defaults).filter(k=>!['industry','own','loan','living','area','brand','size','staff','hours','strategy','salesCapture'].includes(k));
 const dirty=new Set();
 const captions={chicken:['치킨집','배달 경쟁과 원재료비'],cafe:['카페','임대료와 단골 고객'],store:['편의점','인건비와 영업시간'],snack:['분식집','점심 피크와 원가 관리']};
-mountTrends($('dataCards'));
+mountDataStory($('dataStory'));
 mountPresets();
 
 /* 메뉴 */
@@ -92,6 +92,15 @@ $('resetAssumptions').onclick=()=>{dirty.clear();for(const k of assumptionKeys)i
 function goStep(n){if(n===3)$('readyScene').innerHTML=sceneHTML({svg:'open',tag:'개업 준비'});[1,2,3].forEach(i=>{$('step'+i).hidden=i!==n;});[...$('wizSteps').children].forEach((li,i)=>{li.className=i+1===n?'on':i+1<n?'done':'';});jump($('setup'));}
 $('toStep2').onclick=()=>goStep(2);$('backStep1').onclick=()=>goStep(1);$('toStep3').onclick=()=>goStep(3);$('backStep2').onclick=()=>goStep(2);
 
+const VIEWS = { setup: 'play', top: 'play', '': 'play', play: 'play', reality: 'stories', data: 'data', method: 'data', sources: 'data' };
+const HASH = { play: '#setup', stories: '#reality', data: '#data', method: '#method' };
+function view(name) {
+  document.body.dataset.view = name;
+  document.querySelectorAll('.menu a').forEach(a => { const v = VIEWS[a.getAttribute('href').slice(1)]; if (v === name) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current'); });
+  window.scrollTo({ top: 0, behavior: 'instant' });
+}
+function go(name) { history.replaceState(null, '', HASH[name]); view(name); }
+window.addEventListener('hashchange', () => view(VIEWS[location.hash.slice(1)] ?? 'play'));
 const jump=el=>window.scrollTo({top:el.getBoundingClientRect().top+scrollY-56,behavior:'instant'});
 function show(id){for(const k of ['setup','play','results'])$(k).classList.toggle('off',k!==id);document.body.classList.toggle('playing',id!=='setup');jump($(id));}
 
@@ -221,40 +230,40 @@ function renderResults(){const t=totals(sim),l=t.liquidation,gap=l.net-sim.own;
  $('keyEvent').innerHTML=`${major?`<p class="scene-number" style="font-size:20px">${major.month}개월 · ${esc(major.title)}<span>${money(major.cost)}</span></p>`:'<p>가장 큰 일시 지출은 없었습니다.</p>'}${recent?`<ul class="timeline">${recent}</ul>`:''}`;
  $('wfBox').innerHTML=waterfall(sim.records);
  $('extendedResults').innerHTML=`<div class="result-block"><h3>사장님의 시간값</h3><div class="hourly-panel"><p>점주 노동시간당 사업소득</p><strong>${fmt(t.hourly)}<small>원 / 시간</small></strong><p>2026년 최저임금 10,320원과 ${t.hourly>=10320?'비교하면 이상':'비교하면 미만'}입니다. 영업이익 ÷ 노동시간이며 자본 수익이 섞여 있고 법정 임금이 아닙니다.</p><details class="assumptions"><summary>내 기준으로 다시 계산</summary><label for="resultHour">비교 시급 (원)</label><input id="resultHour" type="number" min="0" max="100000" value="${sim.hourly}"/><label for="resultCapital">자기자본 기회비용 (연 %)</label><input id="resultCapital" type="number" min="0" max="30" step=".1" value="${sim.capitalRate}"/><p id="economicOutput">경제적 수익 ${money(t.economic)}</p></details></div></div><details class="assumptions"><summary>세부 수치와 청산 정산</summary><div class="result-grid">${metric('초기 투자·보증금',money(sim.startcost))}${metric('초기 자기자본',money(sim.own))}${metric('가게 현금에서 쓴 생활비',money(sim.records.reduce((x,r)=>x+(r.ownerDraw??0),0)))}${metric('누적 매출',money(t.revenue))}${metric('누적 영업손익',money(t.operating))}${metric('점주 노동비용 차감 후',money(t.operating-t.labor))}${metric('노동·자본 기회비용 반영 후',money(t.economic))}${metric('사업 현금 잔액',money(sim.cash))}${metric('청산 기준 투자 회수율',fmt(t.recovery,1)+'%')}${metric('종료 방식',sim.closed?'영업 정리':'36개월 운영 완료')}</div><h4 style="margin-top:var(--s5)">청산 정산</h4><div class="result-grid">${metric('현금',money(l.cash))}${metric('회수 보증금',money(l.recoveredDeposit))}${metric('시설 처분액',money(l.salvage))}${metric('잔여 대출',money(l.debt))}${metric('철거·복구비',money(l.demolition))}${metric('계약 해지비',money(l.termination))}</div><p class="help">36개월 운영 완료 시에도 비교를 위해 같은 청산 가정을 적용했습니다. 보증금 회수율 ${sim.depositRecovery}%, 시설 처분 비율 ${sim.salvage}%에서 경과월수만큼 감액하며 권리금 회수는 0입니다.</p></details>`;
- $('extendedResults').insertAdjacentHTML('afterbegin',deliveryResult(sim));$('resultDeliveryLink').onclick=()=>{reality(false);currentStory=articles.findIndex(a=>a.id==='delivery');renderStory();$('reality').scrollIntoView({behavior:'smooth'});};
+ $('extendedResults').insertAdjacentHTML('afterbegin',deliveryResult(sim));$('resultDeliveryLink').onclick=()=>{reality(false);currentStory=articles.findIndex(a=>a.id==='delivery');renderStory();go('stories');};
  const recalc=()=>{const h=Number($('resultHour').value),c=Number($('resultCapital').value);$('economicOutput').textContent=$('resultHour').value!==''&&$('resultCapital').value!==''&&$('resultHour').checkValidity()&&$('resultCapital').checkValidity()?`경제적 수익 ${money(t.operating-t.hours*h/10000-sim.own*c/100*sim.month/12)}`:'입력 범위를 확인하세요.';};$('resultHour').oninput=recalc;$('resultCapital').oninput=recalc;
- $('bridgeLine').textContent=sim.closed?'게임 속 당신은 3년을 버티지 못했습니다.':'게임 속 당신은 3년을 버텼습니다.';
+ {const vol=sim.reason.startsWith('자발적')||sim.reason==='매장 양도';$('bridgeLine').textContent=vol?'당신은 더 큰 손실을 막기 위해 가게를 정리했습니다.':sim.closed?'게임 속 당신은 3년을 버티지 못했습니다.':'게임 속 당신은 3년 동안 가게를 지켜냈습니다.';}
  document.querySelector('#results thead').innerHTML='<tr><th>월</th><th>매출</th><th>영업손익</th><th>이자</th><th>원금</th><th>세금·유보</th><th>생활비</th><th>현금증감</th><th>현금잔액</th><th>노동시간</th></tr>';
  $('recordTable').innerHTML=sim.records.map(r=>`<tr>${[r.month,...['sales','operating','interest','principal'].map(k=>fmt(r[k])),fmt(r.tax+r.vat),fmt(r.living),fmt(r.flow),fmt(r.cash),fmt(r.hours)].map(v=>`<td>${v}</td>`).join('')}</tr>`).join('');show('results');}
 $('restart').onclick=()=>{sim=null;personal=false;$('personalized').innerHTML='';summary();show('setup');goStep(1);};
-$('again').onclick=e=>{e.preventDefault();show('setup');goStep(1);};
-$('navPlay').onclick=e=>{if(!sim)return;e.preventDefault();show(sim.finished?'results':'play');};
-$('export').onclick=()=>{if(!sim)return;const cols=['month','sales','material','royalty','delivery','card','wages','rent','other','depreciation','operating','interest','principal','tax','vat','living','netIncome','flow','cash','debt','hours','labor','capital','economic'];const csv=['# 가상 시나리오 / 금액 만원 / 시간 hours / 공식 관측치 아님',cols.join(','),...sim.records.map(r=>cols.map(k=>r[k]).join(','))].join('\r\n');const url=URL.createObjectURL(new Blob(['﻿'+csv],{type:'text/csv;charset=utf-8'}));const a=document.createElement('a');a.href=url;a.download='자영업_3.0_가상월별장부.csv';a.click();setTimeout(()=>URL.revokeObjectURL(url),1500);};
+$('navPlay').onclick=e=>{e.preventDefault();go('play');if(sim)show(sim.finished?'results':'play');};
+$('export').onclick=()=>{if(!sim)return;const cols=['month','sales','material','royalty','delivery','card','wages','rent','other','depreciation','operating','interest','principal','tax','vat','living','netIncome','flow','cash','debt','hours','labor','capital','economic'];const csv=['# 가상 시나리오 / 금액 만원 / 시간 hours / 공식 관측치 아님',cols.join(','),...sim.records.map(r=>cols.map(k=>r[k]).join(','))].join('\r\n');const url=URL.createObjectURL(new Blob(['﻿'+csv],{type:'text/csv;charset=utf-8'}));const a=document.createElement('a');a.href=url;a.download='자영업_2.0_가상월별장부.csv';a.click();setTimeout(()=>URL.revokeObjectURL(url),1500);};
 
 /* 실제 사장님들 */
 function reality(personalize=false){personal=personalize&&!!sim;if(!personal)$('personalized').innerHTML='';if(personal){const rec=recommend(sim);currentStory=articles.findIndex(a=>a.id===rec.id);$('personalized').innerHTML=`<span>게임에서 겪은 일과 이어지는 이야기</span><h3>${esc(rec.why)}</h3>`;}renderStory();}
-$('compare').onclick=()=>{reality(true);$('reality').scrollIntoView({behavior:'smooth'});};
+document.addEventListener('click',e=>{const b=e.target.closest('[data-story-link]');if(!b)return;currentStory=Math.max(0,articles.findIndex(a=>a.id===b.dataset.storyLink));renderStory();go('stories');});
+$('compare').onclick=()=>{reality(true);go('stories');};
+$('toDataFromResult').onclick=()=>go('data');
+$('toPlay1').onclick=$('toPlay2').onclick=()=>{go('play');if(sim)show(sim.finished?'results':'play');else goStep(1);};
+$('toData1').onclick=()=>go('data');
+$('toStories2').onclick=()=>{reality(false);go('stories');};
 $('navReality').onclick=()=>reality(false);
 function illustration(id){if(id==='rent')return `<div class="interactive-chart"><span>가상 구조 실험</span><label for="salesSlider" class="label">월 매출 <b id="sliderLabel"></b></label><input id="salesSlider" type="range" min="600" max="3500" value="2200" step="100"/><div id="breakChart"></div><p id="breakCaption"></p><small>가정: 원재료 40%, 고정 인건비 500만원, 임대료 250만원, 기타 고정비 150만원. 이자·세금·감가상각 제외. 현금은 초기 500만원에서 1개월 증감.</small></div>`;
  if(id==='delivery')return deliveryStoryMarkup();
- if(id==='franchise')return `<div class="cost-structure">${['가입 시 → 가맹비·교육비','돌려받을 수 있는 돈 → 보증금','매달 → 로열티·필수품목','정리할 때 → 해지·원상복구'].map((s,i)=>`<div><b>0${i+1}</b><p>${s}</p></div>`).join('')}</div><p class="reality-caption">정보공개서의 기존 가맹점 평균 매출은 신규 점포의 예상 매출이 아닙니다. 게임의 비용·계약 조건은 업종 공통 모형입니다.</p>`;
- if(id==='labor')return `<div class="scene-number">60<span>시간 / 주</span></div><p class="reality-caption">가상 게임의 기본 점주 노동시간입니다. 실제 자영업자의 평균이 아닙니다.</p>`;
+ if(id==='franchise')return `<div class="cost-structure">${['가입 시 → 가맹비·교육비','돌려받을 수 있는 돈 → 보증금','매달 → 로열티·필수품목','정리할 때 → 해지·원상복구'].map((s,i)=>`<div><b>0${i+1}</b><p>${s}</p></div>`).join('')}</div>`;
+ if(id==='labor')return `<div class="scene-number">60<span>시간 / 주</span></div>`;
  if(id==='closure'||id==='debt')return `<div class="flow-diagram">${(id==='closure'?['현금 + 회수 자산','− 남은 부채','− 가게 정리 비용','= 다음 출발의 자금']:['매출 − 운영비','= 영업이익','− 이자·세금·원금','= 통장 현금의 변화']).map(s=>`<div>${s}</div>`).join('')}</div>`;
-return `<div class="street-diagram" aria-label="수요 이동과 점포 경쟁을 설명하는 개념도"><div>학생·고시생 수요</div><b>↓ 문화·인구·상권의 변화</b><div>같은 거리, 달라진 고객</div><b>↓ 점포 사이의 경쟁</b><div>매출과 고정비의 간격</div></div><p class="reality-caption">취재를 설명하는 개념도이며 관악구 인구·점포 수의 실제 시계열이 아닙니다.</p>`;}
+return `<div class="street-diagram" aria-label="수요 이동과 점포 경쟁을 설명하는 개념도"><div>학생·고시생 수요</div><b>↓ 문화·인구·상권의 변화</b><div>같은 거리, 달라진 고객</div><b>↓ 점포 사이의 경쟁</b><div>매출과 고정비의 간격</div></div>`;}
 const photos={demand:['https://pds.joongang.co.kr/news/component/htmlphoto_mmdata/202409/24/27a53bdc-c3c2-4d3e-9d48-6f9e96f5c2f0.jpg','녹두호프에서 맥주병을 치우는 점주 김례숙 씨','2024년 9월, 서울 관악구 녹두호프'],rent:['https://pds.joongang.co.kr/news/component/htmlphoto_mmdata/202409/25/5f6b8026-67e1-4181-8b20-8f37e3999ac9.jpg','호부침개 백선기 씨가 손님을 기다리며 가게 밖을 내다보는 모습','호부침개 백선기 씨가 손님을 기다리면서 가게 밖을 내다보고 있다.'],franchise:['https://pds.joongang.co.kr/news/component/htmlphoto_mmdata/202409/27/91a44d9b-a69e-41ab-bffe-4d6097cb6639.jpg','맘스터치 상도역점 황성구 씨가 손님을 기다리는 모습','맘스터치 상도역점 황성구 씨(왼쪽)가 손님을 기다리고 있다.']};
 const photo=id=>photos[id]?`<figure class="story-photo"><img src="${photos[id][0]}" alt="${photos[id][1]}" loading="lazy" referrerpolicy="no-referrer"><figcaption>${photos[id][2]} · 사진 중앙일보</figcaption></figure>`:'';
-function renderStory(){const a=articles[currentStory];$('storyTabs').innerHTML=articles.map((a,i)=>`<button type="button" data-story="${i}" aria-pressed="${i===currentStory}">${String(i+1).padStart(2,'0')} ${a.title}</button>`).join('');$('storyTabs').querySelectorAll('button').forEach(b=>b.onclick=()=>{currentStory=Number(b.dataset.story);renderStory();});$('storyContent').innerHTML=`<div class="story-heading"><span>${a.reportedAt} 당시</span><h3>${a.title}</h3></div><div class="story-body"><p class="story-question">${a.question}</p><p>${a.facts}</p>${photo(a.id)}<div class="article-note"><small>취재 대상: ${a.subject}<br>확인 범위: ${a.verification}</small><br>${link(a.url,a.originalTitle??'관련 기획 원문')}</div></div>${illustration(a.id)}<div class="related-sources">${a.relatedStatistics.map(k=>link(sources[k].url,sources[k].label)).join('<br>')}</div>`;$('prevStory').disabled=currentStory===0;$('nextStory').textContent=currentStory===articles.length-1?'그때와 지금 비교하기':'다음 이야기';
+function renderStory(){const a=articles[currentStory];$('storyTabs').innerHTML=articles.map((a,i)=>`<button type="button" data-story="${i}" aria-pressed="${i===currentStory}">${String(i+1).padStart(2,'0')} ${a.title}</button>`).join('');$('storyTabs').querySelectorAll('button').forEach(b=>b.onclick=()=>{currentStory=Number(b.dataset.story);renderStory();});const lay={demand:'hero',rent:'side',franchise:'inset'}[a.id]??'plain',ph=photo(a.id),sb=`<p class="story-question">${a.question}</p><p>${a.facts}</p>${lay==='inset'?ph:''}`;$('storyContent').dataset.layout=lay;$('storyContent').innerHTML=`${lay==='hero'?ph:''}<div class="story-heading"><span>${a.reportedAt} 당시</span><h3>${a.title}</h3></div>${lay==='side'?`<div class="story-cols"><div class="story-body">${sb}</div>${ph}</div>`:`<div class="story-body">${sb}</div>`}${illustration(a.id)}<details class="assumptions"><summary>출처 보기</summary><p>${link(a.url,a.originalTitle??'관련 기획 원문')}</p><p>${a.relatedStatistics.map(k=>link(sources[k].url,sources[k].label)).join('<br>')}</p></details>`;$('prevStory').disabled=currentStory===0;$('nextStory').textContent=currentStory===articles.length-1?'그때와 지금 비교하기':'다음 이야기';
  if(a.id==='rent'){const draw=()=>{const sales=Number($('salesSlider').value),profit=sales*.6-900;$('sliderLabel').textContent=money(sales);const rows=Array.from({length:30},(_,i)=>{const v=600+i*100;return{month:v,op:v*.6-900,cash:500+v*.6-900};});$('breakChart').innerHTML=lineChart(rows,['op','cash'],['영업손익 (감가상각 제외)','1개월 뒤 현금'],chartW($('breakChart')),LIGHT);$('breakChart').querySelector('svg').setAttribute('aria-label','매출 600~3500만원일 때 영업손익과 1개월 뒤 현금. 손익분기 매출 1500만원');$('breakChart').querySelectorAll('svg text').forEach(n=>{if(n.textContent.endsWith('개월'))n.textContent=n.getAttribute('text-anchor')==='end'?'매출 3,500':'매출 600';});$('breakCaption').textContent=`선택 매출 ${money(sales)} − 원재료 ${money(sales*.4)} − 인건비 500만원 − 임대료 250만원 − 기타 150만원 = 영업손익 ${money(profit)} / 현금 ${money(500+profit)}. 손익분기 매출 1,500만원.`;};$('salesSlider').oninput=draw;draw();}
  if(a.id==='delivery')wireDeliveryStory();}
-$('prevStory').onclick=()=>{currentStory=Math.max(0,currentStory-1);renderStory();$('storyContent').scrollIntoView({behavior:'smooth'});};$('nextStory').onclick=()=>{if(currentStory===articles.length-1){$('data').scrollIntoView({behavior:'smooth'});return;}currentStory++;renderStory();$('storyContent').scrollIntoView({behavior:'smooth'});};
+$('prevStory').onclick=()=>{currentStory=Math.max(0,currentStory-1);renderStory();$('storyContent').scrollIntoView({behavior:'smooth'});};$('nextStory').onclick=()=>{if(currentStory===articles.length-1){go('data');return;}currentStory++;renderStory();$('storyContent').scrollIntoView({behavior:'smooth'});};
 
 /* 데이터 */
-function comparison(){const d=indicators.find(d=>d.id===$('indicatorSelect').value),src=sources[d.source],change=d.officialChange??(d.changeType==='pp'?d.after-d.before:(d.after/d.before-1)*100);const max=Math.max(d.before,d.after)*1.16;$('comparison').innerHTML=`<div class="comparison-main"><p>${d.name}</p><div class="comparison-values"><div><span>${d.beforePeriod}</span><strong>${fmt(d.before,1)}<small>${d.unit}</small></strong></div><b>→</b><div><span>${d.afterPeriod}</span><strong>${fmt(d.after,1)}<small>${d.unit}</small></strong></div></div><div class="compare-bars"><span style="width:${d.before/max*100}%">이전 ${fmt(d.before,1)}</span><span style="width:${d.after/max*100}%">최신 ${fmt(d.after,1)}</span></div><div class="change"><b>${change>0?'+':''}${fmt(change,1)}${d.changeType==='pp'?'%p':'%'}</b><p>${d.meaning}</p></div><p class="fine">최신 자료 발표일 ${src.published} · 확인일 ${checkedAt}</p>${link(src.url,src.label)}${d.beforeSource?'<br>'+link(sources[d.beforeSource].url,'이전 공표 자료'):''}</div>`;}
-$('indicatorSelect').innerHTML=indicators.map(d=>`<option value="${d.id}">${d.name}</option>`).join('');$('indicatorSelect').onchange=comparison;
-$('dataCards').innerHTML=indicators.map(d=>`<button type="button" class="data-card" data-indicator="${d.id}"><span>${d.name}</span><strong>${fmt(d.after,1)}<small>${d.unit}</small></strong><p>${d.afterPeriod}</p><em>이전과 비교하기</em></button>`).join('');$('dataCards').querySelectorAll('button').forEach(b=>b.onclick=()=>{$('indicatorSelect').value=b.dataset.indicator;comparison();$('comparison').scrollIntoView({behavior:'smooth'});});
-$('pendingData').innerHTML=pending.map(([label,status,key])=>`<div class="pending-row"><strong>${label}</strong><p>${status}</p>${link(sources[key].url,'확인 경로')}</div>`).join('');
-$('articleSources').innerHTML=articles.map(a=>`<p>${link(a.url,a.originalTitle??a.title)}<small> · ${a.reportedAt} · ${a.verification}</small></p>`).join('');
+$('articleSources').innerHTML=articles.map(a=>`<p>${link(a.url,a.originalTitle??a.title)}<small> · ${a.reportedAt}</small></p>`).join('');
 $('officialSources').innerHTML=Object.values(sources).filter(s=>s.kind==='official').map(s=>`<p>${link(s.url,s.label)}<small>${s.published?' · 발표 '+s.published:''}</small></p>`).join('');
 $('methodText').innerHTML=`<p>${methods.accounting}</p><p class="help">${methods.simulation}</p>`;
 $('allMethods').innerHTML=Object.entries(methods).map(([k,v])=>`<p>${v}</p>`).join('');
-paintUpdates();summary();reality();comparison();
+paintUpdates();summary();reality();view(VIEWS[location.hash.slice(1)] ?? 'play');
