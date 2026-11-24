@@ -10,3 +10,12 @@
 .update-heading>p,.update-footnote{display:none}
 .fact,.brand-section>.mini,.reality-caption,.sticky-side .mini,.data-intro,.sources-section>p,.foot p{display:none}
 .article-note small,.comparison-main>.mini{display:none}
+.capital-presets{display:flex;flex-wrap:wrap;gap:8px;margin:8px 0}
+.capital-presets button{padding:9px 12px;border:1px solid #92947e;background:#fffdf5;color:#293a2d;font:inherit;cursor:pointer}
+.capital-presets button[aria-pressed=true]{background:#344b3c;color:#fff;border-color:#344b3c}
+#setup .form-group label,#setup input,#setup select,#setup summary,#play .choice{font-size:1rem}
+#setup .brand-option strong{font-size:1.1rem}
+#setup .brand-option small,#setup .help{font-size:.875rem}
+.story-body p,.update-chapters article>p,.comparison-main .change p{font-size:1.0625rem;line-height:1.75}
+#setup .form-group:has(#funds) .help,#setup .fee-preview>p.mini,#setup .actions>.mini{display:none}
+.setup-details>.form-group{margin:12px 0}

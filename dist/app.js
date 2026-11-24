@@ -1,4 +1,5 @@
 import { beginEpisodes, currentEpisode, decideEpisode } from './episodes.js';
+import { simplifySetup } from './setup-ui.js';
 import {profiles,areas,defaults,setup,createSimulation,calculateMonth,close,totals,liquidation,recommend,forecastClosure} from './simulation.js';
 import {articles,indicators,sources,pending,methods,checkedAt} from './content.js';
 import {brandPicker,paintBrandSummary,paintFeePreview,paintRunBurden,deliveryResult,deliveryStoryMarkup,wireDeliveryStory,paintUpdates} from './extensions.js';
@@ -9,6 +10,7 @@ const basicMap={funds:'own',loan:'loan',owner:'living',area:'area',brand:'brand'
 const overrideFields=['sales','costRatio','rent','interior','entry','deposit'];
 const assumptionKeys=Object.keys(defaults).filter(k=>!['industry','own','loan','living','area','brand','size','staff','hours','strategy','salesCapture'].includes(k));
 const dirty=new Set();
+simplifySetup();
 function read(){const c={industry:selected};for(const [id,k]of Object.entries(basicMap)){if(['area','brand','strategy'].includes(k))c[k]=$(id).value;else {if(!$(id).value.trim()||!$(id).checkValidity())throw Error('입력값의 범위와 단위를 확인하세요.');c[k]=Number($(id).value);}}
  for(const k of assumptionKeys){if(overrideFields.includes(k)&&!dirty.has(k)){c[k]=null;continue;}if(k==='repayment')c[k]=$(k).value;else{if(!$(k).value.trim()||!$(k).checkValidity())throw Error('가정값의 범위와 단위를 확인하세요.');c[k]=Number($(k).value);if(k==='costRatio')c[k]/=100;}}return c;}
 function updateOverrides(){const c={industry:selected};for(const [id,k]of Object.entries(basicMap))c[k]=['area','brand','strategy'].includes(k)?$(id).value:Number($(id).value);try{const s=setup(c);for(const k of overrideFields)if(!dirty.has(k))$(k).value=Number((k==='costRatio'?s[k]*100:s[k]).toFixed(2));}catch{}}
