@@ -77,6 +77,47 @@ export function renderOutcome(state, result) {
   field.oninput = draw;
   draw();
   renderShare(state, result);
+  renderAfterClosing(state, result.liquidation);
+}
+
+export function afterClosing(state, settlement, salary, searchMonths, repaymentMonths) {
+  let liquid = settlement.net + settlement.debt;
+  let debt = settlement.debt;
+  const principal = debt / repaymentMonths;
+  const monthlyWage = salary / 12 * (1 - state.taxRate / 100);
+  let shortageMonth = liquid < 0 ? 0 : null;
+  for (let month = 1; month <= 12; month++) {
+    const payment = Math.min(debt, principal);
+    const interest = debt * state.rate / 1200;
+    liquid += (month > searchMonths ? monthlyWage : 0) - state.living - payment - interest;
+    debt -= payment;
+    if (liquid < 0 && shortageMonth === null) shortageMonth = month;
+  }
+  return { liquid, debt:Math.max(0,debt), shortageMonth };
+}
+
+function renderAfterClosing(state, settlement) {
+  let panel = document.getElementById('afterClosing');
+  if (!panel) {
+    panel = document.createElement('details');
+    panel.id = 'afterClosing';
+    panel.className = 'assumptions';
+    document.getElementById('salaryComparison').after(panel);
+  }
+  panel.hidden = !state.closed;
+  if (!state.closed) return;
+  panel.innerHTML = '<summary>영업 종료 후 1년</summary><label>재취업 세전 연봉 (만원) <input type="number" min="0" max="100000"></label> <label>구직 기간 (개월) <input type="number" min="0" max="12" value="3"></label> <label>가정한 원금 상환 기간 (개월) <input type="number" min="1" max="360" value="36"></label><p aria-live="polite"></p><details><summary>계산 기준</summary><p>구직 기간 소득은 0원. 영업 종료 시점의 이자율·생활비·실효세율을 적용합니다. 남은 대출을 유지할 수 있다고 가정하고 원금을 균등 상환합니다.</p></details>';
+  const fields = Array.from(panel.querySelectorAll('input'));
+  fields[0].value = state.annualSalary ?? 4200;
+  const draw = () => {
+    if (fields.some(field => field.value === '' || !field.checkValidity())) return;
+    const [salary, searchMonths, repaymentMonths] = fields.map(field => Number(field.value));
+    const projection = afterClosing(state, settlement, salary, searchMonths, repaymentMonths);
+    const shortage = projection.shortageMonth === null ? '' : ` · 현금 부족 ${projection.shortageMonth}개월 차`;
+    panel.querySelector('p').textContent = `12개월 뒤 현금 ${fmtPrior(projection.liquid)}만원 · 남은 원금 ${fmtPrior(projection.debt)}만원${shortage}`;
+  };
+  panel.oninput = draw;
+  draw();
 }
 
 const fmtPrior = value => Math.round(value).toLocaleString('ko-KR');
