@@ -31,4 +31,4 @@
 - GitHub Pages 전환 준비: `.github/workflows/pages.yml` 추가(테스트→빌드→dist 배포). 예정 주소 https://raspos.github.io/self-employed-survival/ . 저장소 생성·Pages(GitHub Actions) 설정은 사용자가 웹에서 한 뒤 `git remote add origin` → push. 기존 chatgpt.site 주소는 별개이며 갱신되지 않는다.
 - 편향 원인 조사 완료(TEST_REPORT.md): 생존의 현금/소진 비율 결정성, 회수율 지표의 생활비 착시, 소형 점포 인건비 고정이 원인. 코드 미변경.
 - 경제 모델 편향 분석(scripts/bias-analysis.mjs) 수행. 배달 비중 업종별 기본값 오류 수정, 편향 회귀 테스트 3개 추가(전체 44개). 남은 보정 판단 4건은 TEST_REPORT.md 참고. 재개 지점: 사용자 판단 후 보정 → 320/390/768/데스크톱 화면 검증 → 데이터 지표 확대.
-- UI/UX 전면 재설계(index.html·editorial.css·app.js·setup-ui.js·trends.js 재작성, event-format.js 신설): 표지·3단계 창업 설정·사건 중심 게임 화면(문자·통화·대화·공문·뉴스·달력 형식)·1면형 결과·워터폴·반응형 그래프. 경제 엔진·기사·통계 데이터는 변경 없음. 테스트 48개, Browser QA, 6개 폭 점검 통과. 남음: 문구 추가 정리(extensions·outcomes의 긴 설명), 결과 공유 이미지 디자인, 사건별 일러스트.
+- 공유 이미지 신문 스타일 재작성·문구 단축(2026-11-24). UI/UX 전면 재설계(index.html·editorial.css·app.js·setup-ui.js·trends.js 재작성, event-format.js 신설): 표지·3단계 창업 설정·사건 중심 게임 화면(문자·통화·대화·공문·뉴스·달력 형식)·1면형 결과·워터폴·반응형 그래프. 경제 엔진·기사·통계 데이터는 변경 없음. 테스트 48개, Browser QA, 6개 폭 점검 통과. 남음: 문구 추가 정리(extensions·outcomes의 긴 설명), 결과 공유 이미지 디자인, 사건별 일러스트.

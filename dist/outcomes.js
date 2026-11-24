@@ -144,6 +144,80 @@ function renderAfterClosing(state, settlement) {
 
 const fmtPrior = value => Math.round(value).toLocaleString('ko-KR');
 
+const SERIF = "'Noto Serif KR','Nanum Myeongjo','Batang',serif";
+const SANS = "'Noto Sans KR','Malgun Gothic',sans-serif";
+const INK = '#171717', SUB = '#60605B', LINE = '#DEDDD7', BRAND = '#AD352B', POS = '#27724E', PAPER = '#F7F6F2';
+const won = n => `${n < 0 ? '−' : ''}${Math.round(Math.abs(n)).toLocaleString('ko-KR')}만원`;
+const eok = n => { const a = Math.round(Math.abs(n)), e = Math.floor(a / 10000), m = a % 10000; return (n < 0 ? '−' : '') + (e ? `${e.toLocaleString('ko-KR')}억${m ? ` ${m.toLocaleString('ko-KR')}만원` : '원'}` : `${m.toLocaleString('ko-KR')}만원`); };
+
+function wrap(ctx, text, x, y, maxWidth, lineHeight) {
+  const words = text.split(' ');
+  let line = '', lines = 0;
+  for (const word of words) {
+    const trial = line ? `${line} ${word}` : word;
+    if (ctx.measureText(trial).width > maxWidth && line) { ctx.fillText(line, x, y + lines * lineHeight); line = word; lines++; } else line = trial;
+  }
+  ctx.fillText(line, x, y + lines * lineHeight);
+  return y + (lines + 1) * lineHeight;
+}
+
+// 매출 100만원당 비용 구성(사업 기준). 막대 하나로 보여준다.
+function costShares(state) {
+  const sum = k => state.records.reduce((a, r) => a + r[k], 0), rev = sum('sales') || 1;
+  const parts = [['원재료', sum('material')], ['인건비', sum('wages')], ['임대료', sum('rent')], ['수수료·기타', sum('delivery') + sum('card') + sum('royalty') + sum('other') + sum('depreciation') + sum('interest') + sum('tax') + sum('vat')]]
+    .map(([name, v]) => [name, v / rev * 100]);
+  const left = 100 - parts.reduce((a, p) => a + p[1], 0);
+  return { parts, left };
+}
+
+export function drawShareCard(canvas, state, result, address) {
+  const W = 1080, H = canvas.height, M = 72, ctx = canvas.getContext('2d');
+  const gap = result.liquidation.net - state.own;
+  ctx.fillStyle = PAPER; ctx.fillRect(0, 0, W, H);
+  ctx.fillStyle = INK; ctx.fillRect(M, 64, W - M * 2, 8);
+  ctx.textBaseline = 'alphabetic';
+  ctx.fillStyle = INK; ctx.font = `900 40px ${SERIF}`; ctx.fillText('대한민국 자영업자로 살아남기', M, 132);
+  ctx.fillStyle = SUB; ctx.font = `500 26px ${SANS}`; ctx.textAlign = 'right'; ctx.fillText('가상 시뮬레이션 결과', W - M, 132); ctx.textAlign = 'left';
+  ctx.fillStyle = LINE; ctx.fillRect(M, 156, W - M * 2, 2);
+  ctx.fillStyle = SUB; ctx.font = `500 30px ${SANS}`;
+  ctx.fillText(`${state.p.name} · ${state.a.name} · ${state.month}개월 운영`, M, 212);
+  const tall = H > 1100, title = outcome(state, result);
+  let size = tall ? 84 : 76;
+  ctx.font = `900 ${size}px ${SERIF}`;
+  if (!tall && ctx.measureText(title).width > W - M * 2) size = 62;
+  ctx.fillStyle = gap >= 0 ? POS : BRAND; ctx.font = `900 ${size}px ${SERIF}`;
+  let y = wrap(ctx, title, M, 316, W - M * 2, Math.round(size * 1.28));
+  ctx.fillStyle = INK; ctx.font = `500 34px ${SERIF}`;
+  y = wrap(ctx, `${state.month >= 36 ? '3년' : `${state.month}개월`} 동안 ${eok(result.revenue)}을 팔았습니다.`, M, y + 20, W - M * 2, 50);
+  const cells = [
+    ['청산 후 회수 자본', won(result.liquidation.net), gap >= 0 ? POS : BRAND],
+    ['누적 노동시간', `${Math.round(result.hours).toLocaleString('ko-KR')}시간`, INK],
+    ['남은 대출', won(state.debt), INK],
+    ['실질시급', `${Math.round(result.hourly).toLocaleString('ko-KR')}원`, INK],
+  ];
+  const top = Math.max(y + 30, tall ? 640 : 0), colW = (W - M * 2) / 2, pitch = tall ? 150 : 118;
+  cells.forEach(([label, value, color], i) => {
+    const cx = M + (i % 2) * colW, cy = top + Math.floor(i / 2) * pitch;
+    ctx.fillStyle = LINE; ctx.fillRect(cx, cy, colW - 24, 2);
+    ctx.fillStyle = SUB; ctx.font = `500 26px ${SANS}`; ctx.fillText(label, cx, cy + (tall ? 40 : 34));
+    ctx.fillStyle = color; ctx.font = `900 ${tall ? 52 : 46}px ${SERIF}`; ctx.fillText(value, cx, cy + (tall ? 102 : 88), colW - 36);
+  });
+  const barY = top + (tall ? 330 : 256), barW = W - M * 2, { parts, left } = costShares(state);
+  ctx.fillStyle = INK; ctx.font = `700 26px ${SANS}`; ctx.fillText('매출 100만원 중 남은 돈', M, barY);
+  const colors = ['#375B78', '#6F8CA5', '#A9B9C7', '#C9C8C0'];
+  let x = M;
+  [...parts, ['남는 돈', Math.max(0, left)]].forEach(([, v], i) => {
+    const w = Math.max(0, v) / 100 * barW;
+    ctx.fillStyle = i === parts.length ? (left < 0 ? BRAND : POS) : colors[i]; ctx.fillRect(x, barY + 20, w, 44); x += w;
+  });
+  ctx.fillStyle = SUB; ctx.font = `500 22px ${SANS}`;
+  ctx.fillText(`${parts.map(([n, v]) => `${n} ${v.toFixed(0)}`).join(' · ')} · 남는 돈 ${left.toFixed(1)}`, M, barY + (tall ? 98 : 88), barW);
+  ctx.fillStyle = LINE; ctx.fillRect(M, H - 150, W - M * 2, 2);
+  ctx.fillStyle = INK; ctx.font = `500 26px ${SANS}`; ctx.fillText(address, M, H - 104, W - M * 2);
+  ctx.fillStyle = SUB; ctx.font = `500 22px ${SANS}`;
+  ctx.fillText('실제 창업 수익을 예측하지 않는 가상 경영 체험입니다. 독립 제작물입니다.', M, H - 68, W - M * 2);
+}
+
 function renderShare(state, result) {
   let panel = document.getElementById('resultShare');
   if (!panel) {
@@ -152,38 +226,28 @@ function renderShare(state, result) {
     panel.className = 'assumptions';
     document.getElementById('salaryComparison').after(panel);
   }
-  panel.innerHTML = '<summary>결과 공유</summary><label>이미지 비율 <select><option value="1080">1:1</option><option value="1350">4:5</option></select></label><div class="actions"><button type="button" class="action-alt">이미지 저장</button><button type="button" class="action-alt">주소 복사</button></div><output aria-live="polite"></output>';
-  const [save, copy] = panel.querySelectorAll('button');
+  panel.innerHTML = '<summary>결과 공유</summary><div class="share-box"><canvas class="share-preview" width="1080" height="1080" aria-label="공유 이미지 미리보기"></canvas><div class="share-side"><label>이미지 비율 <select><option value="1080">1:1</option><option value="1350">4:5</option></select></label><div class="actions"><button type="button" class="action-alt">이미지 저장</button><button type="button" class="action-alt">주소 복사</button><button type="button" class="action-alt" hidden>공유하기</button></div><div class="share-links"><a data-x target="_blank" rel="noopener noreferrer">X</a><a data-threads target="_blank" rel="noopener noreferrer">스레드</a><a data-fb target="_blank" rel="noopener noreferrer">페이스북</a></div><p class="fine">카카오톡은 이미지를 저장해 대화방에 올리거나 공유하기를 이용하세요. 공유 문구에는 결과 제목과 주소만 들어갑니다.</p><output aria-live="polite"></output></div></div>';
+  const canvas = panel.querySelector('canvas'), select = panel.querySelector('select');
+  const [save, copy, nativeShare] = panel.querySelectorAll('button');
   const status = panel.querySelector('output');
-  const address = 'https://self-employed-survival.raspos.chatgpt.site';
-  copy.onclick = async () => {
-    try {
-      await navigator.clipboard.writeText(address);
-      status.textContent = '주소를 복사했습니다.';
-    } catch {
-      status.textContent = address;
-    }
+  const address = location.protocol.startsWith('http') ? location.origin + location.pathname : 'https://raspos.github.io/self-employed-survival/';
+  const text = `${outcome(state, result)} — 대한민국 자영업자로 살아남기 (가상 시뮬레이션)`;
+  panel.querySelector('[data-x]').href = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(address)}`;
+  panel.querySelector('[data-threads]').href = `https://www.threads.net/intent/post?text=${encodeURIComponent(text + ' ' + address)}`;
+  panel.querySelector('[data-fb]').href = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(address)}`;
+  const draw = async () => {
+    canvas.height = Number(select.value);
+    try { await Promise.all([document.fonts.load("900 40px 'Noto Serif KR'"), document.fonts.load("500 26px 'Noto Sans KR'")]); } catch { /* 글꼴 없이 그린다 */ }
+    drawShareCard(canvas, state, result, address);
   };
-  save.onclick = () => {
-    const canvas = document.createElement('canvas');
-    canvas.width = 1080;
-    canvas.height = Number(panel.querySelector('select').value);
-    const ctx = canvas.getContext('2d');
-    if (!ctx) return;
-    ctx.fillStyle = '#f4eddd';
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-    ctx.fillStyle = '#263e31';
-    ctx.fillRect(72, 85, 936, 8);
-    ctx.font = 'bold 38px sans-serif';
-    ctx.fillText('대한민국 자영업자로 살아남기', 72, 172, 936);
-    ctx.font = '28px sans-serif';
-    ctx.fillText(`시뮬레이션 결과  ·  ${state.p.name}  ·  ${state.month}개월`, 72, 270, 936);
-    ctx.font = 'bold 65px serif';
-    ctx.fillText(outcome(state, result), 72, 430, 936);
-    ctx.font = 'bold 48px sans-serif';
-    ctx.fillText(`누적 노동 ${Math.round(result.hours).toLocaleString('ko-KR')}시간`, 72, 620, 936);
-    ctx.font = '25px sans-serif';
-    ctx.fillText(address, 72, canvas.height - 95, 936);
+  select.onchange = draw;
+  panel.addEventListener('toggle', () => { if (panel.open) draw(); });
+  if (navigator.share) { nativeShare.hidden = false; nativeShare.onclick = () => navigator.share({ title: '대한민국 자영업자로 살아남기', text, url: address }).catch(() => {}); }
+  copy.onclick = async () => {
+    try { await navigator.clipboard.writeText(address); status.textContent = '주소를 복사했습니다.'; } catch { status.textContent = address; }
+  };
+  save.onclick = async () => {
+    await draw();
     canvas.toBlob(blob => {
       if (!blob) return;
       const url = URL.createObjectURL(blob);
