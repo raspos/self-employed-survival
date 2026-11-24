@@ -80,7 +80,9 @@ const catalog = [
  ["snack","상인회 소식","학교 앞 푸드트럭","하교 시간에 푸드트럭이 학교 앞에 선다.","학생용 메뉴 가격을 검토한다","동네 단골을 중심으로 운영한다","competition"],
  ["snack","수리 기사 전화","밥솥 교체 시기","아침 첫 취사가 끝나기 전에 밥솥이 멈췄다.","새 밥솥을 산다","여분 솥으로 당분간 운영한다","repair"],
  ["snack","고객 문자","점심 주문 누락","예약한 김밥을 받지 못한 손님에게서 연락이 왔다.","예약 확인 절차를 바꾼다","직접 연락해 사과한다","reputation"],
- ["snack","직원 문자","점심 시간 주문 대기","점심에 주문과 결제를 한꺼번에 받기 어렵다고 한다.","피크에 보조 인력을 둔다","메뉴 수를 줄인다","labor"]
+ ["snack","직원 문자","점심 시간 주문 대기","점심에 주문과 결제를 한꺼번에 받기 어렵다고 한다.","피크에 보조 인력을 둔다","메뉴 수를 줄인다","labor"],
+ ['*','가족 문자','다음 달 휴무부터 정할까','지연이 달력을 펴고 다음 달 약속을 잡자고 합니다.','휴무일을 먼저 정한다','영업 일정을 보고 정한다','rest','family'],
+ ['*','거래처 문자','소량 납품 재협상','한 사장이 지난번 협의 뒤 소량 납품 조건을 다시 제안합니다.','새 납품 조건에 합의한다','다른 조건을 알아본다','material','supplier'],
 ].map(([industry,channel,title,body,a,b,kind,requires],id)=>({id,industry,channel,title,body,a,b,kind,requires}));
 export const episodeCount = catalog.length;
 
@@ -95,7 +97,10 @@ export function episodeSpeaker(event) {
   return event.channel;
 }
 
-const contacts = {labor:'민서', order:'수진'};
+const contacts = {labor:'민서', order:'수진', family:'지연', supplier:'한 사장'};
+const contactFor = event => event.requires ??
+  (/가족/.test(event.channel) ? 'family' :
+   event.kind === 'material' && /거래처/.test(event.channel) ? 'supplier' : event.kind);
 
 export function episodeContext(state, event) {
   if (!event.requires) return event.body;
@@ -182,13 +187,17 @@ export function decideEpisode(state, choice) {
   const event = currentEpisode(state);
   if(state.finished || !event || !['a','b'].includes(choice)) return;
   const first = choice==='a';
-  const relationship = state.contacts?.[event.kind]?.trust ?? 0;
+  const contact = contactFor(event);
+  const relationship = state.contacts?.[contact]?.trust ?? 0;
   const roll = Math.min(1, random(state) + (event.requires ? relationship * .04 : 0));
   const previous = state.records.at(-1);
   let cost = 0;
   switch(event.kind) {
     case 'delivery': state.deliveryPerOrder += 500; if(first) state.deliveryShare=Math.max(0,state.deliveryShare-10); break;
-    case 'material': cost=first?70:0; state.costRatio=Math.min(.95,state.costRatio+(first?.005:.017)); break;
+    case 'material':
+      cost=first?(event.requires==='supplier' && relationship>0 ? 30 : 70):0;
+      state.costRatio=Math.min(.95,state.costRatio+(first?.005:.017));
+      break;
     case 'competition': cost=first?140:0; state.revenueMult*=first && roll>.35?1.035:.965; break;
     case 'order': cost=first?80:0; state.revenueMult*=first && roll>.3?1.05:1.012; break;
     case 'labor': {
@@ -202,7 +211,7 @@ export function decideEpisode(state, choice) {
       state.extraHours=Math.max(1-state.hours,Math.min(112-state.hours,state.extraHours+(first?-3:3)));
       if(first) {
         state.restDays=(state.restDays??0)+1;
-        state.fatigue=Math.max(0,(state.fatigue??0)-12);
+        state.fatigue=Math.max(0,(state.fatigue??0)-(event.requires==='family' && relationship>0 ? 18 : 12));
       }
       break;
     case 'rent': state.rent+=first && roll>.3?20:55; break;
@@ -215,10 +224,10 @@ export function decideEpisode(state, choice) {
   for(const key of ['operating','netIncome','economic','flow','cash']) previous[key]-=cost;
   previous.other+=cost;
   state.seen.push(event.id);
-  if(first && ['labor','order'].includes(event.kind)) state.threads.push(event.kind);
-  if (contacts[event.kind]) {
+  if(first && contacts[contact] && !state.threads.includes(contact)) state.threads.push(contact);
+  if (contacts[contact]) {
     state.contacts ??= {};
-    state.contacts[event.kind] = {
+    state.contacts[contact] = {
       month: state.month,
       choice: event[choice],
       trust: Math.max(-3,Math.min(3,relationship+(first?1:-1))),

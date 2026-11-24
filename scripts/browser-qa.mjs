@@ -8,27 +8,34 @@ fs.mkdirSync('artifacts',{recursive:true});
 const browser=await chromium.launch({headless:true,args:['--no-proxy-server'],channel:'chrome'});const page=await browser.newPage({viewport:{width:1440,height:1000}});const errors=[];page.on('pageerror',e=>errors.push(e.message));
 const {createSimulation}=await import('../dist/simulation.js');
 const {beginEpisodes,currentEpisode,decideEpisode}=await import('../dist/episodes.js');
-let returningWorker;
-for(let seed=0;seed<100&&!returningWorker;seed++){
- const state=createSimulation({industry:'cafe',own:30000});
- beginEpisodes(state,seed);
- while(!state.finished){
-  if(currentEpisode(state).requires==='labor'){returningWorker=state;break;}
-  decideEpisode(state,'a');
+function findFollowUp(key) {
+ for(let seed=0;seed<100;seed++){
+  const state=createSimulation({industry:'chicken',own:30000});
+  beginEpisodes(state,seed);
+  while(!state.finished){
+   if(currentEpisode(state).requires===key) return state;
+   decideEpisode(state,'a');
+  }
  }
+ assert.fail('Missing follow-up: '+key);
 }
-assert.ok(returningWorker);
-const relationshipPage=await browser.newPage({viewport:{width:390,height:844}});
-relationshipPage.on('pageerror',e=>errors.push(e.message));
-await relationshipPage.goto('http://127.0.0.1:4174/#setup');
-await relationshipPage.evaluate(state=>localStorage.setItem('survival-v3',JSON.stringify(state)),returningWorker);
-await relationshipPage.reload();
-await relationshipPage.getByRole('button',{name:'이어서 플레이'}).click();
-assert.match(await relationshipPage.locator('#eventText').innerText(),/개월 차에 고른.*민서/);
-await relationshipPage.locator('#eventChoices button').first().click();
-const savedWages=await relationshipPage.evaluate(()=>JSON.parse(localStorage.getItem('survival-v3')).wages);
-assert.equal(savedWages,returningWorker.wages+65);
-await relationshipPage.close();
+for(const [key,name] of [['labor','민서'],['family','지연'],['supplier','한 사장']]){
+ const before=findFollowUp(key);
+ const relationshipPage=await browser.newPage({viewport:{width:390,height:844}});
+ relationshipPage.on('pageerror',e=>errors.push(e.message));
+ await relationshipPage.goto('http://127.0.0.1:4174/#setup');
+ await relationshipPage.evaluate(state=>localStorage.setItem('survival-v3',JSON.stringify(state)),before);
+ await relationshipPage.reload();
+ await relationshipPage.getByRole('button',{name:'이어서 플레이'}).click();
+ const message=await relationshipPage.locator('#eventText').innerText();
+ assert.ok(message.includes(name) && message.includes(before.contacts[key].choice));
+ await relationshipPage.locator('#eventChoices button').first().click();
+ const after=await relationshipPage.evaluate(()=>JSON.parse(localStorage.getItem('survival-v3')));
+ if(key==='labor') assert.equal(after.wages,before.wages+65);
+ if(key==='family') assert.equal(after.restDays,(before.restDays??0)+1);
+ if(key==='supplier') assert.equal(after.decisions.at(-1).cost,30);
+ await relationshipPage.close();
+}
 async function finish(page) {
  for(let i=0;i<18&&!await page.locator('#results').isVisible();i++) await page.locator('#eventChoices button').first().click();
  await page.locator('#results').waitFor();

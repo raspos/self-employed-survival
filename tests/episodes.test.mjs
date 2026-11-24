@@ -27,8 +27,8 @@ test('saved episode and seed reproduce an uninterrupted playthrough', () => {
   assert.deepEqual(run('cafe', 480, strategy, true), run('cafe', 480, strategy));
 });
 
-test('80 episodes are available and an operating adjustment applies only once per turn', () => {
-  assert.equal(episodeCount, 80);
+test('the episode catalogue meets the target and operations apply only once per turn', () => {
+  assert.ok(episodeCount >= 80);
   const state = createSimulation({ own: 20000 });
   beginEpisodes(state, 817);
   const before = state.records.at(-1).hours;
@@ -56,6 +56,28 @@ test('returning worker recalls the hiring choice after a save and costs less to 
     }
   }
   assert.fail('No returning worker episode found');
+});
+
+test('family and supplier follow-ups remember decisions across a save', () => {
+  const pending = new Set(['family','supplier']);
+  for (let seed=0;seed<100 && pending.size;seed++) {
+    const state=createSimulation({industry:'chicken',own:30000});
+    beginEpisodes(state,seed);
+    while(!state.finished) {
+      const event=currentEpisode(state);
+      if(pending.has(event.requires)) {
+        const restored=JSON.parse(JSON.stringify(state));
+        assert.ok(episodeContext(restored,event).includes(restored.contacts[event.requires].choice));
+        decideEpisode(restored,'a');
+        const decision=restored.decisions.at(-1);
+        assert.equal(decision.cost,event.requires==='supplier'?30:40);
+        if(event.requires==='family') assert.equal(restored.restDays,(state.restDays??0)+1);
+        pending.delete(event.requires);
+      }
+      decideEpisode(state,'a');
+    }
+  }
+  assert.equal(pending.size,0);
 });
 
 test('4,000 seeded runs settle the ledger and can reach either end state', () => {
