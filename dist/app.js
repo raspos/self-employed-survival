@@ -1,6 +1,7 @@
 import { beginEpisodes, currentEpisode, decideEpisode, changeOperations, episodeSpeaker } from './episodes.js';
 import { simplifySetup } from './setup-ui.js';
 import { renderOutcome } from './outcomes.js';
+import { transferShop } from './simulation.js';
 import { environments, applyEnvironment, additionalAreas, environmentNotes } from './environments.js';
 import {profiles,areas,defaults,setup,createSimulation,calculateMonth,close,totals,liquidation,recommend,forecastClosure} from './simulation.js';
 import {articles,indicators,sources,pending,methods,checkedAt} from './content.js';
@@ -175,7 +176,16 @@ try {
   resume.onclick=()=>{sim=saved;resume.remove();renderState();};
  }
 } catch {}
-$('quit').onclick=()=>{close(sim);renderResults();};
+$('quit').onclick=()=>{close(sim);renderState();};
+const transferPanel = document.createElement('details');
+transferPanel.className = 'assumptions';
+transferPanel.innerHTML = '<summary>매장 양도</summary><label>시설·권리 양도대금 (보증금 제외, 만원) <input type="number" min="0" max="100000" value="0"></label><button class="action-alt" type="button">양도하고 영업 종료</button>';
+$('quit').after(transferPanel);
+transferPanel.querySelector('button').onclick = () => {
+ const field = transferPanel.querySelector('input');
+ if (!field.value || !field.reportValidity()) return;
+ if (transferShop(sim,Number(field.value))) renderState();
+};
 const metric=(label,value)=>`<div class="result-metric"><span>${label}</span><strong>${value}</strong></div>`;
 function renderResults(){const t=totals(sim),l=t.liquidation;$('resultTitle').textContent=sim.reason;$('finalWorth').textContent=money(l.net);$('finalWorth').style.color=l.net<0?'#a8392b':'#18775e';$('resultMessage').textContent=sim.closed?`${sim.month}개월의 영업을 마쳤습니다. 가게 정리는 남은 자산과 부채를 다루는 선택입니다. 결과를 개인의 능력만으로 설명할 수는 없습니다.`:'36개월을 운영했습니다. 수익을 얻기 위해 투입한 시간과 감수한 위험도 함께 살펴보세요.';$('monthsRun').textContent=sim.month+'개월';$('totalRevenue').textContent=money(t.revenue);$('netChange').textContent=money(t.investmentReturn);
  $('extendedResults').innerHTML=`<div class="result-grid">${metric('초기 투자·보증금',money(sim.startcost))}${metric('초기 자기자본',money(sim.own))}${metric('누적 영업손익',money(t.operating))}${metric('점주 노동시간',fmt(t.hours)+'시간')}${metric('점주 노동비용 차감 후',money(t.operating-t.labor))}${metric('노동·자본 기회비용 반영 후',money(t.economic))}${metric('대출 잔액',money(sim.debt))}${metric('사업 현금 잔액',money(sim.cash))}${metric('청산 기준 투자 회수율',fmt(t.recovery,1)+'%')}${metric('실제 폐업 선택·중단 여부',sim.closed?'영업 정리':'36개월 운영 완료')}</div><div class="hourly-panel"><p>사장님의 진짜 시간값</p><strong>${fmt(t.hourly)}<small>원 / 시간</small></strong><h3>사장님은 정말 최저임금보다 많이 벌었을까요?</h3><p>점주 노동시간당 사업소득 = 영업이익 ÷ 노동시간<br>2026년 적용 최저임금 10,320원과의 참고 비교: ${t.hourly>=10320?'이상':'미만'}. 자본 수익을 포함할 수 있으며 법정 임금이 아닙니다.</p><label for="resultHour">내 노동 비교 시급 (원)</label><input id="resultHour" type="number" min="0" max="100000" value="${sim.hourly}"/><label for="resultCapital">자기자본 기회비용 (연 %)</label><input id="resultCapital" type="number" min="0" max="30" step=".1" value="${sim.capitalRate}"/><output id="economicOutput">경제적 수익 ${money(t.economic)}</output></div><details><summary>폐업·청산 정산 항목 보기</summary><div class="result-grid">${metric('현금',money(l.cash))}${metric('회수 보증금',money(l.recoveredDeposit))}${metric('시설 처분액',money(l.salvage))}${metric('잔여 대출',money(l.debt))}${metric('철거·복구비',money(l.demolition))}${metric('계약 해지비',money(l.termination))}</div><p class="mini">36개월 운영 완료 시에도 비교를 위해 같은 청산 가정을 적용했습니다. 보증금 회수율 ${sim.depositRecovery}%, 시설 초기 처분비율 ${sim.salvage}%에서 경과월수만큼 감액. 권리금 회수 0.</p></details>`;

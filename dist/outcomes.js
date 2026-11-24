@@ -6,6 +6,7 @@ export function outcome(state, result = totals(state)) {
   const weekly = hours / Math.max(1, state.month) * 12 / 52;
   const last = state.records.at(-1);
   const voluntary = state.reason.startsWith('자발적');
+  if (state.reason === '매장 양도') return '가게를 넘기고 새 출발';
   if (state.closed) {
     if (voluntary && gain >= 0) return '자본을 회수하고 가게를 닫았다';
     if (voluntary && weekly >= 65) return '긴 영업 끝에 문을 닫았다';

@@ -48,7 +48,22 @@ export function choose(s,key){if(s.finished)return s;const e=events.find(e=>e.mo
  const r=s.records.at(-1);r.other+=c.cost;r.operating-=c.cost;r.netIncome-=c.cost;r.economic-=c.cost;r.flow-=c.cost;r.cash-=c.cost;
  s.decisions.push({month:s.month,key:e.key,choice:key,title:c.title,cost:c.cost});if(s.cash<0){s.finished=true;s.closed=true;s.reason='의사결정 지출 후 현금 부족';return s;}return advance(s);}
 export function close(s){if(s.finished)return s;s.finished=true;s.closed=true;s.reason='자발적 폐업 및 정산';return s;}
-export function liquidation(s){const recoveredDeposit=(s.deposit+s.franchiseDeposit)*s.depositRecovery/100,salvage=s.interior*s.salvage/100*Math.max(0,1-s.month/60),demolition=s.demolition,termination=s.termination;return {cash:s.cash,recoveredDeposit,salvage,debt:s.debt,demolition,termination,net:s.cash+recoveredDeposit+salvage-s.debt-demolition-termination};}
+export function transferShop(s, price){
+ if(s.finished || !Number.isFinite(price) || price<0 || price>100000) return false;
+ s.transferPrice=price;
+ s.finished=true;
+ s.closed=true;
+ s.reason='매장 양도';
+ return true;
+}
+export function liquidation(s){
+ const transferred=Number.isFinite(s.transferPrice);
+ const recoveredDeposit=(s.deposit+s.franchiseDeposit)*s.depositRecovery/100;
+ const salvage=transferred?s.transferPrice:s.interior*s.salvage/100*Math.max(0,1-s.month/60);
+ const demolition=transferred?0:s.demolition;
+ const termination=s.termination;
+ return {cash:s.cash,recoveredDeposit,salvage,debt:s.debt,demolition,termination,net:s.cash+recoveredDeposit+salvage-s.debt-demolition-termination};
+}
 export function totals(s){const sum=k=>s.records.reduce((n,r)=>n+r[k],0),l=liquidation(s);return {revenue:sum('sales'),operating:sum('operating'),hours:sum('hours'),labor:sum('labor'),economic:sum('economic'),netIncome:sum('netIncome'),flow:sum('flow'),delivery:sum('delivery'),rent:sum('rent'),interest:sum('interest'),principal:sum('principal'),hourly:sum('hours')?sum('operating')*10000/sum('hours'):0,recovery:l.net/s.own*100,investmentReturn:l.net-s.own,liquidation:l};}
 export function recommend(s){const t=totals(s);if(s.closed)return {id:'closure',why:'가게 정리와 남은 부채를 함께 살펴봅니다.'};if(t.interest+t.principal>t.operating*.7&&s.loan>0)return {id:'debt',why:'영업손익과 대출 상환 뒤의 현금은 다릅니다.'};if(t.hourly<s.hourly||s.hours+s.extraHours>=70)return {id:'labor',why:'당신의 노동시간을 비용으로 계산하면 결과가 달라집니다.'};if(t.delivery>t.rent)return {id:'delivery',why:'배달 관련 비용이 임대료보다 컸습니다.'};if(s.revenueMult<.95)return {id:'demand',why:'매출 감소는 상권의 변화와도 연결됩니다.'};return {id:'rent',why:'매출이 바뀌어도 매달 나가는 고정비를 살펴봅니다.'};}
 export function forecastClosure(s){const next=structuredClone(s);next.finished=false;next.closed=false;next.reason='';const target=Math.min(next.month+6,36);while(next.month<target){const r=calculateMonth(next);next.month=r.month;next.cash=r.cash;next.debt=r.debt;}return {now:liquidation(s).net,later:liquidation(next).net,target,assumption:'추가 의사결정 없이 현재 조건과 동일한 계절 변동을 적용한 6개월 전망입니다. 실제 예측이 아닙니다.'};}
