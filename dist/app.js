@@ -1,6 +1,7 @@
 import { beginEpisodes, currentEpisode, decideEpisode, changeOperations, episodeSpeaker } from './episodes.js';
 import { simplifySetup } from './setup-ui.js';
 import { renderOutcome } from './outcomes.js';
+import { mountTrends } from './trends.js';
 import { transferShop } from './simulation.js';
 import { environments, applyEnvironment, additionalAreas, environmentNotes } from './environments.js';
 import {profiles,areas,defaults,setup,createSimulation,calculateMonth,close,totals,liquidation,recommend,forecastClosure} from './simulation.js';
@@ -13,6 +14,7 @@ const basicMap={funds:'own',loan:'loan',owner:'living',area:'area',brand:'brand'
 const overrideFields=['sales','costRatio','rent','interior','entry','deposit'];
 const assumptionKeys=Object.keys(defaults).filter(k=>!['industry','own','loan','living','area','brand','size','staff','hours','strategy','salesCapture'].includes(k));
 const dirty=new Set();
+mountTrends($('dataCards'));
 simplifySetup();
 const operations = document.createElement('details');
 operations.className = 'assumptions';
