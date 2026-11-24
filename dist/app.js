@@ -1,4 +1,5 @@
-import {profiles,areas,defaults,setup,createSimulation,calculateMonth,advance,choose,close,events,totals,liquidation,recommend,forecastClosure} from './simulation.js';
+import { beginEpisodes, currentEpisode, decideEpisode } from './episodes.js';
+import {profiles,areas,defaults,setup,createSimulation,calculateMonth,close,totals,liquidation,recommend,forecastClosure} from './simulation.js';
 import {articles,indicators,sources,pending,methods,checkedAt} from './content.js';
 import {brandPicker,paintBrandSummary,paintFeePreview,paintRunBurden,deliveryResult,deliveryStoryMarkup,wireDeliveryStory,paintUpdates} from './extensions.js';
 const $=id=>document.getElementById(id),fmt=(n,d=0)=>n.toLocaleString('ko-KR',{maximumFractionDigits:d}),money=n=>`${n<0?'−':''}${fmt(Math.abs(n))}만원`,esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -28,13 +29,21 @@ function lineChart(rows,keys,labels,width=620,height=220){const colors=['#c95935
 for(let i=0;i<4;i++){const v=min+(max-min)*i/3,y=Y(v);out+=`<line x1="55" x2="${width-25}" y1="${y}" y2="${y}" stroke="currentColor" opacity=".13"/><text x="48" y="${y+4}" text-anchor="end" fill="currentColor" font-size="10">${fmt(v)}</text>`;}
 out+=`<line x1="55" x2="${width-25}" y1="${Y(0)}" y2="${Y(0)}" stroke="currentColor" opacity=".4" stroke-dasharray="4 4"/>`;
 keys.forEach((k,j)=>{out+=`<polyline points="${rows.map((r,i)=>`${X(i)},${Y(r[k])}`).join(' ')}" fill="none" stroke="${colors[j]}" stroke-width="3"/>`;});out+=`<text x="55" y="${height-18}" fill="currentColor" font-size="11">${rows[0]?.month??0}</text><text x="${width-25}" y="${height-18}" text-anchor="end" fill="currentColor" font-size="11">${rows.at(-1)?.month??0}개월</text></svg><div class="chart-legend">${labels.map((s,i)=>`<span style="--legend:${colors[i]}">${s}</span>`).join('')}<small>단위: 만원</small></div>`;return out;}
-function renderPlay(){const t=totals(sim),r=sim.records.at(-1),e=events.find(x=>x.month===sim.month);$('playKicker').textContent=`PART 01 / ${sim.month} OF 36 MONTHS`;$('playTitle').textContent=`${sim.p.name} 가게, ${sim.month}개월 차 장부`;$('playSubtitle').textContent=`${sim.a.name} · ${sim.size}평 · 직원 ${sim.staff}명 · 점주 주 ${sim.hours+sim.extraHours}시간 · 가상 시나리오`;$('cashNow').textContent=money(sim.cash);$('salesNow').textContent=money(sim.lastRevenue);$('profitNow').textContent=money(sim.lastDelta);$('profitNow').className='num '+(sim.lastDelta<0?'neg':'');
+function renderPlay(){const t=totals(sim),r=sim.records.at(-1),e=currentEpisode(sim);$('playKicker').textContent=`${sim.month} / 36개월`;$('playTitle').textContent=`${sim.p.name} 가게, ${sim.month}개월 차 장부`;$('playSubtitle').textContent=`${sim.a.name} · ${sim.size}평 · 직원 ${sim.staff}명 · 점주 주 ${sim.hours+sim.extraHours}시간 · 가상 시나리오`;$('cashNow').textContent=money(sim.cash);$('salesNow').textContent=money(sim.lastRevenue);$('profitNow').textContent=money(sim.lastDelta);$('profitNow').className='num '+(sim.lastDelta<0?'neg':'');
  document.querySelector('#play .graphbox').innerHTML=lineChart([{month:0,cash:sim.buffer,debt:sim.loan},...sim.records],['cash','debt'],['현금 잔액','대출 잔액']);
  paintRunBurden(sim,r);$('playStory').textContent=`최근 월 영업이익 ${money(r.operating)} / 순현금 ${money(r.flow)}. 누적 점주 노동 ${fmt(t.hours)}시간. 이익이 나도 원금상환과 생활비로 현금은 줄 수 있습니다.`;
- $('eventTitle').textContent=e?.title??'최종 결산';$('eventText').textContent=e?.text??'';$('eventChoices').innerHTML='';if(e)for(const key of ['a','b']){const c=e[key],b=document.createElement('button');b.className='choice';b.type='button';b.innerHTML=`<strong>${c.title}</strong><span>${c.info}</span>`;b.onclick=()=>{choose(sim,key);renderState();};$('eventChoices').append(b);}
+ $('eventTitle').textContent=e?e.channel+' · '+e.title:'최종 결산';$('eventText').textContent=e?.body??'';$('eventChoices').innerHTML='';if(e)for(const key of ['a','b']){const c=e[key],b=document.createElement('button');b.className='choice';b.type='button';b.textContent=c;b.onclick=()=>{decideEpisode(sim,key);renderState();};$('eventChoices').append(b);}
  const f=forecastClosure(sim);$('closePreview').innerHTML=`<strong>폐업도 경영의 선택입니다.</strong><br>지금 정리하면 ${money(f.now)} / ${f.target}개월까지 영업 후 정리하면 ${money(f.later)}<br><small>${f.assumption} 회수액은 음수가 될 수 있습니다.</small>`;}
-function renderState(){if(sim.finished)renderResults();else{renderPlay();show('play');}}
-$('start').onclick=()=>{try{sim=createSimulation(read());advance(sim);renderState();}catch(e){$('startAlert').textContent=e.message;}};
+function renderState(){try{localStorage.setItem("survival-v3",JSON.stringify(sim));}catch{}if(sim.finished)renderResults();else{renderPlay();show('play');}}
+$('start').onclick=()=>{try{sim=createSimulation(read());beginEpisodes(sim,crypto.getRandomValues(new Uint32Array(1))[0]);renderState();}catch(e){$('startAlert').textContent=e.message;}};
+const resume=document.createElement('button');
+resume.type='button';
+resume.className='action-alt';
+resume.textContent='이어서 플레이';
+try {
+ const saved=JSON.parse(localStorage.getItem('survival-v3'));
+ if(saved?.seen && !saved.finished){ $('start').after(resume); resume.onclick=()=>{sim=saved;resume.remove();renderState();}; }
+} catch {}
 $('quit').onclick=()=>{close(sim);renderResults();};
 const metric=(label,value)=>`<div class="result-metric"><span>${label}</span><strong>${value}</strong></div>`;
 function renderResults(){const t=totals(sim),l=t.liquidation;$('resultTitle').textContent=sim.reason;$('finalWorth').textContent=money(l.net);$('finalWorth').style.color=l.net<0?'#a8392b':'#18775e';$('resultMessage').textContent=sim.closed?`${sim.month}개월의 영업을 마쳤습니다. 가게 정리는 남은 자산과 부채를 다루는 선택입니다. 결과를 개인의 능력만으로 설명할 수는 없습니다.`:'36개월을 운영했습니다. 수익을 얻기 위해 투입한 시간과 감수한 위험도 함께 살펴보세요.';$('monthsRun').textContent=sim.month+'개월';$('totalRevenue').textContent=money(t.revenue);$('netChange').textContent=money(t.investmentReturn);
