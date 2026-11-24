@@ -126,7 +126,7 @@ for (const [label, sameSeed] of [['같은 조건으로 다시', false], ['같은
   };
   const environment = sim.environment;
   const previousRun = { environment, months: sim.month, equity: liquidation(sim).net, hours: totals(sim).hours };
-  sim = Object.assign(applyEnvironment(createSimulation(input), environment), { initialInput: input, previousRun });
+  sim = Object.assign(applyEnvironment(createSimulation(input), environment), { initialInput: input, previousRun, annualSalary:sim.annualSalary });
   beginEpisodes(sim, seed);
   renderState();
  };
@@ -144,13 +144,25 @@ compareRun.onclick=()=>{
  if (!input) return;
  const previousRun = { environment: sim.environment, months: sim.month, equity: liquidation(sim).net, hours: totals(sim).hours };
  const seed = sim.seed;
- sim = Object.assign(applyEnvironment(createSimulation(input),replayEnvironment.value),{initialInput:input,previousRun});
+ sim = Object.assign(applyEnvironment(createSimulation(input),replayEnvironment.value),{initialInput:input,previousRun,annualSalary:sim.annualSalary});
  beginEpisodes(sim,seed);
  renderState();
 };
 replayControls.append(replayEnvironment,compareRun);
 $('restart').after(replayControls);
-$('start').onclick=()=>{try{const input=read();sim=Object.assign(applyEnvironment(createSimulation(input),economySelect.value),{initialInput:input});resume.remove();beginEpisodes(sim,crypto.getRandomValues(new Uint32Array(1))[0]);renderState();}catch(e){$('startAlert').textContent=e.message;}};
+$('start').onclick=()=>{
+ try {
+  const input=read();
+  const salary=$('annualSalary');
+  if(!salary.value || !salary.checkValidity()) throw Error('비교용 연봉을 확인하세요.');
+  sim=Object.assign(applyEnvironment(createSimulation(input),economySelect.value),{initialInput:input,annualSalary:Number(salary.value)});
+  resume.remove();
+  beginEpisodes(sim,crypto.getRandomValues(new Uint32Array(1))[0]);
+  renderState();
+ } catch(e) {
+  $('startAlert').textContent=e.message;
+ }
+};
 const resume=document.createElement('button');
 resume.type='button';
 resume.className='action-alt';

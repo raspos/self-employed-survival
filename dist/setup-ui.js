@@ -19,6 +19,13 @@ export function simplifySetup() {
   const extra = setup.querySelector('.extra-setup');
   extra.before(details);
   details.append(extra, setup.querySelector('.assumptions:not(.setup-details)'), setup.querySelector('.fee-preview'));
+  const salaryLabel = document.createElement('label');
+  salaryLabel.className = 'form-group';
+  salaryLabel.textContent = '비교용 세전 연봉 (만원)';
+  const salary = document.createElement('input');
+  Object.assign(salary,{ id:'annualSalary',type:'number',min:'0',max:'100000',step:'100',value:'4200' });
+  salaryLabel.append(salary);
+  details.append(salaryLabel);
 
   const presets = document.createElement('div');
   presets.className = 'capital-presets';
@@ -31,6 +38,10 @@ export function simplifySetup() {
     button.dataset.amount = amount;
     button.onclick = () => {
       capital.value = amount;
+      if (!details.open) {
+        const size = document.getElementById('size');
+        size.value = amount === 5000 ? 10 : 20;
+      }
       capital.dispatchEvent(new Event('input', { bubbles: true }));
     };
     presets.append(button);
