@@ -19,3 +19,6 @@
 .story-body p,.update-chapters article>p,.comparison-main .change p{font-size:1.0625rem;line-height:1.75}
 #setup .form-group:has(#funds) .help,#setup .fee-preview>p.mini,#setup .actions>.mini{display:none}
 .setup-details>.form-group{margin:12px 0}
+.employment-change{list-style:none;padding:0;margin:1rem 0}
+.employment-change li{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:.25rem .75rem;margin-block:.85rem}
+.employment-change svg{grid-column:1/-1;width:100%;height:1rem;display:block}

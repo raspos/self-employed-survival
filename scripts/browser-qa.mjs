@@ -50,6 +50,17 @@ await mobile.locator('[data-story="2"]').click();await mobile.locator('#storyCon
 await mobile.locator('#brandOptions').scrollIntoViewIfNeeded();await mobile.screenshot({path:'artifacts/mobile-brands.png'});await mobile.locator('#after2024').scrollIntoViewIfNeeded();await mobile.screenshot({path:'artifacts/mobile-after2024.png'});
 await mobile.locator('#funds').fill('50000');await mobile.locator('#start').click();await finish(mobile);await mobile.locator('#results:not(.off)').waitFor();await mobile.screenshot({path:'artifacts/mobile-results.png'});assert.equal(await mobile.locator('#monthsRun').innerText(),'36개월');
 const mobileSize=await mobile.evaluate(()=>({w:document.documentElement.clientWidth,s:document.documentElement.scrollWidth}));assert.ok(mobileSize.s<=mobileSize.w,JSON.stringify(mobileSize));
+await mobile.locator('#restart').click();
+await mobile.locator('#funds').fill('50000');
+await mobile.locator('#start').click();
+await mobile.getByText('매장 양도',{exact:true}).click();
+await mobile.getByLabel(/시설·권리 양도대금/).fill('600');
+await mobile.getByRole('button',{name:'양도하고 영업 종료'}).click();
+assert.equal(await mobile.locator('#resultTitle').innerText(),'가게를 넘기고 새 출발');
+await mobile.locator('#afterClosing > summary').click();
+const initialProjection = await mobile.locator('#afterClosing > p').innerText();
+await mobile.getByLabel(/재취업 세전 연봉/).fill('6500');
+assert.notEqual(await mobile.locator('#afterClosing > p').innerText(),initialProjection);
 for (const width of [320, 768]) {
  const narrow = await browser.newPage({ viewport: { width, height: 850 } });
  narrow.on('pageerror', e => errors.push(e.message));

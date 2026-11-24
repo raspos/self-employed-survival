@@ -4,6 +4,14 @@ export const wages = [
   [2024,9860],[2025,10030],[2026,10320],[2027,10700],
 ];
 
+import { sources } from './content.js';
+
+const employmentChanges = [
+  ['고용원이 있는 자영업자', 15000],
+  ['고용원이 없는 자영업자', 42000],
+  ['무급가족종사자', -45000],
+];
+
 export function mountTrends(container) {
   const section = document.createElement('section');
   section.className = 'graphbox';
@@ -26,4 +34,19 @@ export function mountTrends(container) {
     <p><a href="https://www.minimumwage.go.kr/minWage/policy/decisionMain.do" target="_blank" rel="noopener noreferrer">최저임금위원회</a></p>
     <details><summary>연도별 수치</summary><div class="tablewrap"><table><thead><tr><th>적용 연도</th><th>시간급</th></tr></thead><tbody>${wages.map(([year,value])=>`<tr><th scope="row">${year}${year===2027?' (고시)':''}</th><td>${format.format(value)}원</td></tr>`).join('')}</tbody></table></div></details>`;
   container.after(section);
+  const employment = document.createElement('section');
+  employment.className = 'graphbox';
+  employment.innerHTML = `<h3>자영업 고용 변화</h3>
+    <p>2026년 10월 · 2025년 10월 대비</p>
+    <ul class="employment-change">${employmentChanges.map(([label,value])=>{
+      const length = Math.abs(value)/1000;
+      const start = value<0 ? 50-length : 50;
+      return `<li><span>${label}</span><strong>${value>0?'+':'−'}${format.format(Math.abs(value))}명</strong>
+        <svg viewBox="0 0 100 10" preserveAspectRatio="none" aria-hidden="true">
+          <rect x="${start}" y="2" width="${length}" height="6" fill="${value<0?'#a84e32':'#286753'}"/>
+          <line x1="50" y1="0" x2="50" y2="10" stroke="currentColor" stroke-width=".35"/>
+        </svg></li>`;
+    }).join('')}</ul>
+    <p><a href="${sources.employmentBrief.url}" target="_blank" rel="noopener noreferrer">국가데이터처 고용동향</a></p>`;
+  section.after(employment);
 }
