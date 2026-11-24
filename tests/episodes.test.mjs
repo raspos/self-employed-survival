@@ -2,6 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { createSimulation } from '../dist/simulation.js';
 import { beginEpisodes, currentEpisode, decideEpisode, changeOperations, episodeCount, episodeContext } from '../dist/episodes.js';
+import { businessOutflows, largestDecisionExpense } from '../dist/ledger-summary.js';
 
 function run(industry, seed, strategy, restore = false) {
   let state = createSimulation({ industry });
@@ -94,6 +95,11 @@ test('household reserve is set aside from capital and pays living costs only onc
   assert.equal(saved.records[2].ownerDraw,240);
   assert.equal(saved.householdCash,0);
   assert.ok(Math.abs(saved.buffer+saved.records.reduce((total,row)=>total+row.flow,0)-saved.cash)<1e-7);
+  const sales = saved.records.reduce((sum,row)=>sum+row.sales,0);
+  const draws = saved.records.reduce((sum,row)=>sum+row.ownerDraw,0);
+  assert.ok(Math.abs(saved.buffer+sales-businessOutflows(saved.records).total-draws-saved.cash)<1e-7);
+  const biggest = Math.max(...saved.decisions.map(decision=>decision.cost),0);
+  assert.equal(largestDecisionExpense(saved.decisions)?.cost??0,biggest);
 });
 
 test('4,000 seeded runs settle the ledger and can reach either end state', () => {

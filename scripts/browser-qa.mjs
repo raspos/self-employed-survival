@@ -91,6 +91,8 @@ await mobile.getByRole('button',{name:'양도하고 영업 종료'}).click();
 assert.equal(await mobile.locator('#resultTitle').innerText(),'가게를 넘기고 새 출발');
 await mobile.locator('#runCharts > summary').click();
 assert.match(await mobile.locator('#runCharts > p').innerText(),/가계 예비금 잔액 [\d,]+만원/);
+assert.ok(await mobile.getByRole('heading',{name:'영업 기간 사업 지출'}).isVisible());
+assert.ok(await mobile.locator('#runCharts').getByRole('rowheader',{name:'배달·결제 비용'}).isVisible());
 await mobile.locator('#afterClosing > summary').click();
 const initialProjection = await mobile.locator('#afterClosing > p').innerText();
 await mobile.getByLabel(/재취업 세전 연봉/).fill('6500');

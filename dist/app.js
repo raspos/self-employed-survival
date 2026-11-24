@@ -2,6 +2,7 @@ import { beginEpisodes, currentEpisode, decideEpisode, changeOperations, episode
 import { simplifySetup } from './setup-ui.js';
 import { renderOutcome } from './outcomes.js';
 import { mountTrends } from './trends.js';
+import { businessOutflows, largestDecisionExpense } from './ledger-summary.js';
 import { transferShop } from './simulation.js';
 import { environments, applyEnvironment, additionalAreas, environmentNotes } from './environments.js';
 import {profiles,areas,defaults,setup,createSimulation,calculateMonth,close,totals,liquidation,recommend,forecastClosure} from './simulation.js';
@@ -108,10 +109,18 @@ function renderRunCharts() {
   $('extendedResults').after(charts);
  }
  const timeline = sim.decisions.map(item => `<li><strong>${item.month}개월</strong> · ${esc(item.title)}</li>`).join('');
+ const costs = businessOutflows(sim.records);
+ const major = largestDecisionExpense(sim.decisions);
+ const breakdown = costs.rows.map(({label,amount}) => {
+  const share = 100*amount/costs.total;
+  return `<tr><th scope="row">${label}</th><td>${money(amount)}</td><td>${fmt(share,1)}%</td></tr>`;
+ }).join('');
  charts.innerHTML = `<summary>36개월 장부와 선택 기록</summary>
   <p>가계 예비금 잔액 <strong>${money(sim.householdCash??0)}</strong></p>
   <div class="graphbox">${lineChart(sim.records,['sales','netIncome'],['매출','세후 손익'])}</div>
   <div class="graphbox">${lineChart([{month:0,cash:sim.buffer,debt:sim.loan},...sim.records],['cash','debt'],['현금','대출'])}</div>
+  ${breakdown ? `<h3>영업 기간 사업 지출</h3><div class="tablewrap"><table><thead><tr><th>항목</th><th>지출</th><th>비중</th></tr></thead><tbody>${breakdown}</tbody></table></div>` : ''}
+  ${major ? `<p>가장 큰 일시 지출 · ${major.month}개월, ${esc(major.title)} <strong>${money(major.cost)}</strong></p>` : ''}
   ${timeline ? '<ol>'+timeline+'</ol>' : ''}`;
 }
 const replayControls = document.createElement('div');
