@@ -28,3 +28,18 @@ test('convenience store default month is not made loss-making by delivery fees',
   const s = createSimulation({ industry: 'store', own: 20000 });
   assert.ok(calculateMonth(s, 1, 1).operating > 0);
 });
+
+test('shop size has an interior optimum: small shops are viable and the largest is not the best', () => {
+  for (const industry of Object.keys(profiles)) {
+    const op = size => calculateMonth(createSimulation({ industry, own: 30000, size }), 1, 1).operating;
+    const sizes = [10, 15, 20, 30, 40], values = sizes.map(op);
+    assert.ok(values[0] > 0, `${industry} 10평 ${values[0]}`);
+    assert.notEqual(values.indexOf(Math.max(...values)), sizes.length - 1, industry);
+  }
+});
+
+test('closure forecast reports the living cost paid from shop cash', async () => {
+  const { forecastClosure } = await import('../dist/simulation.js');
+  const s = createSimulation({ industry: 'chicken', own: 30000 });
+  assert.ok(forecastClosure(s).livingPaid > 0);
+});
