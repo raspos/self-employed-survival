@@ -1,5 +1,6 @@
 import { beginEpisodes, currentEpisode, decideEpisode } from './episodes.js';
 import { simplifySetup } from './setup-ui.js';
+import { renderOutcome } from './outcomes.js';
 import {profiles,areas,defaults,setup,createSimulation,calculateMonth,close,totals,liquidation,recommend,forecastClosure} from './simulation.js';
 import {articles,indicators,sources,pending,methods,checkedAt} from './content.js';
 import {brandPicker,paintBrandSummary,paintFeePreview,paintRunBurden,deliveryResult,deliveryStoryMarkup,wireDeliveryStory,paintUpdates} from './extensions.js';
@@ -36,7 +37,7 @@ function renderPlay(){const t=totals(sim),r=sim.records.at(-1),e=currentEpisode(
  paintRunBurden(sim,r);$('playStory').textContent=`최근 월 영업이익 ${money(r.operating)} / 순현금 ${money(r.flow)}. 누적 점주 노동 ${fmt(t.hours)}시간. 이익이 나도 원금상환과 생활비로 현금은 줄 수 있습니다.`;
  $('eventTitle').textContent=e?e.channel+' · '+e.title:'최종 결산';$('eventText').textContent=e?.body??'';$('eventChoices').innerHTML='';if(e)for(const key of ['a','b']){const c=e[key],b=document.createElement('button');b.className='choice';b.type='button';b.textContent=c;b.onclick=()=>{decideEpisode(sim,key);renderState();};$('eventChoices').append(b);}
  const f=forecastClosure(sim);$('closePreview').innerHTML=`<strong>폐업도 경영의 선택입니다.</strong><br>지금 정리하면 ${money(f.now)} / ${f.target}개월까지 영업 후 정리하면 ${money(f.later)}<br><small>${f.assumption} 회수액은 음수가 될 수 있습니다.</small>`;}
-function renderState(){try{localStorage.setItem("survival-v3",JSON.stringify(sim));}catch{}if(sim.finished)renderResults();else{renderPlay();show('play');}}
+function renderState(){try{localStorage.setItem("survival-v3",JSON.stringify(sim));}catch{}if(sim.finished){renderResults();renderOutcome(sim,totals(sim));}else{renderPlay();show('play');}}
 $('start').onclick=()=>{try{sim=createSimulation(read());beginEpisodes(sim,crypto.getRandomValues(new Uint32Array(1))[0]);renderState();}catch(e){$('startAlert').textContent=e.message;}};
 const resume=document.createElement('button');
 resume.type='button';
