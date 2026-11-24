@@ -15,7 +15,7 @@ export function eventView({ channel, who, text, month }) {
   const t = esc(text), w = esc(who), c = esc(channel);
   switch (formatKind(channel)) {
     case 'doc': return `<div class="fmt-doc"><div class="sheet"><header><span>${c}</span><span>${month}개월차</span></header><p>${t}</p></div></div>`;
-    case 'msg': return `<div class="fmt-msg"><div class="bubble"><span class="who">${w}</span>${t}</div></div>`;
+    case 'msg': return `<div class="fmt-msg"><div class="bubble">${w===c?'':`<span class="who-line">${w}</span>`}${t}</div></div>`;
     case 'call': return `<div class="fmt-call"><div class="call"><span class="dot"></span><div><small>${w} · 통화</small><p>${t}</p></div></div></div>`;
     case 'talk': return `<div class="fmt-talk"><div class="line"><b>${w}</b>${t}</div></div>`;
     case 'news': return `<div class="fmt-news"><div class="clip"><header>${c}${/가상/.test(channel) ? ' · 가상' : ''}</header><p>${t}</p></div></div>`;

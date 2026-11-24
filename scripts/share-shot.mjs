@@ -11,7 +11,7 @@ for(const [name,industry,funds,quit] of [['good','snack','20000',false],['bad','
   await p.evaluate(()=>['step1','step2','step3'].forEach(i=>{document.getElementById(i).hidden=false;}));
   await p.locator('#industryOptions button').nth(['chicken','cafe','store','snack'].indexOf(industry)).click();
   await p.locator('#funds').fill(funds);await p.locator('#start').click();
-  for(let i=0;i<20&&!await p.locator('#results').isVisible();i++){if(quit&&i===3)await p.locator('#quit').click();else await p.locator('#eventChoices button').first().click();}
+  for(let i=0;i<20&&!await p.locator('#results').isVisible();i++){if(quit&&i===3){await p.locator('summary:text-is("운영 조정·폐업")').click();await p.locator('#quit').click();}else await p.locator('#eventChoices button').first().click();}
   await p.locator('#resultShare > summary').click();
   for(const [ratio,h] of [['1x1','1080'],['4x5','1350']]){await p.locator('#resultShare select').selectOption(h);await p.waitForTimeout(600);await p.locator('.share-preview').evaluate(c=>c.toBlob(()=>{}));
     const data=await p.locator('.share-preview').evaluate(c=>c.toDataURL('image/png'));fs.writeFileSync(`${out}/${name}-${ratio}.png`,Buffer.from(data.split(',')[1],'base64'));}

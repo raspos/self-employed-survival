@@ -4,7 +4,8 @@
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
 <title>대한민국 자영업자로 살아남기</title>
-<meta name="description" content="당신에게 1억원이 생겼습니다. 36개월의 선택 끝에서 실제 사장님들의 이야기와 공식 통계를 만납니다."/>
+<meta name="description" content="당신에게 1억원이 생겼습니다. 회사를 그만두고 사장이 되시겠습니까?"/>
+<meta name="theme-color" content="#120f0d"/>
 <link rel="icon" href="data:,"/>
 <link rel="stylesheet" href="editorial.css"/>
 </head>
@@ -15,19 +16,17 @@
 <ul class="menu" id="menu"><li><a href="#setup" id="navPlay">사장이 되어보기</a></li><li><a href="#reality" id="navReality">실제 사장님들</a></li><li><a href="#data">자영업 데이터</a></li><li><a href="#method">계산 방법</a></li></ul>
 </div></header>
 
-<section class="cover" id="top"><div class="wrap">
-<div>
-<h1><span>대한민국</span><br><span>자영업자로</span> <em>살아남기</em></h1>
-<p class="cover-lead">당신에게 1억원이 생겼습니다.<br>회사를 그만두고 사장이 되시겠습니까?</p>
+<section class="stage cover" id="top" role="img" aria-label="골목 가게에서 영수증을 정리하는 점주 일러스트"><div class="panel">
+<p class="title">대한민국 자영업자로 살아남기</p>
+<h1>당신에게 1억원이 생겼습니다.</h1>
+<p class="q">회사를 그만두고 사장이 되시겠습니까?</p>
 <a class="btn primary" href="#setup" id="coverStart">내 가게 시작하기</a>
-<div class="cover-links"><a href="#reality">실제 사장님들의 이야기</a><a href="#data">그때와 지금</a></div>
-<p class="cover-meta">중앙일보 「2024 자영업 리포트」를 바탕으로 만든 가상 경영 체험입니다. 독립 제작물이며 중앙일보 공식 서비스가 아닙니다.</p>
-</div>
-<figure><img src="shop-illustration.jpg" width="1672" height="941" alt="마감 시간에 동네 가게에서 영수증을 정리하는 점주"><figcaption>일러스트</figcaption></figure>
+<p class="links"><a href="#reality">실제 사장님들의 이야기</a><a href="#data">그때와 지금</a></p>
 </div></section>
 
 <main>
-<section id="setup" class="setup"><div class="wrap-game">
+<section id="setup" class="setup"><div class="wrap-text">
+<div class="actions resume-box" id="resumeBox"></div>
 <ol class="wiz-steps" id="wizSteps"><li class="on">업종</li><li>투자</li><li>개업 준비</li></ol>
 
 <div id="step1">
@@ -37,8 +36,8 @@
 <select id="brand" aria-label="브랜드 키워드" hidden></select>
 <div id="brandOptions" class="brand-options" role="group" aria-label="브랜드 키워드 선택"></div>
 <div id="brandSummary" class="brand-summary" aria-live="polite"></div>
-<p class="fine">실명 대신 특징 키워드로 고릅니다. 치킨·카페·편의점은 공정위 2024년 실적 상위 3개, 분식은 공개 집계 상위 3개이며 기준 연도가 다를 수 있습니다.</p></section>
-<div class="wiz-nav"><button class="btn primary" type="button" id="toStep2">다음: 얼마나 투자할까요</button></div>
+<details class="assumptions"><summary>브랜드 선정 기준</summary><p>치킨·카페·편의점은 공정위 2024년 실적 상위 3개, 분식은 공개 집계 상위 3개이며 기준 연도가 다를 수 있습니다. 실명 대신 특징 키워드로 고릅니다.</p></details></section>
+<div class="wiz-nav"><button class="btn primary" type="button" id="toStep2">다음</button></div>
 </div>
 
 <div id="step2" hidden>
@@ -47,31 +46,31 @@
 <div class="stack">
 <div class="form-group"><span class="label" id="fundsLabel">내 자본금 (만원)</span>
 <div class="capital-presets" id="capitalPresets" role="group" aria-label="창업 자본 빠른 선택"></div>
-<input id="funds" type="number" min="1000" max="100000" step="500" value="10000" aria-labelledby="fundsLabel"/>
-<span class="help">빌린 돈은 포함하지 않습니다.</span></div>
-<div class="form-group"><label for="loan">창업 대출 (만원)</label><input id="loan" type="number" min="0" max="100000" step="500" value="3000"/><span class="help">연 5%, 60개월 원금 균등상환이 기본입니다.</span></div>
+<input id="funds" type="number" min="1000" max="100000" step="500" value="10000" aria-labelledby="fundsLabel"/></div>
+<div class="form-group"><label for="loan">창업 대출 (만원)</label><input id="loan" type="number" min="0" max="100000" step="500" value="3000"/></div>
 <div class="form-group"><label for="area">상권</label><select id="area"><option value="res">수도권 주거지역</option><option value="center">서울 주요 상권</option><option value="local">중소도시 상권</option></select></div>
 <div class="form-group"><label for="mode">운영 방식</label><select id="mode"><option value="staff">직원 고용</option><option value="solo">나 홀로 운영</option><option value="family">가족 공동 운영</option></select></div>
-<div class="form-group"><label for="economy">경제 환경</label><select id="economy"></select><span class="help" id="economyNote"></span></div>
+<div class="form-group"><label for="economy">경제 환경</label><select id="economy"></select><details class="assumptions"><summary>적용 기준</summary><p id="economyNote"></p></details></div>
 </div>
 <div class="budget" aria-live="polite"><h3>자본은 이렇게 쓰입니다</h3><div id="startupBar"></div></div>
 </div>
-<div class="wiz-nav"><button class="action-alt" type="button" id="backStep1">이전</button><button class="btn primary" type="button" id="toStep3">다음: 개업 준비 완료</button></div>
+<div class="wiz-nav"><button class="action-alt" type="button" id="backStep1">이전</button><button class="btn primary" type="button" id="toStep3">다음</button></div>
 </div>
 
 <div id="step3" hidden>
+<figure class="scene" id="readyScene"></figure>
 <h2>개업 준비 완료</h2>
 <div class="bigstats">
 <div class="bigstat"><span class="l">총 창업 비용</span><span class="v" id="sideStartcost">-</span></div>
 <div class="bigstat"><span class="l">개업 후 남는 현금</span><span class="v" id="sideBuffer">-</span><span class="s" id="sideRunway"></span></div>
-<div class="bigstat"><span class="l">월 고정비</span><span class="v" id="sideFixed">-</span><span class="s">인건비·임대료·이자·원금 포함</span></div>
-<div class="bigstat"><span class="l">손익분기 매출</span><span class="v" id="sideBE">-</span><span class="s">월 기준</span></div>
+<div class="bigstat"><span class="l">월 고정비</span><span class="v" id="sideFixed">-</span></div>
+<div class="bigstat"><span class="l">손익분기 매출</span><span class="v" id="sideBE">-</span></div>
 </div>
 <p class="help" id="setupLine"></p>
 <div id="startAlert" class="warning" role="status" aria-live="polite"></div>
 <div class="actions"><button class="btn primary" id="start" type="button">가게 문 열기</button></div>
 
-<details class="assumptions setup-details"><summary>상세 설정 <span>생활비·규모·금리·원가·세금</span></summary>
+<details class="assumptions setup-details"><summary>상세 설정</summary>
 <div class="form-grid">
 <div class="form-group"><label for="owner">사장님의 월 생활비 (만원)</label><input id="owner" type="number" min="0" max="5000" step="20" value="280"/></div>
 <div class="form-group"><label for="householdReserve">생활비로 남겨둘 자본 (만원)</label><input id="householdReserve" type="number" min="0" max="100000" step="1" value="0"/></div>
@@ -83,7 +82,7 @@
 <div class="form-group"><label for="strategy">영업 전략</label><select id="strategy"><option value="balanced">홀·배달 균형</option><option value="delivery">배달 집중</option><option value="local">단골 중심</option></select></div>
 </div>
 <details class="assumptions"><summary>비용·세금·대출 가정</summary>
-<p>금액은 만원, 매출·비용은 부가세 제외 기준입니다. 업종·상권 기본값을 고치면 그대로 적용됩니다.</p>
+<p>금액은 만원, 매출·비용은 부가세 제외 기준입니다.</p>
 <div class="form-grid" id="assumptionFields">
 <div class="form-group"><label for="rate">대출금리 (연 %)</label><input id="rate" type="number" value="5" min="0" max="30" step="0.1" required/></div>
 <div class="form-group"><label for="term">대출 만기 (개월)</label><input id="term" type="number" value="60" min="1" max="360" step="1" required/></div>
@@ -120,35 +119,21 @@
 </div>
 </div></section>
 
-<section id="play" class="game off"><div class="wrap-game">
-<div class="gamebar"><b id="playTitle">개업</b><span id="playKicker"></span></div>
-<div class="progress" role="progressbar" aria-valuemin="0" aria-valuemax="36" id="progress"><i id="progressFill"></i></div>
-<div class="vitals">
-<div class="vital"><span class="l">보유 현금</span><span class="v" id="cashNow">-</span></div>
-<div class="vital"><span class="l">최근 매출</span><span class="v" id="salesNow">-</span></div>
-<div class="vital"><span class="l">남은 대출</span><span class="v" id="debtNow">-</span></div>
-</div>
-<div class="gamegrid">
-<div>
+<section id="play" class="game off">
+<div class="hud"><span class="m" id="playKicker"></span><span>현금<b id="cashNow">-</b></span><span>매출<b id="salesNow">-</b></span><span>대출<b id="debtNow">-</b></span><div class="prog" id="progress" role="progressbar" aria-label="진행" aria-valuemin="0" aria-valuemax="36"><i id="progressFill"></i></div></div>
 <figure class="scene" id="scene" hidden></figure>
-<p class="event-from" id="eventFrom"></p>
-<h2 class="event-title" id="eventTitle"></h2>
-<div class="event-body" id="eventText"></div>
-<div class="choices" id="eventChoices"></div>
-<p class="fine" id="playStory"></p>
+<section class="talk"><div class="who" id="eventWho"></div><h2 class="event-title" id="eventTitle"></h2><div class="event-body" id="eventText"></div></section>
+<div class="pick" id="eventChoices"></div>
+<div class="more-wrap">
+<details class="assumptions"><summary>가게 현황</summary><ul class="status-list" id="statusList"></ul></details>
+<details class="assumptions"><summary>장부 보기</summary><div class="chart-wrap" id="cashChartBox"></div><div id="runDelivery" class="run-delivery"></div></details>
+<details class="assumptions"><summary>운영 조정·폐업</summary><div class="exit-box"><div id="closePreview" class="note-box"></div><div class="actions"><button class="action-alt" id="quit" type="button">여기서 문 닫기</button></div></div></details>
 </div>
-<aside class="side-panel" aria-label="가게 현황">
-<h3>가게 현황</h3>
-<ul class="status-list" id="statusList"></ul>
-<details class="assumptions" open><summary>장부 보기</summary><div class="chart-wrap" id="cashChartBox"></div><div id="runDelivery" class="run-delivery"></div></details>
-<div class="exit-box"><div id="closePreview" class="note-box"></div><div class="actions"><button class="action-alt" id="quit" type="button">여기서 문 닫기</button></div></div>
-</aside>
-</div>
-</div></section>
+</section>
 
-<section id="results" class="off"><div class="wrap-game">
+<section id="results" class="results off"><figure class="scene" id="resultScene" hidden></figure><div class="wrap">
 <div class="front">
-<p class="kicker"><span id="resultTitle">마지막 장부</span></p>
+<p class="kicker" id="resultTitle"></p>
 <h2 id="resultHeadline"></h2>
 <div class="endmessage" id="resultMessage"></div>
 </div>
@@ -165,50 +150,47 @@
 </div>
 <div class="reality-gateway"><p id="bridgeLine"></p><h3>당신이 겪은 일은<br>게임 속에서만 벌어지는 일이 아닙니다.</h3><div class="actions"><button class="btn primary" id="compare" type="button">실제 사장님들 만나기</button></div></div>
 <div class="actions"><button class="btn" id="restart" type="button">다른 가게 차려보기</button><button class="action-alt" id="export" type="button">월별 장부 CSV</button></div>
-<div class="result-block" id="ledgerBlock"><h3>월별 장부</h3><div class="tablewrap"><table><thead><tr><th>월</th></tr></thead><tbody id="recordTable"></tbody></table></div></div>
+<details class="assumptions" id="ledgerBlock"><summary>월별 장부</summary><div class="tablewrap"><table><thead><tr><th>월</th></tr></thead><tbody id="recordTable"></tbody></table></div></details>
 </div></section>
 </main>
 
-<section id="reality" class="reality-section"><div class="wrap">
+<section id="reality" class="reality-section light"><div class="wrap">
 <p class="eyebrow">2024년 취재</p>
 <h2>게임이 끝나면 현실이 시작됩니다</h2>
-<p class="reality-lead">기자들이 만난 사장님들의 이야기입니다.</p>
 <div id="personalized" class="personalized"></div>
 <div class="story-tabs" id="storyTabs" role="group" aria-label="이야기 선택"></div>
 <article id="storyContent" class="story-content" aria-live="polite"></article>
 <div class="story-actions"><button id="prevStory" class="action-alt" type="button">이전 이야기</button><button id="nextStory" class="btn primary" type="button">다음 이야기</button></div>
-<p class="reality-caption">취재 사례는 2024년 당시 상황이며 현재 근황이 아닙니다. 게임과 사례의 연결은 주제별 추천입니다.</p>
+<details class="assumptions"><summary>취재 사례 안내</summary><p>취재 사례는 2024년 당시 상황이며 현재 근황이 아닙니다. 게임과 사례의 연결은 주제별 추천입니다.</p></details>
 </div></section>
 
-<section id="data" class="data-section"><div class="wrap">
+<section id="data" class="data-section light"><div class="wrap">
 <p class="eyebrow">자영업 데이터</p>
 <h2>2024년 이후, 무엇이 달라졌을까</h2>
-<p class="data-intro">숫자는 대상 기간과 발표 날짜를 함께 읽어야 합니다.</p>
 <div id="after2024"></div>
 <div class="data-controls"><label for="indicatorSelect">비교할 지표</label><select id="indicatorSelect"></select><span>자료 확인일 2026.10.19</span></div>
 <div id="comparison" aria-live="polite"></div>
 <div class="data-grid" id="dataCards"></div>
 <details class="data-method"><summary>아직 확인하지 못한 자료</summary><div id="pendingData"></div></details>
-<div class="support-panel"><span>폐업 이후</span><h3>2026년 희망리턴패키지</h3><p>사업정리 컨설팅, 법률자문, 채무조정, 점포철거비 등을 지원합니다. 대상·임차 조건·제외 업종·잔여 예산은 세부 사업별 최신 공고를 확인해야 하며, 게임 회수액에는 포함하지 않았습니다.</p><a href="https://www.sbiz24.kr/#/pbanc/567" target="_blank" rel="noopener noreferrer">2026년 점포철거비 공고 ↗</a><a href="https://www.sbiz.or.kr/nhrp/main.do" target="_blank" rel="noopener noreferrer">컨설팅·법률·채무조정 공고 ↗</a></div>
+<div class="support-panel"><span>폐업 이후</span><h3>2026년 희망리턴패키지</h3><p>사업정리 컨설팅, 법률자문, 채무조정, 점포철거비를 지원합니다. 대상과 조건은 사업별 최신 공고를 확인하세요. 게임 회수액에는 포함하지 않았습니다.</p><a href="https://www.sbiz24.kr/#/pbanc/567" target="_blank" rel="noopener noreferrer">2026년 점포철거비 공고 ↗</a><a href="https://www.sbiz.or.kr/nhrp/main.do" target="_blank" rel="noopener noreferrer">컨설팅·법률·채무조정 공고 ↗</a></div>
 </div></section>
 
-<section id="method" class="method"><div class="wrap-article">
+<section id="method" class="method light"><div class="wrap-text">
 <h2>계산 방법</h2>
 <div id="methodText"></div>
 <details><summary>계산 방식과 한계</summary><div id="allMethods"></div></details>
 </div></section>
 
-<section class="ending"><div class="wrap">
+<section class="ending light"><div class="wrap">
 <p>게임 속 당신은 다른 선택을 할 수 있었습니다.</p>
 <h2>현실의 사장님들에게는 선택지가 많지 않았을지도 모릅니다.</h2>
 <a href="https://www.joongang.co.kr/issue/11684" target="_blank" rel="noopener noreferrer">중앙일보 2024 자영업 리포트 읽기 ↗</a><a href="#setup" id="again">다시 시작하기</a>
 </div></section>
 
-<section class="sources-section wrap" id="sources"><h2>취재와 데이터의 출처</h2>
-<p>독립적인 재구성물이며 기사 전문과 영상은 다시 싣지 않았습니다. 기사 속 사진은 사용 허락을 받아 출처와 함께 게재했습니다.</p>
+<section class="sources-section light" id="sources"><div class="wrap"><h2>출처</h2>
 <h3>취재 기사 · 2024년 당시</h3><div id="articleSources"></div><div id="brandSources"></div>
-<h3>공식 통계·정책</h3><div id="officialSources"></div></section>
-<footer class="foot"><div class="wrap"><b>대한민국 자영업자로 살아남기 3.0</b><p>독립 제작 · 중앙일보 공식 서비스 아님 · 원본 프로토타입을 확장한 가상 체험</p></div></footer>
+<h3>공식 통계·정책</h3><div id="officialSources"></div></div></section>
+<footer class="foot light"><div class="wrap"><b>대한민국 자영업자로 살아남기 3.0</b> · 독립 제작 · 중앙일보 공식 서비스 아님 · 기사 사진은 사용 허락을 받아 출처와 함께 게재했습니다.</div></footer>
 <script type="module" src="app.js"></script>
 </body>
 </html>

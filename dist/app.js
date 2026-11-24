@@ -1,6 +1,7 @@
 import { beginEpisodes, currentEpisode, decideEpisode, changeOperations, episodeSpeaker, episodeContext } from './episodes.js';
 import { mountPresets } from './setup-ui.js';
 import { eventView } from './event-format.js';
+import { sceneFor, sceneHTML } from './scenes.js';
 import { renderOutcome } from './outcomes.js';
 import { mountTrends } from './trends.js';
 import { businessOutflows, largestDecisionExpense } from './ledger-summary.js';
@@ -13,7 +14,7 @@ const $=id=>document.getElementById(id),fmt=(n,d=0)=>n.toLocaleString('ko-KR',{m
 const big=n=>`${n<0?'−':''}${fmt(Math.abs(Math.round(n)))}<small>만원</small>`;
 const eok=n=>{const a=Math.abs(Math.round(n)),e=Math.floor(a/10000),m=a%10000;return (n<0?'−':'')+(e?`${fmt(e)}억${m?` ${fmt(m)}만원`:'원'}`:`${fmt(m)}만원`);};
 const link=(url,label)=>`<a href="${esc(url)}" target="_blank" rel="noopener noreferrer">${esc(label)} ↗</a>`;
-const COLORS=['#AD352B','#375B78','#27724E'];
+const COLORS=['#e0a458','#8fb5d6','#8fc79a'],LIGHT=['#AD352B','#375B78','#27724E'];
 let selected='chicken',sim=null,currentStory=0,personal=false;
 const basicMap={funds:'own',loan:'loan',owner:'living',area:'area',brand:'brand',salesCapture:'salesCapture',size:'size',staff:'staff',hours:'hours',strategy:'strategy'};
 const overrideFields=['deliveryShare','sales','costRatio','rent','interior','entry','deposit'];
@@ -88,17 +89,18 @@ for(const k of assumptionKeys)$(k).addEventListener('input',()=>{dirty.add(k);su
 $('resetAssumptions').onclick=()=>{dirty.clear();for(const k of assumptionKeys)if(!overrideFields.includes(k))$(k).value=defaults[k];summary();};
 
 /* 마법사 */
-function goStep(n){[1,2,3].forEach(i=>{$('step'+i).hidden=i!==n;});[...$('wizSteps').children].forEach((li,i)=>{li.className=i+1===n?'on':i+1<n?'done':'';});$('setup').scrollIntoView({block:'start'});}
+function goStep(n){if(n===3)$('readyScene').innerHTML=sceneHTML({svg:'open',tag:'개업 준비'});[1,2,3].forEach(i=>{$('step'+i).hidden=i!==n;});[...$('wizSteps').children].forEach((li,i)=>{li.className=i+1===n?'on':i+1<n?'done':'';});jump($('setup'));}
 $('toStep2').onclick=()=>goStep(2);$('backStep1').onclick=()=>goStep(1);$('toStep3').onclick=()=>goStep(3);$('backStep2').onclick=()=>goStep(2);
 
-function show(id){for(const k of ['setup','play','results'])$(k).classList.toggle('off',k!==id);document.body.classList.toggle('playing',id!=='setup');$(id).scrollIntoView({block:'start'});}
+const jump=el=>window.scrollTo({top:el.getBoundingClientRect().top+scrollY-56,behavior:'instant'});
+function show(id){for(const k of ['setup','play','results'])$(k).classList.toggle('off',k!==id);document.body.classList.toggle('playing',id!=='setup');jump($(id));}
 
 /* 그래프 */
 const chartW=el=>Math.max(280,Math.round(el?.getBoundingClientRect().width||0)||340);
-function lineChart(rows,keys,labels,width=340){const height=Math.round(Math.min(280,Math.max(190,width*.56))),L=52,R=14,T=14,B=34;let all=[0,...rows.flatMap(r=>keys.map(k=>r[k]))],min=Math.min(...all),max=Math.max(...all);if(max===min)max=min+1;const X=i=>L+i/Math.max(1,rows.length-1)*(width-L-R),Y=v=>T+(max-v)/(max-min)*(height-T-B);let out=`<svg viewBox="0 0 ${width} ${height}" role="img" aria-label="${esc(labels.join(' 및 '))} 추이. 단위 만원"><title>${esc(labels.join(' · '))} (만원)</title>`;
+function lineChart(rows,keys,labels,width=340,colors=COLORS){const height=Math.round(Math.min(280,Math.max(190,width*.56))),L=52,R=14,T=14,B=34;let all=[0,...rows.flatMap(r=>keys.map(k=>r[k]))],min=Math.min(...all),max=Math.max(...all);if(max===min)max=min+1;const X=i=>L+i/Math.max(1,rows.length-1)*(width-L-R),Y=v=>T+(max-v)/(max-min)*(height-T-B);let out=`<svg viewBox="0 0 ${width} ${height}" role="img" aria-label="${esc(labels.join(' 및 '))} 추이. 단위 만원"><title>${esc(labels.join(' · '))} (만원)</title>`;
 for(let i=0;i<4;i++){const v=min+(max-min)*i/3,y=Y(v);out+=`<line x1="${L}" x2="${width-R}" y1="${y}" y2="${y}" stroke="currentColor" opacity=".18"/><text x="${L-6}" y="${y+4}" text-anchor="end" fill="currentColor" font-size="12">${fmt(v)}</text>`;}
 out+=`<line x1="${L}" x2="${width-R}" y1="${Y(0)}" y2="${Y(0)}" stroke="currentColor" opacity=".5" stroke-dasharray="4 4"/>`;
-keys.forEach((k,j)=>{out+=`<polyline points="${rows.map((r,i)=>`${X(i)},${Y(r[k])}`).join(' ')}" fill="none" stroke="${COLORS[j]}" stroke-width="3" stroke-linejoin="round"/>`;});out+=`<text x="${L}" y="${height-10}" fill="currentColor" font-size="12">${rows[0]?.month??0}개월</text><text x="${width-R}" y="${height-10}" text-anchor="end" fill="currentColor" font-size="12">${rows.at(-1)?.month??0}개월</text></svg><div class="chart-legend">${labels.map((s,i)=>`<span style="--legend:${COLORS[i]}">${s}</span>`).join('')}<small>단위 만원</small></div>`;return out;}
+keys.forEach((k,j)=>{out+=`<polyline points="${rows.map((r,i)=>`${X(i)},${Y(r[k])}`).join(' ')}" fill="none" stroke="${colors[j]}" stroke-width="3" stroke-linejoin="round"/>`;});out+=`<text x="${L}" y="${height-10}" fill="currentColor" font-size="12">${rows[0]?.month??0}개월</text><text x="${width-R}" y="${height-10}" text-anchor="end" fill="currentColor" font-size="12">${rows.at(-1)?.month??0}개월</text></svg><div class="chart-legend">${labels.map((s,i)=>`<span style="--legend:${colors[i]}">${s}</span>`).join('')}<small>단위 만원</small></div>`;return out;}
 function waterfall(records){const sum=k=>records.reduce((a,r)=>a+r[k],0),rev=sum('sales');if(!rev)return '';
  const rows=[['원재료·상품',sum('material')],['배달·결제 수수료',sum('delivery')+sum('card')],['로열티',sum('royalty')],['인건비',sum('wages')],['임대료',sum('rent')],['기타 운영비',sum('other')],['감가상각',sum('depreciation')],['이자',sum('interest')],['세금·부가세',sum('tax')+sum('vat')]].map(([n,v])=>[n,v/rev*100]);
  const left=100-rows.reduce((a,r)=>a+r[1],0),pct=v=>fmt(v,1);
@@ -106,19 +108,18 @@ function waterfall(records){const sum=k=>records.reduce((a,r)=>a+r[k],0),rev=sum
 
 /* 게임 화면 */
 function renderPlay(){const t=totals(sim),r=sim.records.at(-1),e=currentEpisode(sim);
- $('playTitle').textContent=`${sim.p.name} · ${sim.a.name}`;$('playKicker').textContent=`개업 ${sim.month}개월차 · ${sim.month} / 36개월`;
+ $('playKicker').textContent=`개업 ${sim.month}개월차`;
  $('progressFill').style.width=`${sim.month/36*100}%`;$('progress').setAttribute('aria-valuenow',String(sim.month));
  $('cashNow').innerHTML=big(sim.cash);$('cashNow').classList.toggle('neg',sim.cash<0);$('salesNow').innerHTML=big(sim.lastRevenue);$('debtNow').innerHTML=big(sim.debt);
  const fatigue=sim.fatigue??0;
  $('statusList').innerHTML=[['월 영업이익',`<b class="${r.operating<0?'neg':''}">${money(r.operating)}</b>`],['지난 구간 현금 증감',`<b class="${sim.lastDelta<0?'neg':''}">${sim.lastDelta>0?'+':''}${money(sim.lastDelta)}</b>`],['점주 노동시간',`<b>주 ${fmt(sim.hours+sim.extraHours)}시간</b>`],['피로',`<b>${fatigue>=65?'높음':fatigue>=35?'보통':'낮음'}</b>`],['추가 휴무',`<b>${sim.restDays??0}일</b>`],['직원',`<b>${sim.staff}명</b>`],...(sim.householdCash>0?[['가계 예비금',`<b>${money(sim.householdCash)}</b>`]]:[])].map(([a,b])=>`<li><span>${a}</span>${b}</li>`).join('');
  const box=$('cashChartBox');box.innerHTML=lineChart([{month:0,cash:sim.buffer,debt:sim.loan},...sim.records],['cash','debt'],['현금','대출'],chartW(box.parentElement));
  paintRunBurden(sim,r);
- $('playStory').textContent=`최근 영업이익 ${money(r.operating)}, 순현금 ${money(r.flow)}. 누적 점주 노동 ${fmt(t.hours)}시간.`;
- const scene=$('scene');scene.hidden=sim.decisions.length!==0;if(!scene.hidden&&!scene.firstChild)scene.innerHTML='<img src="shop-illustration.jpg" width="1672" height="941" alt="마감 시간에 동네 가게에서 영수증을 정리하는 점주"><figcaption>일러스트</figcaption>';
- if(e){$('eventFrom').textContent=`개업 ${sim.month}개월차 · ${episodeSpeaker(e)}`;$('eventTitle').textContent=e.title;$('eventText').innerHTML=eventView({channel:e.channel,who:episodeSpeaker(e),text:episodeContext(sim,e),month:sim.month});}
- else{$('eventFrom').textContent='';$('eventTitle').textContent='최종 결산';$('eventText').innerHTML='';}
- $('eventChoices').innerHTML='';if(e)for(const key of ['a','b']){const c=e[key],b=document.createElement('button');b.className='choice';b.type='button';b.textContent=c;b.onclick=()=>{decideEpisode(sim,key);renderState();};$('eventChoices').append(b);}
- const f=forecastClosure(sim);$('closePreview').innerHTML=`<strong>폐업도 경영의 선택입니다.</strong><br>지금 정리하면 ${money(f.now)}, ${f.target}개월까지 영업한 뒤 정리하면 ${money(f.later)}<br>계속 영업하는 동안 생활비 ${money(f.livingPaid)}가 가게 현금에서 나갑니다. 정리하면 그 생활비는 다른 소득으로 마련해야 합니다.<br><small>${f.assumption} 회수액은 음수가 될 수 있습니다.</small>`;}
+ const sc=sceneFor(e,sim),scene=$('scene');scene.hidden=!sc;scene.innerHTML=sceneHTML(sc);
+ if(e){const who=episodeSpeaker(e),person=who!==e.channel,nm=who.split(' · ').pop();$('eventWho').innerHTML=person?`<i>${esc(nm[0])}</i><b>${esc(who)}</b>`:`<b>${esc(who)}</b>`;$('eventTitle').textContent=e.title;$('eventText').innerHTML=eventView({channel:e.channel,who:episodeSpeaker(e),text:episodeContext(sim,e),month:sim.month});}
+ else{$('eventWho').innerHTML='';$('eventTitle').textContent='최종 결산';$('eventText').innerHTML='';}
+ $('eventChoices').innerHTML='';if(e)for(const key of ['a','b']){const c=e[key],b=document.createElement('button');b.className='choice';b.type='button';b.innerHTML=`<i>${key==='a'?1:2}</i><span></span>`;b.lastChild.textContent=c;b.onclick=()=>{decideEpisode(sim,key);renderState();};$('eventChoices').append(b);}
+ const f=forecastClosure(sim);$('closePreview').innerHTML=`지금 정리하면 ${money(f.now)} · ${f.target}개월까지 영업 후 정리하면 ${money(f.later)}<br>영업하는 동안 생활비 ${money(f.livingPaid)}가 가게 현금에서 나갑니다.<br><small>${f.assumption} 회수액은 음수가 될 수 있습니다.</small>`;}
 function arrangeResults(){const flow=$('resultFlow');for(const id of ['keyEventBlock','wfBlock','salaryComparison','priorRun','afterClosing','runCharts','extendedResults','resultShare']){const el=$(id);if(el)flow.append(el);}if($('salaryComparison'))$('salaryComparison').open=true;}
 function renderState(){
  try{localStorage.setItem("survival-v3",JSON.stringify(sim));}catch{}
@@ -200,7 +201,7 @@ try{
  const saved=JSON.parse(localStorage.getItem('survival-v3'));
  if(saved?.seen){
   if(saved.finished)resume.textContent='지난 결과 보기';
-  const resumeBox=document.createElement('div');resumeBox.className='actions resume-box';resumeBox.append(resume);$('wizSteps').before(resumeBox);
+  $('resumeBox').append(resume);
   resume.onclick=()=>{sim=saved;resume.remove();renderState();};
  }
 }catch{}
@@ -209,7 +210,7 @@ $('quit').onclick=()=>{close(sim);renderState();};
 /* 결과 */
 const metric=(label,value)=>`<div class="result-metric"><span>${label}</span><strong>${value}</strong></div>`;
 function renderResults(){const t=totals(sim),l=t.liquidation,gap=l.net-sim.own;
- $('resultTitle').textContent=sim.reason;
+ $('resultTitle').textContent=sim.reason;{const rs=$('resultScene');rs.hidden=false;rs.innerHTML=sceneHTML(sim.closed?{svg:'closed',tag:'폐업'}:{art:'art-open',tag:`${sim.month}개월 영업`});}
  const span=sim.month>=36?'3년':`${sim.month}개월`;
  $('resultHeadline').innerHTML=`당신은 ${span} 동안<br>${eok(t.revenue)}을 팔았습니다.<br><em class="${gap>=0?'pos':''}">${gap>=0?'창업할 때보다 자본이 늘었습니다.':'하지만 손에 남은 돈은 창업할 때보다 적었습니다.'}</em>`;
  $('resultMessage').textContent=`${sim.p.name} · ${sim.a.name} · 청산하면 ${money(l.net)}가 남습니다. 창업 때 자기자본은 ${money(sim.own)}였고 차이는 ${gap>=0?'+':''}${money(gap)}입니다.`;
@@ -217,7 +218,7 @@ function renderResults(){const t=totals(sim),l=t.liquidation,gap=l.net-sim.own;
  $('finalWorthSub').textContent=`자기자본 ${money(sim.own)} 대비`;
  $('laborHours').innerHTML=`${fmt(t.hours)}<small>시간</small>`;$('debtLeft').innerHTML=big(sim.debt);$('hourlyReal').innerHTML=`${fmt(t.hourly)}<small>원</small>`;
  const major=largestDecisionExpense(sim.decisions),recent=sim.decisions.slice(-6).map(d=>`<li><b>${d.month}개월</b> · ${esc(d.title)}</li>`).join('');
- $('keyEvent').innerHTML=`${major?`<p class="scene-number" style="font-size:var(--fs-card)">${major.month}개월 · ${esc(major.title)}<span>${money(major.cost)}</span></p>`:'<p>가장 큰 일시 지출은 없었습니다.</p>'}${recent?`<ul class="timeline">${recent}</ul>`:''}`;
+ $('keyEvent').innerHTML=`${major?`<p class="scene-number" style="font-size:20px">${major.month}개월 · ${esc(major.title)}<span>${money(major.cost)}</span></p>`:'<p>가장 큰 일시 지출은 없었습니다.</p>'}${recent?`<ul class="timeline">${recent}</ul>`:''}`;
  $('wfBox').innerHTML=waterfall(sim.records);
  $('extendedResults').innerHTML=`<div class="result-block"><h3>사장님의 시간값</h3><div class="hourly-panel"><p>점주 노동시간당 사업소득</p><strong>${fmt(t.hourly)}<small>원 / 시간</small></strong><p>2026년 최저임금 10,320원과 ${t.hourly>=10320?'비교하면 이상':'비교하면 미만'}입니다. 영업이익 ÷ 노동시간이며 자본 수익이 섞여 있고 법정 임금이 아닙니다.</p><details class="assumptions"><summary>내 기준으로 다시 계산</summary><label for="resultHour">비교 시급 (원)</label><input id="resultHour" type="number" min="0" max="100000" value="${sim.hourly}"/><label for="resultCapital">자기자본 기회비용 (연 %)</label><input id="resultCapital" type="number" min="0" max="30" step=".1" value="${sim.capitalRate}"/><p id="economicOutput">경제적 수익 ${money(t.economic)}</p></details></div></div><details class="assumptions"><summary>세부 수치와 청산 정산</summary><div class="result-grid">${metric('초기 투자·보증금',money(sim.startcost))}${metric('초기 자기자본',money(sim.own))}${metric('가게 현금에서 쓴 생활비',money(sim.records.reduce((x,r)=>x+(r.ownerDraw??0),0)))}${metric('누적 매출',money(t.revenue))}${metric('누적 영업손익',money(t.operating))}${metric('점주 노동비용 차감 후',money(t.operating-t.labor))}${metric('노동·자본 기회비용 반영 후',money(t.economic))}${metric('사업 현금 잔액',money(sim.cash))}${metric('청산 기준 투자 회수율',fmt(t.recovery,1)+'%')}${metric('종료 방식',sim.closed?'영업 정리':'36개월 운영 완료')}</div><h4 style="margin-top:var(--s5)">청산 정산</h4><div class="result-grid">${metric('현금',money(l.cash))}${metric('회수 보증금',money(l.recoveredDeposit))}${metric('시설 처분액',money(l.salvage))}${metric('잔여 대출',money(l.debt))}${metric('철거·복구비',money(l.demolition))}${metric('계약 해지비',money(l.termination))}</div><p class="help">36개월 운영 완료 시에도 비교를 위해 같은 청산 가정을 적용했습니다. 보증금 회수율 ${sim.depositRecovery}%, 시설 처분 비율 ${sim.salvage}%에서 경과월수만큼 감액하며 권리금 회수는 0입니다.</p></details>`;
  $('extendedResults').insertAdjacentHTML('afterbegin',deliveryResult(sim));$('resultDeliveryLink').onclick=()=>{reality(false);currentStory=articles.findIndex(a=>a.id==='delivery');renderStory();$('reality').scrollIntoView({behavior:'smooth'});};
@@ -243,7 +244,7 @@ return `<div class="street-diagram" aria-label="수요 이동과 점포 경쟁�
 const photos={demand:['https://pds.joongang.co.kr/news/component/htmlphoto_mmdata/202409/24/27a53bdc-c3c2-4d3e-9d48-6f9e96f5c2f0.jpg','녹두호프에서 맥주병을 치우는 점주 김례숙 씨','2024년 9월, 서울 관악구 녹두호프'],rent:['https://pds.joongang.co.kr/news/component/htmlphoto_mmdata/202409/25/5f6b8026-67e1-4181-8b20-8f37e3999ac9.jpg','호부침개 백선기 씨가 손님을 기다리며 가게 밖을 내다보는 모습','호부침개 백선기 씨가 손님을 기다리면서 가게 밖을 내다보고 있다.'],franchise:['https://pds.joongang.co.kr/news/component/htmlphoto_mmdata/202409/27/91a44d9b-a69e-41ab-bffe-4d6097cb6639.jpg','맘스터치 상도역점 황성구 씨가 손님을 기다리는 모습','맘스터치 상도역점 황성구 씨(왼쪽)가 손님을 기다리고 있다.']};
 const photo=id=>photos[id]?`<figure class="story-photo"><img src="${photos[id][0]}" alt="${photos[id][1]}" loading="lazy" referrerpolicy="no-referrer"><figcaption>${photos[id][2]} · 사진 중앙일보</figcaption></figure>`:'';
 function renderStory(){const a=articles[currentStory];$('storyTabs').innerHTML=articles.map((a,i)=>`<button type="button" data-story="${i}" aria-pressed="${i===currentStory}">${String(i+1).padStart(2,'0')} ${a.title}</button>`).join('');$('storyTabs').querySelectorAll('button').forEach(b=>b.onclick=()=>{currentStory=Number(b.dataset.story);renderStory();});$('storyContent').innerHTML=`<div class="story-heading"><span>${a.reportedAt} 당시</span><h3>${a.title}</h3></div><div class="story-body"><p class="story-question">${a.question}</p><p>${a.facts}</p>${photo(a.id)}<div class="article-note"><small>취재 대상: ${a.subject}<br>확인 범위: ${a.verification}</small><br>${link(a.url,a.originalTitle??'관련 기획 원문')}</div></div>${illustration(a.id)}<div class="related-sources">${a.relatedStatistics.map(k=>link(sources[k].url,sources[k].label)).join('<br>')}</div>`;$('prevStory').disabled=currentStory===0;$('nextStory').textContent=currentStory===articles.length-1?'그때와 지금 비교하기':'다음 이야기';
- if(a.id==='rent'){const draw=()=>{const sales=Number($('salesSlider').value),profit=sales*.6-900;$('sliderLabel').textContent=money(sales);const rows=Array.from({length:30},(_,i)=>{const v=600+i*100;return{month:v,op:v*.6-900,cash:500+v*.6-900};});$('breakChart').innerHTML=lineChart(rows,['op','cash'],['영업손익 (감가상각 제외)','1개월 뒤 현금'],chartW($('breakChart')));$('breakChart').querySelector('svg').setAttribute('aria-label','매출 600~3500만원일 때 영업손익과 1개월 뒤 현금. 손익분기 매출 1500만원');$('breakChart').querySelectorAll('svg text').forEach(n=>{if(n.textContent.endsWith('개월'))n.textContent=n.getAttribute('text-anchor')==='end'?'매출 3,500':'매출 600';});$('breakCaption').textContent=`선택 매출 ${money(sales)} − 원재료 ${money(sales*.4)} − 인건비 500만원 − 임대료 250만원 − 기타 150만원 = 영업손익 ${money(profit)} / 현금 ${money(500+profit)}. 손익분기 매출 1,500만원.`;};$('salesSlider').oninput=draw;draw();}
+ if(a.id==='rent'){const draw=()=>{const sales=Number($('salesSlider').value),profit=sales*.6-900;$('sliderLabel').textContent=money(sales);const rows=Array.from({length:30},(_,i)=>{const v=600+i*100;return{month:v,op:v*.6-900,cash:500+v*.6-900};});$('breakChart').innerHTML=lineChart(rows,['op','cash'],['영업손익 (감가상각 제외)','1개월 뒤 현금'],chartW($('breakChart')),LIGHT);$('breakChart').querySelector('svg').setAttribute('aria-label','매출 600~3500만원일 때 영업손익과 1개월 뒤 현금. 손익분기 매출 1500만원');$('breakChart').querySelectorAll('svg text').forEach(n=>{if(n.textContent.endsWith('개월'))n.textContent=n.getAttribute('text-anchor')==='end'?'매출 3,500':'매출 600';});$('breakCaption').textContent=`선택 매출 ${money(sales)} − 원재료 ${money(sales*.4)} − 인건비 500만원 − 임대료 250만원 − 기타 150만원 = 영업손익 ${money(profit)} / 현금 ${money(500+profit)}. 손익분기 매출 1,500만원.`;};$('salesSlider').oninput=draw;draw();}
  if(a.id==='delivery')wireDeliveryStory();}
 $('prevStory').onclick=()=>{currentStory=Math.max(0,currentStory-1);renderStory();$('storyContent').scrollIntoView({behavior:'smooth'});};$('nextStory').onclick=()=>{if(currentStory===articles.length-1){$('data').scrollIntoView({behavior:'smooth'});return;}currentStory++;renderStory();$('storyContent').scrollIntoView({behavior:'smooth'});};
 
