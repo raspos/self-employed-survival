@@ -25,3 +25,5 @@
 .story-photo{margin:1.25rem 0}
 .story-photo img{display:block;width:100%;height:auto}
 .story-photo figcaption{margin-top:.5rem;font-size:.875rem;line-height:1.5}
+.hero-route a{color:inherit;font-size:1rem;text-underline-offset:.28em}
+.hero-route{flex-wrap:wrap}

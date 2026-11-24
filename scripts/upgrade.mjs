@@ -7,7 +7,7 @@ html=html.replace('</head>','<link rel="stylesheet" href="editorial.css"/>\n<met
 html=html.replace('경제 데이터 스토리텔링 실험실 · MVP 0.1','2024 REPORT → 2026 UPDATE');
 html=html.replace('INTERACTIVE ECONOMIC STORY · PROTOTYPE','INTERACTIVE JOURNALISM / VOL. 02');
 html=html.replace('당신에게 <span>1억원</span>이 생겼다.<br>사장이 되시겠습니까?','대한민국<br>자영업자로 <span>살아남기</span>');
-html=html.replace(/<p class="lead">[\s\S]*?<\/p>/,'<p class="lead">당신에게 1억원이 생겼습니다.<br>회사를 그만두고 사장이 되시겠습니까?</p><a class="hero-start" href="#setup">내 가게 시작하기 <span>↗</span></a><div class="hero-route"><span>01 &nbsp; 운영해보다</span><span>02 &nbsp; 현실을 만나다</span><span>03 &nbsp; 숫자로 읽다</span></div>');
+html=html.replace(/<p class="lead">[\s\S]*?<\/p>/,'<p class="lead">당신에게 1억원이 생겼습니다.<br>회사를 그만두고 사장이 되시겠습니까?</p><a class="hero-start" href="#setup">내 가게 시작하기 <span>↗</span></a><div class="hero-route"><a href="#reality">실제 사장님 이야기</a><a href="#data">그때와 지금</a></div>');
 html=html.replace(/<div class="fact">[\s\S]*?<\/div>/,'<div class="fact">36개월의 선택, 그리고 게임 밖의 삶.<br>가상 경영 시뮬레이션 × 중앙일보 「2024 자영업 리포트」 기반 재구성<br><b>독립 제작 프로젝트 · 중앙일보 공식 서비스가 아닙니다.</b></div>');
 html=html.replace('</header>','</header><nav class="part-nav" aria-label="콘텐츠 이동"><a href="#setup">01 당신은 사장입니다</a><a href="#reality" id="navReality">02 게임 밖의 현실</a><a href="#data">03 그때와 지금</a></nav>');
 html=html.replace('실제 브랜드 선택 기능은 공정위 API를 연동하는 다음 단계에 추가합니다.','가상 브랜드의 조건을 비교하고 가정을 직접 바꿔보세요. 실제 브랜드의 매출 예측이 아닙니다.');
