@@ -24,6 +24,11 @@ $('eventChoices').after(operations);
 const life = document.createElement('p');
 life.className = 'mini';
 operations.before(life);
+const shopIllustration = document.createElement('figure');
+shopIllustration.className = 'story-photo shop-illustration';
+shopIllustration.hidden = true;
+shopIllustration.innerHTML = '<img src="./shop-illustration.jpg" width="1672" height="941" loading="lazy" alt="마감 시간에 동네 가게에서 영수증을 정리하는 점주"><figcaption>게임 속 가게 · 일러스트</figcaption>';
+$('eventTitle').before(shopIllustration);
 operations.addEventListener('click', event => {
  const action = event.target.closest('button')?.dataset.operation;
  if (!action || !sim) return;
@@ -75,7 +80,7 @@ function summary(){try{updateOverrides();const s=applyEnvironment(setup(read()),
  $('sales').dataset.override=String(dirty.has('sales'));paintBrandSummary(s);paintFeePreview(s,r);$('feeLabShare').value=Number($('deliveryShare').value);$('feeLabShareValue').textContent=$('deliveryShare').value+'%';
  $('sideBuffer').className='val '+(s.buffer<0?'bad':'good');$('sideFree').className='val '+(r.flow<0?'bad':'good');
  }catch(e){$('start').disabled=true;$('startAlert').textContent=e.message;}}
-Object.entries(profiles).forEach(([key,p])=>{const b=document.createElement('button');b.type='button';b.className='option'+(key===selected?' chosen':'');b.setAttribute('aria-pressed',String(key===selected));b.innerHTML=`<strong><span>${p.symbol}</span> ${p.name}</strong><small>${p.caption}</small>`;b.onclick=()=>{selected=key;document.querySelectorAll('.option').forEach(x=>{x.classList.toggle('chosen',x===b);x.setAttribute('aria-pressed',String(x===b));});brandPicker(selected,()=>{dirty.delete('sales');summary();});summary();};$('industryOptions').append(b);});
+Object.entries(profiles).forEach(([key,p])=>{const b=document.createElement('button');b.type='button';b.className='option'+(key===selected?' chosen':'');b.setAttribute('aria-pressed',String(key===selected));b.innerHTML=`<strong>${p.name}</strong><small>${p.caption}</small>`;b.onclick=()=>{selected=key;document.querySelectorAll('.option').forEach(x=>{x.classList.toggle('chosen',x===b);x.setAttribute('aria-pressed',String(x===b));});brandPicker(selected,()=>{dirty.delete('sales');summary();});summary();};$('industryOptions').append(b);});
 brandPicker(selected,()=>{dirty.delete('sales');summary();});
 $('feeLabShare').oninput=()=>{$('deliveryShare').value=$('feeLabShare').value;dirty.add('deliveryShare');summary();};
 for(const id of Object.keys(basicMap))$(id).addEventListener('input',summary);
@@ -95,6 +100,7 @@ function renderState(){
  try{localStorage.setItem("survival-v3",JSON.stringify(sim));}catch{}
  if(sim.finished){renderResults();renderOutcome(sim,totals(sim));renderRunCharts();return;}
  const fatigue = sim.fatigue ?? 0;
+ shopIllustration.hidden = sim.decisions.length !== 0;
  life.textContent = `추가 휴무 ${sim.restDays ?? 0}일 · 피로 ${fatigue >= 65 ? '높음' : fatigue >= 35 ? '보통' : '낮음'}`;
  renderPlay();
  if ($('play').classList.contains('off')) show('play');
