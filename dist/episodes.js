@@ -84,6 +84,17 @@ const catalog = [
 ].map(([industry,channel,title,body,a,b,kind,requires],id)=>({id,industry,channel,title,body,a,b,kind,requires}));
 export const episodeCount = catalog.length;
 
+export function episodeSpeaker(event) {
+  if (/가족/.test(event.channel)) return '가족 · 지연';
+  if (/직원/.test(event.channel)) return '직원 · 민서';
+  if (/거래처/.test(event.channel)) return '납품처 · 한 사장';
+  if (/건물주|계약서/.test(event.channel)) return '건물주 · 박 씨';
+  if (/은행/.test(event.channel)) return '은행 · 이 대리';
+  if (/본사/.test(event.channel)) return '본사 · 오 매니저';
+  if (/단골/.test(event.channel)) return '단골 · 수진';
+  return event.channel;
+}
+
 function random(state) {
   state.rng = (Math.imul(1664525,state.rng)+1013904223) >>> 0;
   return state.rng / 4294967296;
@@ -99,6 +110,30 @@ export function beginEpisodes(state, seed) {
 
 export function currentEpisode(state) {
   return catalog[state.episode];
+}
+
+export function changeOperations(state, action) {
+  if (state.finished || !currentEpisode(state)) return false;
+  state.operations ??= [];
+  if (state.operations.some(item => item.month === state.month)) return false;
+  let title;
+  if (action === 'shorter') {
+    if (state.hours + state.extraHours < 25) return false;
+    state.extraHours -= 8;
+    state.revenueMult *= .95;
+    state.other *= .94;
+    title = '영업시간 단축';
+  } else if (action === 'pickup') {
+    if (state.deliveryShare < 10) return false;
+    state.deliveryShare -= 10;
+    state.revenueMult *= .98;
+    title = '배달 일부를 포장으로 전환';
+  } else {
+    return false;
+  }
+  state.operations.push({ month: state.month, title });
+  state.decisions.push({ month: state.month, key: 'operation', title, cost: 0 });
+  return true;
 }
 
 function nextEpisode(state) {

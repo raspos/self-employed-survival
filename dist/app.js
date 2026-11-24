@@ -1,7 +1,7 @@
-import { beginEpisodes, currentEpisode, decideEpisode } from './episodes.js';
+import { beginEpisodes, currentEpisode, decideEpisode, changeOperations, episodeSpeaker } from './episodes.js';
 import { simplifySetup } from './setup-ui.js';
 import { renderOutcome } from './outcomes.js';
-import { environments, applyEnvironment, additionalAreas } from './environments.js';
+import { environments, applyEnvironment, additionalAreas, environmentNotes } from './environments.js';
 import {profiles,areas,defaults,setup,createSimulation,calculateMonth,close,totals,liquidation,recommend,forecastClosure} from './simulation.js';
 import {articles,indicators,sources,pending,methods,checkedAt} from './content.js';
 import {brandPicker,paintBrandSummary,paintFeePreview,paintRunBurden,deliveryResult,deliveryStoryMarkup,wireDeliveryStory,paintUpdates} from './extensions.js';
@@ -13,6 +13,20 @@ const overrideFields=['sales','costRatio','rent','interior','entry','deposit'];
 const assumptionKeys=Object.keys(defaults).filter(k=>!['industry','own','loan','living','area','brand','size','staff','hours','strategy','salesCapture'].includes(k));
 const dirty=new Set();
 simplifySetup();
+const operations = document.createElement('details');
+operations.className = 'assumptions';
+operations.innerHTML = '<summary>운영 조정</summary><div class="actions"><button type="button" class="action-alt" data-operation="shorter">영업시간 단축</button><button type="button" class="action-alt" data-operation="pickup">포장 위주로 전환</button></div><output aria-live="polite"></output>';
+$('eventChoices').after(operations);
+const life = document.createElement('p');
+life.className = 'mini';
+operations.before(life);
+operations.addEventListener('click', event => {
+ const action = event.target.closest('button')?.dataset.operation;
+ if (!action || !sim) return;
+ const applied = changeOperations(sim,action);
+ if (applied) renderState();
+ operations.querySelector('output').textContent = applied ? '다음 달 장부부터 반영됩니다.' : '현재 적용할 수 없습니다.';
+});
 for (const [key, area] of Object.entries(additionalAreas)) {
  $('area').add(new Option(area.name, key));
 }
@@ -24,6 +38,17 @@ for (const [key, scenario] of Object.entries(environments)) {
 }
 economyLabel.append(economySelect);
 $('setup').querySelector('.setup-details').before(economyLabel);
+const economyMethod = document.createElement('details');
+const economyMethodTitle = document.createElement('summary');
+economyMethodTitle.textContent = '경제 환경 적용 기준';
+const economyMethodText = document.createElement('p');
+economyMethod.append(economyMethodTitle,economyMethodText);
+economyLabel.after(economyMethod);
+economySelect.onchange = () => {
+ economyMethodText.textContent = environmentNotes[economySelect.value];
+};
+economySelect.onchange();
+economySelect.addEventListener('change',summary);
 const modeLabel = document.createElement('label');
 modeLabel.textContent = '운영 방식 ';
 const modeSelect = document.createElement('select');
@@ -40,7 +65,7 @@ modeSelect.onchange = () => {
 function read(){const c={industry:selected};for(const [id,k]of Object.entries(basicMap)){if(['area','brand','strategy'].includes(k))c[k]=$(id).value;else {if(!$(id).value.trim()||!$(id).checkValidity())throw Error('입력값의 범위와 단위를 확인하세요.');c[k]=Number($(id).value);}}
  for(const k of assumptionKeys){if(overrideFields.includes(k)&&!dirty.has(k)){c[k]=null;continue;}if(k==='repayment')c[k]=$(k).value;else{if(!$(k).value.trim()||!$(k).checkValidity())throw Error('가정값의 범위와 단위를 확인하세요.');c[k]=Number($(k).value);if(k==='costRatio')c[k]/=100;}}return c;}
 function updateOverrides(){const c={industry:selected};for(const [id,k]of Object.entries(basicMap))c[k]=['area','brand','strategy'].includes(k)?$(id).value:Number($(id).value);try{const s=setup(c);for(const k of overrideFields)if(!dirty.has(k))$(k).value=Number((k==='costRatio'?s[k]*100:s[k]).toFixed(2));}catch{}}
-function summary(){try{updateOverrides();const s=setup(read()),r=calculateMonth({...s,month:0,cash:s.buffer,debt:s.loan,revenueMult:1,extraFixed:0,extraHours:0},1,1);const variable=(r.material+r.royalty+r.delivery+r.card+r.vat)/Math.max(r.sales,1);const be=(s.wages+s.rent+s.other+r.interest+r.principal+s.living)/Math.max(.01,1-variable);
+function summary(){try{updateOverrides();const s=applyEnvironment(setup(read()),economySelect.value),r=calculateMonth({...s,month:0,cash:s.buffer,debt:s.loan,revenueMult:1,extraFixed:0,extraHours:0},1,1);const variable=(r.material+r.royalty+r.delivery+r.card+r.vat)/Math.max(r.sales,1);const be=(s.wages+s.rent+s.other+r.interest+r.principal+s.living)/Math.max(.01,1-variable);
  for(const [id,val]of Object.entries({sideIndustry:s.p.name,sideArea:s.a.name,sideFunding:money(s.own+s.loan),sideStartcost:money(s.startcost),sideBuffer:money(s.buffer),sideSales:money(s.sales),sideBE:money(be),sideFree:money(r.flow)}))$(id).textContent=val;
  $('start').disabled=s.buffer<0;$('startAlert').textContent=s.buffer<0?'자금이 부족합니다. 자본금·대출·초기 비용을 조정해 주세요.':`가상 개업 직후 현금 ${money(s.buffer)}. 창업비용 중 보증금 ${money(s.deposit+s.franchiseDeposit)}은 회수 가능 자산입니다. 손익분기 매출은 세전 현금 기준 근사치입니다.`;
  $('sales').dataset.override=String(dirty.has('sales'));paintBrandSummary(s);paintFeePreview(s,r);$('feeLabShare').value=Number($('deliveryShare').value);$('feeLabShareValue').textContent=$('deliveryShare').value+'%';
@@ -60,9 +85,17 @@ keys.forEach((k,j)=>{out+=`<polyline points="${rows.map((r,i)=>`${X(i)},${Y(r[k]
 function renderPlay(){const t=totals(sim),r=sim.records.at(-1),e=currentEpisode(sim);$('playKicker').textContent=`${sim.month} / 36개월`;$('playTitle').textContent=`${sim.p.name} 가게, ${sim.month}개월 차 장부`;$('playSubtitle').textContent=`${sim.a.name} · ${sim.size}평 · 직원 ${sim.staff}명 · 점주 주 ${sim.hours+sim.extraHours}시간 · 가상 시나리오`;$('cashNow').textContent=money(sim.cash);$('salesNow').textContent=money(sim.lastRevenue);$('profitNow').textContent=money(sim.lastDelta);$('profitNow').className='num '+(sim.lastDelta<0?'neg':'');
  document.querySelector('#play .graphbox').innerHTML=lineChart([{month:0,cash:sim.buffer,debt:sim.loan},...sim.records],['cash','debt'],['현금 잔액','대출 잔액']);
  paintRunBurden(sim,r);$('playStory').textContent=`최근 월 영업이익 ${money(r.operating)} / 순현금 ${money(r.flow)}. 누적 점주 노동 ${fmt(t.hours)}시간. 이익이 나도 원금상환과 생활비로 현금은 줄 수 있습니다.`;
- $('eventTitle').textContent=e?e.channel+' · '+e.title:'최종 결산';$('eventText').textContent=e?.body??'';$('eventChoices').innerHTML='';if(e)for(const key of ['a','b']){const c=e[key],b=document.createElement('button');b.className='choice';b.type='button';b.textContent=c;b.onclick=()=>{decideEpisode(sim,key);renderState();};$('eventChoices').append(b);}
+ $('eventTitle').textContent=e?episodeSpeaker(e)+' · '+e.title:'최종 결산';$('eventText').textContent=e?.body??'';$('eventChoices').innerHTML='';if(e)for(const key of ['a','b']){const c=e[key],b=document.createElement('button');b.className='choice';b.type='button';b.textContent=c;b.onclick=()=>{decideEpisode(sim,key);renderState();};$('eventChoices').append(b);}
  const f=forecastClosure(sim);$('closePreview').innerHTML=`<strong>폐업도 경영의 선택입니다.</strong><br>지금 정리하면 ${money(f.now)} / ${f.target}개월까지 영업 후 정리하면 ${money(f.later)}<br><small>${f.assumption} 회수액은 음수가 될 수 있습니다.</small>`;}
-function renderState(){try{localStorage.setItem("survival-v3",JSON.stringify(sim));}catch{}if(sim.finished){renderResults();renderOutcome(sim,totals(sim));renderRunCharts();}else{renderPlay();show('play');}}
+function renderState(){
+ try{localStorage.setItem("survival-v3",JSON.stringify(sim));}catch{}
+ if(sim.finished){renderResults();renderOutcome(sim,totals(sim));renderRunCharts();return;}
+ const fatigue = sim.fatigue ?? 0;
+ life.textContent = `추가 휴무 ${sim.restDays ?? 0}일 · 피로 ${fatigue >= 65 ? '높음' : fatigue >= 35 ? '보통' : '낮음'}`;
+ renderPlay();
+ if ($('play').classList.contains('off')) show('play');
+ else $('eventTitle').scrollIntoView({ block:'nearest', behavior:'instant' });
+}
 function renderRunCharts() {
  let charts = $('runCharts');
  if (!charts) {
@@ -124,7 +157,11 @@ resume.className='action-alt';
 resume.textContent='이어서 플레이';
 try {
  const saved=JSON.parse(localStorage.getItem('survival-v3'));
- if(saved?.seen && !saved.finished){ $('start').after(resume); resume.onclick=()=>{sim=saved;resume.remove();renderState();}; }
+ if(saved?.seen){
+  if(saved.finished) resume.textContent='지난 결과 보기';
+  $('start').after(resume);
+  resume.onclick=()=>{sim=saved;resume.remove();renderState();};
+ }
 } catch {}
 $('quit').onclick=()=>{close(sim);renderResults();};
 const metric=(label,value)=>`<div class="result-metric"><span>${label}</span><strong>${value}</strong></div>`;

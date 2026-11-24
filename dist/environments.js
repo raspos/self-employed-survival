@@ -17,6 +17,15 @@ export const environments = {
   rebound: { label: '가상 · 경기 회복', wage: 10320, demand: 1.1, rent: 1.05 },
 };
 
+export const environmentNotes = {
+  baseline: '최저임금 10,320원. 그 밖의 조건은 업종별 기본값을 적용합니다.',
+  historical: '최저임금 9,860원. 배달 중개료는 당시 기본요율 9.8% 예시를 적용합니다.',
+  highRate: '대출 연이율을 8%로 설정합니다.',
+  slowdown: '기준 매출 12%, 임대료 2% 감소를 가정합니다.',
+  inputs: '원가율 6%p, 배달비 건당 500원 상승을 가정합니다.',
+  rebound: '기준 매출 10%, 임대료 5% 증가를 가정합니다.',
+};
+
 export function applyEnvironment(state, key) {
   const scenario = environments[key];
   if (!scenario) return state;

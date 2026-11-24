@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { createSimulation } from '../dist/simulation.js';
-import { beginEpisodes, currentEpisode, decideEpisode } from '../dist/episodes.js';
+import { beginEpisodes, currentEpisode, decideEpisode, changeOperations, episodeCount } from '../dist/episodes.js';
 
 function run(industry, seed, strategy, restore = false) {
   let state = createSimulation({ industry });
@@ -25,6 +25,17 @@ function run(industry, seed, strategy, restore = false) {
 test('saved episode and seed reproduce an uninterrupted playthrough', () => {
   const strategy = turn => turn % 2 ? 'a' : 'b';
   assert.deepEqual(run('cafe', 480, strategy, true), run('cafe', 480, strategy));
+});
+
+test('80 episodes are available and an operating adjustment applies only once per turn', () => {
+  assert.equal(episodeCount, 80);
+  const state = createSimulation({ own: 20000 });
+  beginEpisodes(state, 817);
+  const before = state.records.at(-1).hours;
+  assert.equal(changeOperations(state, 'shorter'), true);
+  assert.equal(changeOperations(state, 'pickup'), false);
+  assert.equal(state.records.at(-1).hours, before);
+  assert.equal(state.hours + state.extraHours, 52);
 });
 
 test('4,000 seeded runs settle the ledger and can reach either end state', () => {

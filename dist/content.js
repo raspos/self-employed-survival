@@ -43,7 +43,7 @@ sources.delivery2024={label:'관계부처 · 2024년 배달플랫폼 최종 상�
 sources.baemin={label:'배민 · 배민배달 상생요금제 공식 안내',url:'https://ceo.baemin.com/guide/12699',kind:'official',checked:'2026-10-19'};
 sources.coupangCurrent={label:'쿠팡이츠 · 음식점 상생요금제 공식 안내',url:'https://partners.coupangeats.com/onboarding/',kind:'official',checked:'2026-10-19'};
 sources.coupangSettlement={label:'쿠팡이츠 · 정산 정책',url:'https://partners.coupangeats.com/news/policies/7692/',kind:'official',checked:'2026-10-19'};
-sources.employmentBrief={label:'국가데이터처 · 2026년 9월 고용동향 브리핑',url:'https://www.korea.kr/briefing/policyBriefingView.do?newsId=156785404',published:'2026-10-16',kind:'official'};
+sources.employmentBrief={label:'국가데이터처 · 2026년 10월 고용동향',url:'https://www.korea.kr/briefing/policyBriefingView.do?newsId=156788701',published:'2026-11-11',kind:'official'};
 sources.snackRanking={label:'점포가이드 · 분식 평균매출 공개 집계 (보조 출처)',url:'https://jumpo.shop/franchise-ranking/bunsik/',kind:'secondary',checked:'2026-10-19'};
 indicators.push(
  {id:'franchiseSales',name:'전체 가맹점 연평균 매출',unit:'백만원',before:354,after:369,beforePeriod:'2023년 실적',afterPeriod:'2024년 실적',source:'ftc2025',changeType:'percent',officialChange:4.3,meaning:'공정위 공표 증감률 +4.3%. 표시값은 백만원 단위 반올림으로 단순 계산과 차이가 날 수 있습니다. 비용 차감 전 매출이며 점주의 순이익 증가율이 아닙니다.'},
@@ -55,7 +55,7 @@ export const updates=[
  {period:'2026.04 발표 / 2023 → 2024 실적',title:'매출 증가와 비용 부담은 함께 움직인다',number:'매출 +6.1% / 차액가맹금 +13.0%',text:'외식 가맹점의 연평균 매출과 평균 차액가맹금이 모두 늘었습니다.',source:'ftc2025'},
  {period:'2024.11 상생안 → 이후 시행·현재 안내 확인',title:'중개료는 차등화됐지만 배달비는 남았다',number:'중개 2.0~7.8% + 별도 배달비',text:'과거 기본 중개료 9.8%와 달리 매출 구간별 요율을 적용합니다. 배달비·결제료·광고비와 정산 시차를 함께 봐야 합니다. 구간 분류와 환급 방식은 플랫폼별로 다릅니다.',source:'baemin'},
  {period:'2026.07 발표 / 2024 → 2025 실적',title:'폐업 신고 감소가 곧 부담 해소는 아니다',number:'100.8만 → 97.6만 개',text:'폐업 사업자 수는 줄었습니다. 이 통계는 폐업 신고 집계이므로 기업 생존율·가맹계약 해지율과 같은 개념으로 다루지 않습니다.',source:'closures'},
- {period:'2026.10.16 발표 / 2026년 9월 전년동월 대비',title:'혼자 일하는 사장과 고용하는 사장의 변화가 다르다',number:'고용원 없음 +4.9만 / 있음 −0.8만 명',text:'최신 고용동향은 두 집단의 방향이 달랐음을 보여줍니다. 한 시점의 전년동월 변화이며 2024년부터 누적된 증감이나 그 원인으로 해석하지 않습니다.',source:'employmentBrief'}
+ {period:'2026.10 / 전년 동월 대비',title:'고용원 없는 자영업자 4만 2천 명 증가',number:'고용원 없음 +4.2만 / 있음 +1.5만 명',text:'무급가족종사자는 4만 5천 명 줄었습니다.',source:'employmentBrief'}
 ];
 methods.simulation='브랜드별 기존 가맹점 평균매출은 출처·실적연도가 있는 참고 통계입니다. 게임 매출은 그 월 환산값에 기본 65%의 수정 가능한 시나리오 반영률을 적용한 가정입니다. 실제 신규 매장의 예상 매출이나 성공률이 아닙니다. 비용·이벤트는 업종 공통 모형이며 실제 브랜드 계약을 재현하지 않습니다. 2026년 10월 조건을 고정한 가상 36개월로 미래 임금·금리·매출을 예측하지 않습니다.';
 const brandPending=pending.findIndex(r=>r[0].includes('브랜드별'));
