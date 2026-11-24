@@ -80,6 +80,22 @@ test('family and supplier follow-ups remember decisions across a save', () => {
   assert.equal(pending.size,0);
 });
 
+test('household reserve is set aside from capital and pays living costs only once', () => {
+  const initial = {own:30000,householdReserve:600,living:280};
+  const state = createSimulation(initial);
+  const zeroReserve = createSimulation({...initial,householdReserve:0});
+  assert.equal(state.buffer+state.householdCash,zeroReserve.buffer);
+  beginEpisodes(state,817);
+  assert.equal(state.records[0].ownerDraw,0);
+  assert.equal(state.records[1].ownerDraw,0);
+  assert.equal(state.records[1].householdCash,40);
+  const saved=JSON.parse(JSON.stringify(state));
+  decideEpisode(saved,'a');
+  assert.equal(saved.records[2].ownerDraw,240);
+  assert.equal(saved.householdCash,0);
+  assert.ok(Math.abs(saved.buffer+saved.records.reduce((total,row)=>total+row.flow,0)-saved.cash)<1e-7);
+});
+
 test('4,000 seeded runs settle the ledger and can reach either end state', () => {
   let closed = 0;
   for (const industry of ['chicken', 'cafe', 'store', 'snack']) {

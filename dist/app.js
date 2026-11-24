@@ -109,6 +109,7 @@ function renderRunCharts() {
  }
  const timeline = sim.decisions.map(item => `<li><strong>${item.month}개월</strong> · ${esc(item.title)}</li>`).join('');
  charts.innerHTML = `<summary>36개월 장부와 선택 기록</summary>
+  <p>가계 예비금 잔액 <strong>${money(sim.householdCash??0)}</strong></p>
   <div class="graphbox">${lineChart(sim.records,['sales','netIncome'],['매출','세후 손익'])}</div>
   <div class="graphbox">${lineChart([{month:0,cash:sim.buffer,debt:sim.loan},...sim.records],['cash','debt'],['현금','대출'])}</div>
   ${timeline ? '<ol>'+timeline+'</ol>' : ''}`;

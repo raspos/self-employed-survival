@@ -82,11 +82,15 @@ await mobile.locator('#funds').fill('50000');await mobile.locator('#start').clic
 const mobileSize=await mobile.evaluate(()=>({w:document.documentElement.clientWidth,s:document.documentElement.scrollWidth}));assert.ok(mobileSize.s<=mobileSize.w,JSON.stringify(mobileSize));
 await mobile.locator('#restart').click();
 await mobile.locator('#funds').fill('50000');
+await mobile.locator('.setup-details > summary').click();
+await mobile.locator('#householdReserve').fill('5000');
 await mobile.locator('#start').click();
 await mobile.getByText('매장 양도',{exact:true}).click();
 await mobile.getByLabel(/시설·권리 양도대금/).fill('600');
 await mobile.getByRole('button',{name:'양도하고 영업 종료'}).click();
 assert.equal(await mobile.locator('#resultTitle').innerText(),'가게를 넘기고 새 출발');
+await mobile.locator('#runCharts > summary').click();
+assert.match(await mobile.locator('#runCharts > p').innerText(),/가계 예비금 잔액 [\d,]+만원/);
 await mobile.locator('#afterClosing > summary').click();
 const initialProjection = await mobile.locator('#afterClosing > p').innerText();
 await mobile.getByLabel(/재취업 세전 연봉/).fill('6500');

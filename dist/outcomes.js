@@ -32,7 +32,7 @@ export function comparison(state, annualSalary, result = totals(state)) {
   const wageHours = years * 52 * 40;
   const wageAssets = wageIncome - state.living * state.month +
     state.own * ((1 + state.capitalRate / 100) ** years - 1);
-  const ownerIncome = result.netIncome - state.own * state.capitalRate / 100 * years;
+  const ownerIncome = result.netIncome - (state.own-(state.householdReserve??0)) * state.capitalRate / 100 * years;
   return [
     ['누적 노동소득', ownerIncome, wageIncome, '만원'],
     ['노동시간', result.hours, wageHours, '시간'],
@@ -81,7 +81,7 @@ export function renderOutcome(state, result) {
 }
 
 export function afterClosing(state, settlement, salary, searchMonths, repaymentMonths) {
-  let liquid = settlement.net + settlement.debt;
+  let liquid = settlement.net + settlement.debt + (state.householdCash??0);
   let debt = settlement.debt;
   const principal = debt / repaymentMonths;
   const monthlyWage = salary / 12 * (1 - state.taxRate / 100);

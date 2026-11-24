@@ -26,6 +26,10 @@ export function simplifySetup() {
   Object.assign(salary,{ id:'annualSalary',type:'number',min:'0',max:'100000',step:'100',value:'4200' });
   salaryLabel.append(salary);
   details.append(salaryLabel);
+  const reserveGroup = document.createElement('div');
+  reserveGroup.className = 'form-group';
+  reserveGroup.innerHTML = '<label for="householdReserve">자본금 중 생활비로 남겨둘 금액 (만원)</label><input id="householdReserve" type="number" min="0" max="100000" step="1" value="0">';
+  details.append(reserveGroup);
 
   const presets = document.createElement('div');
   presets.className = 'capital-presets';

@@ -160,7 +160,7 @@ function nextEpisode(state) {
     const fatigueDrag = 1 - Math.max(0, (state.fatigue ?? 0) - 40) / 1000;
     const row = calculateMonth(state, month, monthlyVariation(month) * fatigueDrag);
     state.records.push(row);
-    Object.assign(state,{month:row.month,cash:row.cash,debt:row.debt});
+    Object.assign(state,{month:row.month,cash:row.cash,debt:row.debt,householdCash:row.householdCash});
     const weekly = row.hours * 12 / 52;
     state.fatigue = Math.max(0, Math.min(100, (state.fatigue ?? 0) + (weekly - 55) / 4));
     state.lastRevenue += row.sales;
