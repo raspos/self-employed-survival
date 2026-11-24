@@ -38,7 +38,28 @@ function renderPlay(){const t=totals(sim),r=sim.records.at(-1),e=currentEpisode(
  $('eventTitle').textContent=e?e.channel+' · '+e.title:'최종 결산';$('eventText').textContent=e?.body??'';$('eventChoices').innerHTML='';if(e)for(const key of ['a','b']){const c=e[key],b=document.createElement('button');b.className='choice';b.type='button';b.textContent=c;b.onclick=()=>{decideEpisode(sim,key);renderState();};$('eventChoices').append(b);}
  const f=forecastClosure(sim);$('closePreview').innerHTML=`<strong>폐업도 경영의 선택입니다.</strong><br>지금 정리하면 ${money(f.now)} / ${f.target}개월까지 영업 후 정리하면 ${money(f.later)}<br><small>${f.assumption} 회수액은 음수가 될 수 있습니다.</small>`;}
 function renderState(){try{localStorage.setItem("survival-v3",JSON.stringify(sim));}catch{}if(sim.finished){renderResults();renderOutcome(sim,totals(sim));}else{renderPlay();show('play');}}
-$('start').onclick=()=>{try{sim=createSimulation(read());beginEpisodes(sim,crypto.getRandomValues(new Uint32Array(1))[0]);renderState();}catch(e){$('startAlert').textContent=e.message;}};
+const replayControls = document.createElement('div');
+replayControls.className = 'actions';
+for (const [label, sameSeed] of [['같은 조건으로 다시', false], ['같은 사건 시드로 다시', true]]) {
+ const button = document.createElement('button');
+ button.type = 'button';
+ button.className = 'action-alt';
+ button.textContent = label;
+ button.onclick = () => {
+  const seed = sameSeed ? sim.seed : crypto.getRandomValues(new Uint32Array(1))[0];
+  const input = sim.initialInput ?? {
+   ...sim.config,
+   deliveryShare: Math.max(0, Math.min(100, sim.config.deliveryShare -
+    (sim.config.strategy === 'delivery' ? 20 : sim.config.strategy === 'local' ? -20 : 0))),
+  };
+  sim = Object.assign(createSimulation(input), { initialInput: input });
+  beginEpisodes(sim, seed);
+  renderState();
+ };
+ replayControls.append(button);
+}
+$('restart').after(replayControls);
+$('start').onclick=()=>{try{const input=read();sim=Object.assign(createSimulation(input),{initialInput:input});resume.remove();beginEpisodes(sim,crypto.getRandomValues(new Uint32Array(1))[0]);renderState();}catch(e){$('startAlert').textContent=e.message;}};
 const resume=document.createElement('button');
 resume.type='button';
 resume.className='action-alt';

@@ -64,4 +64,57 @@ export function renderOutcome(state, result) {
   };
   field.oninput = draw;
   draw();
+  renderShare(state, result);
+}
+
+function renderShare(state, result) {
+  let panel = document.getElementById('resultShare');
+  if (!panel) {
+    panel = document.createElement('details');
+    panel.id = 'resultShare';
+    panel.className = 'assumptions';
+    document.getElementById('salaryComparison').after(panel);
+  }
+  panel.innerHTML = '<summary>결과 공유</summary><label>이미지 비율 <select><option value="1080">1:1</option><option value="1350">4:5</option></select></label><div class="actions"><button type="button" class="action-alt">이미지 저장</button><button type="button" class="action-alt">주소 복사</button></div><output aria-live="polite"></output>';
+  const [save, copy] = panel.querySelectorAll('button');
+  const status = panel.querySelector('output');
+  const address = 'https://self-employed-survival.raspos.chatgpt.site';
+  copy.onclick = async () => {
+    try {
+      await navigator.clipboard.writeText(address);
+      status.textContent = '주소를 복사했습니다.';
+    } catch {
+      status.textContent = address;
+    }
+  };
+  save.onclick = () => {
+    const canvas = document.createElement('canvas');
+    canvas.width = 1080;
+    canvas.height = Number(panel.querySelector('select').value);
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+    ctx.fillStyle = '#f4eddd';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = '#263e31';
+    ctx.fillRect(72, 85, 936, 8);
+    ctx.font = 'bold 38px sans-serif';
+    ctx.fillText('대한민국 자영업자로 살아남기', 72, 172, 936);
+    ctx.font = '28px sans-serif';
+    ctx.fillText(`시뮬레이션 결과  ·  ${state.p.name}  ·  ${state.month}개월`, 72, 270, 936);
+    ctx.font = 'bold 65px serif';
+    ctx.fillText(outcome(state, result), 72, 430, 936);
+    ctx.font = 'bold 48px sans-serif';
+    ctx.fillText(`누적 노동 ${Math.round(result.hours).toLocaleString('ko-KR')}시간`, 72, 620, 936);
+    ctx.font = '25px sans-serif';
+    ctx.fillText(address, 72, canvas.height - 95, 936);
+    canvas.toBlob(blob => {
+      if (!blob) return;
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = '자영업-결과.png';
+      link.click();
+      setTimeout(() => URL.revokeObjectURL(url), 1500);
+    }, 'image/png');
+  };
 }
