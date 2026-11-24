@@ -80,15 +80,17 @@ export function renderOutcome(state, result) {
   renderAfterClosing(state, result.liquidation);
 }
 
-export function afterClosing(state, settlement, salary, searchMonths, repaymentMonths) {
+export function afterClosing(state, settlement, salary, searchMonths, repaymentMonths, options = {}) {
   let liquid = settlement.net + settlement.debt + (state.householdCash??0);
   let debt = settlement.debt;
   const principal = debt / repaymentMonths;
   const monthlyWage = salary / 12 * (1 - state.taxRate / 100);
+  const rate = options.rate ?? state.rate;
+  const graceMonths = options.graceMonths ?? 0;
   let shortageMonth = liquid < 0 ? 0 : null;
   for (let month = 1; month <= 12; month++) {
-    const payment = Math.min(debt, principal);
-    const interest = debt * state.rate / 1200;
+    const payment = month > graceMonths ? Math.min(debt, principal) : 0;
+    const interest = debt * rate / 1200;
     liquid += (month > searchMonths ? monthlyWage : 0) - state.living - payment - interest;
     debt -= payment;
     if (liquid < 0 && shortageMonth === null) shortageMonth = month;
@@ -118,6 +120,26 @@ function renderAfterClosing(state, settlement) {
   };
   panel.oninput = draw;
   draw();
+  if (settlement.debt > 0) {
+    const adjustment = document.createElement('details');
+    adjustment.innerHTML = '<summary>채무조정 조건 비교</summary><label>가정한 연이율 (%) <input type="number" min="0" max="30" step="0.1"></label> <label>원금 거치 기간 (개월) <input type="number" min="0" max="12" value="0"></label><p aria-live="polite"></p><p>거치 중에도 이자는 냅니다. 원금 감면과 지원 자격 심사는 포함하지 않습니다.</p><a href="https://www.newstartfund.or.kr/Contents/Prod.do" target="_blank" rel="noopener noreferrer">새출발기금 지원 대상·조건</a>';
+    panel.append(adjustment);
+    const [rate,grace]=adjustment.querySelectorAll('input');
+    rate.value=state.rate;
+    const baseDraw=panel.oninput;
+    panel.oninput = () => {
+      baseDraw();
+      if ([...fields,rate,grace].some(field=>field.value===''||!field.checkValidity())) return;
+      const [salary, searchMonths, repaymentMonths]=fields.map(field=>Number(field.value));
+      const baseline=afterClosing(state,settlement,salary,searchMonths,repaymentMonths);
+      const revised=afterClosing(state,settlement,salary,searchMonths,repaymentMonths,{
+        rate:Number(rate.value),graceMonths:Number(grace.value),
+      });
+      const delta=revised.liquid-baseline.liquid;
+      adjustment.querySelector('p').textContent=`12개월 뒤 현금 ${fmtPrior(revised.liquid)}만원 (기본 대비 ${delta>0?'+':''}${fmtPrior(delta)}만원) · 남은 원금 ${fmtPrior(revised.debt)}만원`;
+    };
+    panel.oninput();
+  }
 }
 
 const fmtPrior = value => Math.round(value).toLocaleString('ko-KR');

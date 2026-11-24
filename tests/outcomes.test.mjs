@@ -42,3 +42,13 @@ test('sale proceeds replace salvage and the debt principal is settled once', () 
   assert.equal(projection.liquid,settlement.net);
   assert.equal(projection.debt,0);
 });
+
+test('debt grace delays principal rather than waiving it', () => {
+  const state={rate:12,living:0,taxRate:0,householdCash:100};
+  const settlement={net:-1200,debt:1200};
+  const baseline=afterClosing(state,settlement,0,12,12);
+  const grace=afterClosing(state,settlement,0,12,12,{rate:12,graceMonths:12});
+  assert.equal(baseline.debt,0);
+  assert.equal(grace.debt,1200);
+  assert.equal(grace.liquid,100-12*12);
+});

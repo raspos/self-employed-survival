@@ -97,6 +97,12 @@ await mobile.locator('#afterClosing > summary').click();
 const initialProjection = await mobile.locator('#afterClosing > p').innerText();
 await mobile.getByLabel(/재취업 세전 연봉/).fill('6500');
 assert.notEqual(await mobile.locator('#afterClosing > p').innerText(),initialProjection);
+await mobile.getByText('채무조정 조건 비교',{exact:true}).click();
+const adjusted=mobile.locator('#afterClosing details').filter({hasText:'채무조정 조건 비교'}).locator('p').first();
+const baselineAdjustment=await adjusted.innerText();
+await mobile.getByLabel(/원금 거치 기간/).fill('12');
+assert.notEqual(await adjusted.innerText(),baselineAdjustment);
+assert.equal(await mobile.getByRole('link',{name:'새출발기금 지원 대상·조건'}).getAttribute('href'),'https://www.newstartfund.or.kr/Contents/Prod.do');
 for (const width of [320, 768]) {
  const narrow = await browser.newPage({ viewport: { width, height: 850 } });
  narrow.on('pageerror', e => errors.push(e.message));
