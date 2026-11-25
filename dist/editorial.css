@@ -511,3 +511,4 @@ body.playing[data-view] .cover[data-view]{display:none}
 .vs .side.hot{border-color:var(--accent)}
 .vs .side.hot strong{color:var(--accent-ink);font-size:clamp(48px,8vw,104px)}
 .vs .side em{font-style:normal;font-size:15px;color:var(--sub)}
+.industry .pic{background:none;overflow:hidden}.industry .pic svg{display:block;width:100%;height:100%}

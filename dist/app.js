@@ -1,7 +1,7 @@
 import { beginEpisodes, currentEpisode, decideEpisode, changeOperations, episodeSpeaker, episodeContext } from './episodes.js';
 import { mountPresets } from './setup-ui.js';
 import { eventView } from './event-format.js';
-import { sceneFor, sceneHTML } from './scenes.js';
+import { sceneFor, sceneHTML, industryArt } from './scenes.js';
 import { renderOutcome } from './outcomes.js';
 import { mountDataStory } from './datastory.js';
 import { businessOutflows, largestDecisionExpense } from './ledger-summary.js';
@@ -81,7 +81,7 @@ function summary(){try{updateOverrides();const s=applyEnvironment(setup(read()),
  $('startAlert').textContent=short?`자금이 부족합니다. 자본금·대출·매장 규모를 조정하세요. (${money(s.buffer)})`:'';
  paintBudget(s);$('sales').dataset.override=String(dirty.has('sales'));paintBrandSummary(s);paintFeePreview(s,r);$('feeLabShare').value=Number($('deliveryShare').value);$('feeLabShareValue').textContent=$('deliveryShare').value+'%';
  }catch(e){$('start').disabled=true;$('toStep3').disabled=true;$('startAlert').textContent=e.message;}}
-Object.entries(profiles).forEach(([key,p])=>{const [name,caption]=captions[key]??[p.name,p.caption];const b=document.createElement('button');b.type='button';b.className='industry';b.dataset.key=key;b.setAttribute('aria-pressed',String(key===selected));b.innerHTML=`<span class="pic pic-${key}" role="img" aria-label="${esc(name)} 상권"></span><span class="txt"><strong>${name}</strong><small>${caption}</small></span>`;b.onclick=()=>{selected=key;document.querySelectorAll('.industry').forEach(x=>x.setAttribute('aria-pressed',String(x===b)));brandPicker(selected,()=>{dirty.delete('sales');summary();});summary();};$('industryOptions').append(b);});
+Object.entries(profiles).forEach(([key,p])=>{const [name,caption]=captions[key]??[p.name,p.caption];const b=document.createElement('button');b.type='button';b.className='industry';b.dataset.key=key;b.setAttribute('aria-pressed',String(key===selected));b.innerHTML=`<span class="pic" role="img" aria-label="${esc(name)}">${industryArt[key]?.()??''}</span><span class="txt"><strong>${name}</strong><small>${caption}</small></span>`;b.onclick=()=>{selected=key;document.querySelectorAll('.industry').forEach(x=>x.setAttribute('aria-pressed',String(x===b)));brandPicker(selected,()=>{dirty.delete('sales');summary();});summary();};$('industryOptions').append(b);});
 brandPicker(selected,()=>{dirty.delete('sales');summary();});
 $('feeLabShare').oninput=()=>{$('deliveryShare').value=$('feeLabShare').value;dirty.add('deliveryShare');summary();};
 for(const id of Object.keys(basicMap))$(id).addEventListener('input',summary);
