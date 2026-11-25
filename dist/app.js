@@ -2,6 +2,7 @@ import { beginEpisodes, currentEpisode, decideEpisode, changeOperations, episode
 import { mountPresets } from './setup-ui.js';
 import { eventView } from './event-format.js';
 import { sceneFor, sceneHTML, industryArt } from './scenes.js';
+import { cashflow, closureChart, franchiseTimeline, laborBars, streetFlow } from './infographics.js';
 import { renderOutcome } from './outcomes.js';
 import { mountDataStory } from './datastory.js';
 import { businessOutflows, largestDecisionExpense } from './ledger-summary.js';
@@ -250,10 +251,11 @@ $('toStories2').onclick=()=>{reality(false);go('stories');};
 $('navReality').onclick=()=>reality(false);
 function illustration(id){if(id==='rent')return `<div class="interactive-chart"><span>가상 구조 실험</span><label for="salesSlider" class="label">월 매출 <b id="sliderLabel"></b></label><input id="salesSlider" type="range" min="600" max="3500" value="2200" step="100"/><div id="breakChart"></div><p id="breakCaption"></p><small>가정: 원재료 40%, 고정 인건비 500만원, 임대료 250만원, 기타 고정비 150만원. 이자·세금·감가상각 제외. 현금은 초기 500만원에서 1개월 증감.</small></div>`;
  if(id==='delivery')return deliveryStoryMarkup();
- if(id==='franchise')return `<div class="cost-structure">${['가입 시 → 가맹비·교육비','돌려받을 수 있는 돈 → 보증금','매달 → 로열티·필수품목','정리할 때 → 해지·원상복구'].map((s,i)=>`<div><b>0${i+1}</b><p>${s}</p></div>`).join('')}</div>`;
- if(id==='labor')return `<div class="scene-number">60<span>시간 / 주</span></div>`;
- if(id==='closure'||id==='debt')return `<div class="flow-diagram">${(id==='closure'?['현금 + 회수 자산','− 남은 부채','− 가게 정리 비용','= 다음 출발의 자금']:['매출 − 운영비','= 영업이익','− 이자·세금·원금','= 통장 현금의 변화']).map(s=>`<div>${s}</div>`).join('')}</div>`;
-return `<div class="street-diagram" aria-label="수요 이동과 점포 경쟁을 설명하는 개념도"><div>학생·고시생 수요</div><b>↓ 문화·인구·상권의 변화</b><div>같은 거리, 달라진 고객</div><b>↓ 점포 사이의 경쟁</b><div>매출과 고정비의 간격</div></div>`;}
+ if(id==='franchise')return franchiseTimeline();
+ if(id==='labor')return laborBars();
+ if(id==='closure')return closureChart();
+ if(id==='debt')return cashflow();
+return streetFlow();}
 const photos={demand:['https://pds.joongang.co.kr/news/component/htmlphoto_mmdata/202409/24/27a53bdc-c3c2-4d3e-9d48-6f9e96f5c2f0.jpg','녹두호프에서 맥주병을 치우는 점주 김례숙 씨','2024년 9월, 서울 관악구 녹두호프'],rent:['https://pds.joongang.co.kr/news/component/htmlphoto_mmdata/202409/25/5f6b8026-67e1-4181-8b20-8f37e3999ac9.jpg','호부침개 백선기 씨가 손님을 기다리며 가게 밖을 내다보는 모습','호부침개 백선기 씨가 손님을 기다리면서 가게 밖을 내다보고 있다.'],franchise:['https://pds.joongang.co.kr/news/component/htmlphoto_mmdata/202409/27/91a44d9b-a69e-41ab-bffe-4d6097cb6639.jpg','맘스터치 상도역점 황성구 씨가 손님을 기다리는 모습','맘스터치 상도역점 황성구 씨(왼쪽)가 손님을 기다리고 있다.']};
 const photo=id=>photos[id]?`<figure class="story-photo"><img src="${photos[id][0]}" alt="${photos[id][1]}" loading="lazy" referrerpolicy="no-referrer"><figcaption>${photos[id][2]} · 사진 중앙일보</figcaption></figure>`:'';
 function renderStory(){const a=articles[currentStory];$('storyTabs').innerHTML=articles.map((a,i)=>`<button type="button" data-story="${i}" aria-pressed="${i===currentStory}">${String(i+1).padStart(2,'0')} ${a.title}</button>`).join('');$('storyTabs').querySelectorAll('button').forEach(b=>b.onclick=()=>{currentStory=Number(b.dataset.story);renderStory();});const lay={demand:'hero',rent:'side',franchise:'inset'}[a.id]??'plain',ph=photo(a.id),sb=`<p class="story-question">${a.question}</p><p>${a.facts}</p>${lay==='inset'?ph:''}`;$('storyContent').dataset.layout=lay;$('storyContent').innerHTML=`${lay==='hero'?ph:''}<div class="story-heading"><span>${a.reportedAt} 당시</span><h3>${a.title}</h3></div>${lay==='side'?`<div class="story-cols"><div class="story-body">${sb}</div>${ph}</div>`:`<div class="story-body">${sb}</div>`}${illustration(a.id)}<details class="assumptions"><summary>출처 보기</summary><p>${link(a.url,a.originalTitle??'관련 기획 원문')}</p><p>${a.relatedStatistics.map(k=>link(sources[k].url,sources[k].label)).join('<br>')}</p></details>`;$('prevStory').disabled=currentStory===0;$('nextStory').textContent=currentStory===articles.length-1?'그때와 지금 비교하기':'다음 이야기';

@@ -46,3 +46,12 @@ test('no body text below 12px is declared in the stylesheet', () => {
   const sizes = [...css.matchAll(/font-size:\s*(\d+(?:\.\d+)?)px/g)].map(m => Number(m[1]));
   assert.ok(sizes.every(n => n >= 12), sizes.filter(n => n < 12).join());
 });
+
+test('infographic figures reconcile with the engine', async () => {
+  const { cashflowSteps, closureSteps } = await import('../dist/infographics.js');
+  const { r } = cashflowSteps();
+  const computed = r.operating - r.interest - r.principal - (r.tax + r.vat) - r.living + r.depreciation;
+  assert.ok(Math.abs(computed - r.flow) < 1e-6, `${computed} vs ${r.flow}`);
+  const l = closureSteps();
+  assert.ok(Math.abs(l.cash + l.recoveredDeposit + l.salvage - l.debt - l.demolition - l.termination - l.net) < 1e-6);
+});
