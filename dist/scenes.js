@@ -65,7 +65,7 @@ const shopSvg = body => `<svg viewBox="0 0 400 300" preserveAspectRatio="xMidYMi
 const frame = (sign, signColor, awning, signText = '#f7ead0') => `<rect width="400" height="300" fill="${P.sky}"/>
 <rect y="244" width="400" height="56" fill="${P.dark}"/><rect y="244" width="400" height="6" fill="#5b4332"/>
 <rect x="46" y="92" width="308" height="152" fill="${P.wall}"/>
-<rect x="60" y="14" width="280" height="44" fill="${signColor}"/><text x="200" y="46" text-anchor="middle" font-family="'Noto Serif KR',serif" font-weight="900" font-size="28" fill="${signText}">${sign}</text>
+<rect x="60" y="14" width="280" height="44" fill="${signColor}"/><text x="200" y="50" text-anchor="middle" font-family="'Noto Serif KR',serif" font-weight="900" font-size="36" fill="${signText}">${sign}</text>
 <path d="M40 70h320v22H40z" fill="${awning}"/>${Array.from({ length: 8 }, (_, i) => `<path d="M${40 + i * 40} 92h40l-20 16z" fill="${i % 2 ? P.cream : awning}"/>`).join('')}`;
 const door = x => `<rect x="${x}" y="130" width="64" height="114" fill="${P.green}"/><rect x="${x + 8}" y="140" width="48" height="60" fill="#cfe0d0"/><circle cx="${x + 52}" cy="196" r="3" fill="${P.amber}"/>`;
 const win = (x, w = 120) => `<rect x="${x}" y="124" width="${w}" height="96" fill="${P.amber}"/><rect x="${x}" y="124" width="${w}" height="96" fill="none" stroke="${P.green}" stroke-width="6"/>`;
@@ -82,8 +82,8 @@ const cafe = () => shopSvg(`${frame('카페', '#5b4332', P.green)}${win(70, 130)
 const store = () => shopSvg(`<rect width="400" height="300" fill="${P.sky}"/>
 <rect y="244" width="400" height="56" fill="${P.dark}"/><rect y="244" width="400" height="6" fill="#5b4332"/>
 <rect x="30" y="40" width="340" height="204" fill="${P.cream}"/>
-<rect x="30" y="40" width="340" height="40" fill="${P.green}"/><rect x="30" y="80" width="340" height="8" fill="${P.amber}"/>
-<text x="200" y="70" text-anchor="middle" font-family="'Noto Serif KR',serif" font-weight="900" font-size="26" fill="#f7ead0">편의점</text>
+<rect x="30" y="40" width="340" height="46" fill="${P.green}"/><rect x="30" y="86" width="340" height="8" fill="${P.amber}"/>
+<text x="200" y="76" text-anchor="middle" font-family="'Noto Serif KR',serif" font-weight="900" font-size="36" fill="#f7ead0">편의점</text>
 <rect x="46" y="104" width="190" height="124" fill="#fff6e0" stroke="${P.green}" stroke-width="6"/>
 ${[0, 1, 2].map(r => `<rect x="54" y="${116 + r * 36}" width="174" height="4" fill="${P.dark}" opacity=".5"/>` + Array.from({ length: 6 }, (_, c) => `<rect x="${58 + c * 28}" y="${r * 36 + 98}" width="22" height="20" fill="${[P.brick, P.amber, P.green, '#6b7f95', P.brick, P.amber][(c + r) % 6]}"/>`).join('')).join('')}
 <rect x="262" y="104" width="86" height="140" fill="#cfe0d0" stroke="${P.green}" stroke-width="6"/><line x1="305" y1="104" x2="305" y2="244" stroke="${P.green}" stroke-width="4"/>
@@ -92,7 +92,7 @@ ${[0, 1, 2].map(r => `<rect x="54" y="${116 + r * 36}" width="174" height="4" fi
 const snack = () => shopSvg(`<rect width="400" height="300" fill="${P.sky}"/>
 <rect y="244" width="400" height="56" fill="${P.dark}"/><rect y="244" width="400" height="6" fill="#5b4332"/>
 <rect x="46" y="100" width="308" height="144" fill="${P.wall}"/>
-<rect x="70" y="16" width="260" height="42" fill="${P.brick}"/><text x="200" y="46" text-anchor="middle" font-family="'Noto Serif KR',serif" font-weight="900" font-size="26" fill="#f7ead0">분식</text>
+<rect x="70" y="16" width="260" height="42" fill="${P.brick}"/><text x="200" y="50" text-anchor="middle" font-family="'Noto Serif KR',serif" font-weight="900" font-size="36" fill="#f7ead0">분식</text>
 <path d="M36 64h328v30H36z" fill="${P.brick}"/>${Array.from({ length: 8 }, (_, i) => `<rect x="${36 + i * 41}" y="64" width="20.5" height="30" fill="#f7ead0"/>`).join('')}
 <rect x="60" y="150" width="190" height="94" fill="#8a6a50"/><rect x="60" y="144" width="190" height="10" fill="#5b4332"/>
 <ellipse cx="120" cy="140" rx="46" ry="12" fill="#3a2a20"/><path d="M74 140a46 36 0 0 0 92 0z" fill="#c9763c"/><ellipse cx="120" cy="140" rx="40" ry="9" fill="${P.brick}"/>
